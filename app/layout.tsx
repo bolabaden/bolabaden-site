@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://bocloud.org',
+    url: 'https://bolabaden.org',
     title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
     description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development.',
     siteName: 'Boden Crouch Portfolio',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  metadataBase: new URL('https://bocloud.org'),
+  metadataBase: new URL('https://bolabaden.org'),
 }
 
 export default function RootLayout({

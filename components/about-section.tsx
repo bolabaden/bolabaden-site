@@ -238,14 +238,14 @@ export function AboutSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:contact@bocloud.org"
+              href="mailto:contact@bolabaden.org"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               <MessageSquare className="h-4 w-4" />
               Get in Touch
             </a>
             <a
-              href="https://github.com/bocloud"
+              href="https://github.com/bolabaden"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-colors rounded-lg"

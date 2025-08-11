@@ -137,7 +137,7 @@ export function HeroSection() {
               Contact Me
             </Link>
             <Link
-              href="https://github.com/bocloud"
+              href="https://github.com/bolabaden"
               target="_blank"
               rel="noopener noreferrer"
               className={cn(

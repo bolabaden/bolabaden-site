@@ -144,14 +144,14 @@ export default function GlobalError({
               </p>
               <div className="flex flex-wrap justify-center gap-4 text-sm">
                 <a 
-                  href="mailto:contact@bocloud.org"
+                  href="mailto:contact@bolabaden.org"
                   className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
                 >
                   <Mail className="h-4 w-4" />
                   Email Support
                 </a>
                 <a 
-                  href="https://github.com/bocloud"
+                  href="https://github.com/bolabaden"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
@@ -170,7 +170,7 @@ export default function GlobalError({
               className="mt-8"
             >
               <div className="text-xs text-muted-foreground/60">
-                bocloud.org • Self-Hosted Infrastructure
+                bolabaden.org • Self-Hosted Infrastructure
               </div>
             </motion.div>
           </div>

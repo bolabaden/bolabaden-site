@@ -14,13 +14,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">bocloud.org</h3>
+            <h3 className="text-lg font-semibold mb-4">bolabaden.org</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Self-taught infrastructure & AI engineer building and sharing technical solutions.
             </p>
             <div className="flex items-center gap-4">
               <Link
-                href="https://github.com/bocloud"
+                href="https://github.com/bolabaden"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -28,7 +28,7 @@ export function Footer() {
                 <Github className="h-5 w-5" />
               </Link>
               <Link
-                href="mailto:contact@bocloud.org"
+                href="mailto:contact@bolabaden.org"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Mail className="h-5 w-5" />
@@ -73,7 +73,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  href="https://github.com/bocloud"
+                  href="https://github.com/bolabaden"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
@@ -106,10 +106,10 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  href="mailto:contact@bocloud.org"
+                  href="mailto:contact@bolabaden.org"
                   className="hover:text-primary transition-colors"
                 >
-                  contact@bocloud.org
+                  contact@bolabaden.org
                 </Link>
               </li>
               <li>Remote Work</li>

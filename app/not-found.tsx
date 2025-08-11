@@ -163,14 +163,14 @@ export default function NotFound() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link 
-                href="mailto:contact@bocloud.org"
+                href="mailto:contact@bolabaden.org"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
                 <Mail className="h-4 w-4" />
                 Email Support
               </Link>
               <Link 
-                href="https://github.com/bocloud"
+                href="https://github.com/bolabaden"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
@@ -196,7 +196,7 @@ export default function NotFound() {
             className="mt-8"
           >
             <div className="text-xs text-muted-foreground/60">
-              bocloud.org • Self-Hosted Infrastructure
+              bolabaden.org • Self-Hosted Infrastructure
             </div>
           </motion.div>
         </div>

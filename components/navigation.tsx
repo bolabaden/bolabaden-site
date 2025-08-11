@@ -47,7 +47,7 @@ export function Navigation() {
             href="/"
             className="text-xl font-bold text-foreground hover:text-primary transition-colors"
           >
-            bocloud.org
+            bolabaden.org
           </Link>
 
           {/* Desktop Navigation */}
@@ -66,7 +66,7 @@ export function Navigation() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <Link
-              href="https://github.com/bocloud"
+              href="https://github.com/bolabaden"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md p-2"
@@ -74,7 +74,7 @@ export function Navigation() {
               <Github className="h-5 w-5" />
             </Link>
             <Link
-              href="mailto:contact@bocloud.org"
+              href="mailto:contact@bolabaden.org"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus-ring"
             >
               <Mail className="h-4 w-4 mr-2 inline" />
@@ -115,7 +115,7 @@ export function Navigation() {
                 ))}
                 <div className="flex items-center space-x-4 pt-4 border-t border-border">
                   <Link
-                    href="https://github.com/bocloud"
+                    href="https://github.com/bolabaden"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md p-2"
@@ -123,7 +123,7 @@ export function Navigation() {
                     <Github className="h-5 w-5" />
                   </Link>
                   <Link
-                    href="mailto:contact@bocloud.org"
+                    href="mailto:contact@bolabaden.org"
                     className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus-ring"
                   >
                     <Mail className="h-4 w-4 mr-2 inline" />
