@@ -144,7 +144,7 @@ export default function GlobalError({
               </p>
               <div className="flex flex-wrap justify-center gap-4 text-sm">
                 <a 
-                  href="mailto:contact@bolabaden.org"
+                  href="mailto:boden.crouch@gmail.com"
                   className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
                 >
                   <Mail className="h-4 w-4" />

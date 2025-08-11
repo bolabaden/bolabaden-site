@@ -28,7 +28,7 @@ export function Footer() {
                 <Github className="h-5 w-5" />
               </Link>
               <Link
-                href="mailto:contact@bolabaden.org"
+                href="mailto:boden.crouch@gmail.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Mail className="h-5 w-5" />
@@ -106,14 +106,14 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  href="mailto:contact@bolabaden.org"
+                  href="mailto:boden.crouch@gmail.com"
                   className="hover:text-primary transition-colors"
                 >
-                  contact@bolabaden.org
+                  boden.crouch@gmail.com
                 </Link>
               </li>
               <li>Remote Work</li>
-              <li>UTC-5 (Eastern)</li>
+              <li>UTC-6 (Central)</li>
               <li>
                 <button
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}

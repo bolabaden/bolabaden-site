@@ -74,7 +74,7 @@ export function Navigation() {
               <Github className="h-5 w-5" />
             </Link>
             <Link
-              href="mailto:contact@bolabaden.org"
+              href="mailto:boden.crouch@gmail.com"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus-ring"
             >
               <Mail className="h-4 w-4 mr-2 inline" />
@@ -123,7 +123,7 @@ export function Navigation() {
                     <Github className="h-5 w-5" />
                   </Link>
                   <Link
-                    href="mailto:contact@bolabaden.org"
+                    href="mailto:boden.crouch@gmail.com"
                     className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus-ring"
                   >
                     <Mail className="h-4 w-4 mr-2 inline" />

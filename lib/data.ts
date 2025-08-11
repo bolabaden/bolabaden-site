@@ -229,10 +229,10 @@ export const techStack: TechStack[] = [
 ]
 
 export const contactInfo: ContactInfo = {
-  email: 'contact@bolabaden.org',
+  email: 'boden.crouch@gmail.com',
   github: 'https://github.com/bolabaden',
   location: 'Remote',
-  timezone: 'UTC-5 (Eastern)',
+  timezone: 'UTC-6 (Central)',
   availability: 'open-to-opportunities',
   preferredCommunication: ['email', 'text-based chat', 'async communication'],
   workPreferences: {

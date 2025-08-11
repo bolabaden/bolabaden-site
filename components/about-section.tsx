@@ -112,7 +112,7 @@ export function AboutSection() {
   const workPreferences = [
     { icon: Globe, label: 'Remote Work', description: 'Fully remote, distributed teams' },
     { icon: MessageSquare, label: 'Async Communication', description: 'Email, text-based chat, documentation' },
-    { icon: Clock, label: 'Flexible Hours', description: 'Eastern timezone, flexible scheduling' },
+    { icon: Clock, label: 'Flexible Hours', description: 'Central timezone, flexible scheduling' },
     { icon: Code, label: 'Technical Focus', description: 'Hands-on development and architecture' }
   ]
 
@@ -238,7 +238,7 @@ export function AboutSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:contact@bolabaden.org"
+              href="mailto:boden.crouch@gmail.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               <MessageSquare className="h-4 w-4" />

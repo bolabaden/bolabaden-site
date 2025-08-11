@@ -168,7 +168,7 @@ export async function GET(
             <div class="text-center">
                 <p class="text-sm text-gray-400 mb-4">Need help? Can't find what you're looking for?</p>
                 <div class="flex flex-wrap justify-center gap-4 text-sm">
-                    <a href="mailto:contact@bolabaden.org" class="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1">
+                    <a href="mailto:boden.crouch@gmail.com" class="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>

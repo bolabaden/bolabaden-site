@@ -1,0 +1,2000 @@
+@@ -0,0 +1,18 @@
++Dockerfile
++.dockerignore
++.git
++.gitignore
++README.md
++.env
++.env.local
++.env.development.local
++.env.test.local
++.env.production.local
++.next
++.vercel
++node_modules
++npm-debug.log*
++yarn-debug.log*
++yarn-error.log*
++.DS_Store
++*.tsbuildinfo 
+\ No newline at end of file
+diff --git a/.gitignore b/.gitignore
+deleted file mode 100644
+index 5ef6a52..0000000
+--- a/.gitignore
++++ /dev/null
+@@ -1,41 +0,0 @@
+-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+-
+-# dependencies
+-/node_modules
+-/.pnp
+-.pnp.*
+-.yarn/*
+-!.yarn/patches
+-!.yarn/plugins
+-!.yarn/releases
+-!.yarn/versions
+-
+-# testing
+-/coverage
+-
+-# next.js
+-/.next/
+-/out/
+-
+-# production
+-/build
+-
+-# misc
+-.DS_Store
+-*.pem
+-
+-# debug
+-npm-debug.log*
+-yarn-debug.log*
+-yarn-error.log*
+-.pnpm-debug.log*
+-
+-# env files (can opt-in for committing if needed)
+-.env*
+-
+-# vercel
+-.vercel
+-
+-# typescript
+-*.tsbuildinfo
+-next-env.d.ts
+diff --git a/.gitkeep b/.gitkeep
+new file mode 100644
+index 0000000..0519ecb
+--- /dev/null
++++ b/.gitkeep
+@@ -0,0 +1 @@
++ 
+\ No newline at end of file
+diff --git a/Dockerfile b/Dockerfile
+index 61620d9..a67f7d9 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,14 +1,15 @@
+-# Use the official Node.js runtime as a parent image
++# Use Node.js 18 Alpine as base image
+ FROM node:18-alpine AS base
+ 
+ # Install dependencies only when needed
+ FROM base AS deps
++# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+ RUN apk add --no-cache libc6-compat
+ WORKDIR /app
+ 
+ # Install dependencies based on the preferred package manager
+ COPY package.json package-lock.json* ./
+-RUN npm ci --only=production
++RUN npm ci || (echo "npm ci failed, trying npm install" && npm install && npm ci)
+ 
+ # Rebuild the source code only when needed
+ FROM base AS builder
+@@ -16,22 +17,27 @@ WORKDIR /app
+ COPY --from=deps /app/node_modules ./node_modules
+ COPY . .
+ 
+-# Build the application
++# Next.js collects completely anonymous telemetry data about general usage.
++# Learn more here: https://nextjs.org/telemetry
++# Uncomment the following line in case you want to disable telemetry during the build.
++ENV NEXT_TELEMETRY_DISABLED=1
++
+ RUN npm run build
+ 
+ # Production image, copy all the files and run next
+ FROM base AS runner
+ WORKDIR /app
+ 
+-ENV NODE_ENV production
+-ENV NEXT_TELEMETRY_DISABLED 1
++ENV NODE_ENV=production
++ENV NEXT_TELEMETRY_DISABLED=1
+ 
+-# Create a non-root user
+ RUN addgroup --system --gid 1001 nodejs
+ RUN adduser --system --uid 1001 nextjs
+ 
+-# Copy built application
+ COPY --from=builder /app/public ./public
++
++# Automatically leverage output traces to reduce image size
++# https://nextjs.org/docs/advanced-features/output-file-tracing
+ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+ 
+@@ -1,210 +1,212 @@
+-# Bolabaden - Professional Website
++# bolabaden: Boden Crouch Portfolio & Infrastructure Platform
+ 
+-A modern, professional website for **bolabaden.org** built with Next.js, featuring dynamic error pages, iframe embedding capabilities, and a beautiful design that represents cloud infrastructure expertise.
++Welcome to **bolabaden**—a dual-purpose, production-grade platform that serves as both the professional portfolio of Boden Crouch and a comprehensive, live management interface for self-hosted infrastructure, Kubernetes, AI tools, and backend development. bolabaden is built with Next.js 14, TypeScript, and Tailwind CSS, and is designed to be both a personal branding site and a living, operational demonstration of modern cloud-native engineering.
+ 
+-## 🚀 Features
++---
++
++## Overview
+ 
+-### Core Website
++bolabaden is:
+ 
+-- **Professional Homepage**: Modern design with hero section, services showcase, and about section
+-- **Responsive Design**: Mobile-first approach with Tailwind CSS
+-- **Dark Mode Support**: Automatic dark/light mode switching
+-- **Custom SVG Logo**: Professional bolabaden.org branding
+-- **SEO Optimized**: Proper meta tags, Open Graph, and Twitter cards
++- **A Professional Portfolio**: Showcasing Boden Crouch’s technical expertise, project history, open source contributions, and professional philosophy. Includes detailed case studies, project writeups, and a dynamic, interactive resume.
++- **A Live Infrastructure Platform**: Real-time dashboards and management for self-hosted and cloud-native services, including Kubernetes clusters, AI/ML workloads, CI/CD pipelines, and backend systems. Features live service status, monitoring, and technical documentation.
+ 
+-### Error Pages
++## Project Structure
+ 
+-- **Dynamic Error Pages**: Professional error pages for all HTTP status codes (400-599)
+-- **Traefik Integration**: Seamless integration with Traefik reverse proxy
+-- **Custom Branding**: All error pages maintain bolabaden.org branding
+-- **Responsive Design**: Works perfectly on all devices
++```shell
++├── app/                    # Next.js 14 app directory
++│   ├── globals.css        # Global styles and theme
++│   ├── layout.tsx         # Root layout with metadata
++│   └── page.tsx           # Main homepage
++├── components/            # React components
++│   ├── hero-section.tsx   # Hero with professional intro
++│   ├── technical-showcase.tsx  # Infrastructure & services
++│   ├── projects-section.tsx    # Project portfolio
++│   ├── guides-section.tsx      # Technical guides
++│   ├── about-section.tsx       # About and skills
++│   ├── contact-section.tsx     # Contact information
++│   ├── navigation.tsx          # Main navigation
++│   ├── section.tsx            # Reusable section wrapper
++│   └── footer.tsx             # Site footer
++├── lib/                   # Utilities and data
++│   ├── utils.ts           # Utility functions
++│   ├── types.ts           # TypeScript interfaces
++│   └── data.ts            # Portfolio content
++└── public/                # Static assets
++```
+ 
+-### Iframe Embedding
++- **/app**: Next.js App Router pages, layouts, and server components
++- **/components**: Reusable React components and UI primitives
++- **/lib**: Utility functions, API clients, and shared logic
++- **/styles**: Tailwind CSS configuration and global styles
++- **/public**: Static assets (images, icons, etc.)
++- **/docs**: Technical guides, documentation, and markdown content
++- **/infrastructure**: IaC scripts, Kubernetes manifests, and deployment configs
++- **/scripts**: Automation, CI/CD, and maintenance scripts
+ 
+-- **Subdomain Integration**: Embed bolabaden.org navigation on all subdomains
+-- **Service Wrapper**: Iframe wrapper for exposing services while maintaining branding
+-- **Loading States**: Professional loading and error states
+-- **Security**: Proper sandbox and CSP headers
++---
+ 
+-## 🏗️ Architecture
++## Features
+ 
+-### Tech Stack
++- **Modern, Professional Design**: Clean, minimalist dark theme with glassmorphism, custom branding, and accessibility in mind.
++- **Live Technical Showcase**: Real-time infrastructure monitoring, service status, architecture diagrams, and live metrics for Kubernetes, Docker, and cloud-native services.
++- **Project Portfolio**: Featured projects with GitHub integration, live demos, technology stack highlights, and detailed writeups.
++- **Technical Guides & Documentation**: Step-by-step guides for self-hosted services, infrastructure-as-code, Kubernetes deployments, and DevOps workflows.
++- **Professional About & Resume**: Authentic representation of skills, experience, certifications, and work philosophy, with downloadable resume and LinkedIn integration.
++- **Contact & Availability**: Multiple communication channels, live availability status, and pre-filled contact templates for easy outreach.
++- **Responsive & Accessible**: Optimized for desktop and mobile, with a focus on accessibility and performance.
++- **SEO & Performance**: Proper metadata, static site generation, image optimization, and best-in-class performance.
++- **Open Source**: MIT licensed, open for contributions, issues, and feedback. Community-driven improvements welcome.
+ 
+-- **Framework**: Next.js 15 with App Router
+-- **Styling**: Tailwind CSS
+-- **Language**: TypeScript
+-- **Deployment**: Docker containerization
+-- **Reverse Proxy**: Traefik integration
++---
+ 
+-### Project Structure
++## Technology Stack
+ 
+-```shell
+-src/bolabaden-site/
+-├── app/
+-│   ├── api/
+-│   │   ├── embed/                 # Iframe embedding API
+-│   │   └── error/[status]/        # Dynamic error pages API
+-│   ├── error-pages/
+-│   │   ├── 404/                   # 404 error page
+-│   │   └── 500/                   # 500 error page
+-│   ├── globals.css                # Global styles
+-│   ├── layout.tsx                 # Root layout
+-│   └── page.tsx                   # Homepage
+-├── components/
+-│   ├── IframeWrapper.tsx          # Iframe wrapper component
+-│   ├── Logo.tsx                   # Custom SVG logo
+-│   └── Navbar.tsx                 # Navigation component
+-├── Dockerfile                     # Production Docker image
+-├── docker-compose.override.yml    # Traefik integration config
+-└── next.config.ts                 # Next.js configuration
+-```
++- **Framework**: Next.js 14 (App Router, Server Components, Static & Dynamic Rendering)
++- **Language**: TypeScript (strict mode, type-safe throughout)
++- **Styling**: Tailwind CSS with a custom design system and utility-first approach
++- **Animations**: Framer Motion for smooth, modern UI transitions and microinteractions
++- **Icons**: Lucide React for consistent, scalable iconography
++- **State Management**: React Context, Zustand, and SWR for data fetching and state
++- **API & Backend**: REST/GraphQL endpoints, edge functions, and integrations with self-hosted services
++- **Deployment**: Docker containerization, multi-stage builds, standalone output, and CI/CD pipelines (GitHub Actions)
++- **Monitoring & Observability**: Prometheus, Grafana, and custom dashboards for live metrics and alerting
++- **Infrastructure**: Kubernetes (k3s/k8s), Traefik/NGINX, self-hosted GitHub Actions runners, and IaC (Terraform/Ansible)
++- **AI/ML Integration**: Self-hosted LLMs, inference endpoints, and AI-powered features
+ 
+-## 🚀 Getting Started
++---
++
++## Deploy locally
+ 
+-### Development
++1. Clone the repo
++
++   ```bash
++   git clone https://github.com/bolabaden/bolabaden-site.git
++   cd portfolio
++   ```
+ 
+-1. **Install dependencies**:
++2. Install dependencies:
+ 
+    ```bash
+    npm install
+    ```
+ 
+-2. **Run development server**:
++3. Run the development server:
+ 
+    ```bash
+    npm run dev
+    ```
+ 
+-3. **Open browser**: Navigate to `http://localhost:3000`
+-
+-### Production Deployment
++4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+ 
+-#### Docker Build
++### Building for Production
+ 
+ ```bash
+-docker build -t bolabaden-site .
++npm run build
++npm start
+ ```
+ 
+-#### Docker Compose Integration
+-
+-Replace your existing `error-pages` service with the configuration from `docker-compose.override.yml`:
++---
+ 
+-```yaml
+-services:
+-  error-pages:
+-    build:
+-      context: ./src/bolabaden-site
+-      dockerfile: Dockerfile
+-    container_name: bolabaden-error-pages
+-    # ... (see docker-compose.override.yml for full config)
++```bash
++docker build -t bolabaden-portfolio .
++docker run -p 3000:3000 bolabaden-portfolio
+ ```
+ 
+-## 🔧 Configuration
+-
+-### Environment Variables
+-
+-- `NODE_ENV`: Set to `production` for production builds
+-- `PORT`: Server port (default: 3000)
+-- `HOSTNAME`: Server hostname (default: 0.0.0.0)
+-
+-### Traefik Labels
+-
+-The application includes comprehensive Traefik labels for:
+-
+-- **Error middleware**: Handles 400-599 status codes
+-- **Main website**: Serves bolabaden.org
+-- **Catch-all router**: Handles 404s with lowest priority
+-- **Embed service**: Provides iframe embedding at embed.bolabaden.org
+-
+-## 🎨 Customization
+-
+-### Branding
++## Configuration
+ 
+-- **Logo**: Edit `components/Logo.tsx` to modify the SVG logo
+-- **Colors**: Update Tailwind classes in `globals.css`
+-- **Content**: Modify `app/page.tsx` for homepage content
++### Content Management
+ 
+-### Error Pages
++All portfolio content is managed through the `lib/data.ts` file:
+ 
+-- **Messages**: Update error configurations in `app/api/error/[status]/route.ts`
+-- **Styling**: Modify the HTML template in the same file
+-- **New Status Codes**: Add entries to the `errorConfigs` object
++- **Services**: Infrastructure and hosted services
++- **Projects**: Portfolio projects with GitHub links
++- **Guides**: Technical documentation and tutorials
++- **Tech Stack**: Skills and experience levels
++- **Contact Info**: Professional contact details
+ 
+-### Iframe Embedding
++### Styling
+ 
+-- **Trusted Domains**: Update the `trustedDomains` array in `app/api/embed/route.ts`
+-- **Styling**: Modify the HTML template in the embed API route
++The design system is built with Tailwind CSS and includes:
+ 
+-## 🌐 Usage Examples
++- **Custom Color Palette**: Professional dark theme
++- **Typography**: Optimized font stack with JetBrains Mono
++- **Components**: Reusable UI components with consistent styling
++- **Responsive Design**: Mobile-first approach
++- **Animations**: Smooth transitions and hover effects
+ 
+-### Basic Error Page
++## Key Features
+ 
+-```
+-https://bolabaden.org/api/error/404
+-```
++### Technical Showcase
+ 
+-### Iframe Embedding
+-
+-```
+-https://bolabaden.org/api/embed?service=Grafana&url=https://grafana.bolabaden.org
+-```
++- Live service status monitoring
++- Infrastructure architecture overview
++- Real-time performance metrics
++- Service categorization and filtering
+ 
+-### Integration with Other Services
++### Project Portfolio
+ 
+-Add this to your service's HTML to embed bolabaden.org navigation:
++- Featured project highlights
++- Technology stack integration
++- GitHub repository links
++- Live demo accessibility
+ 
+-```html
+-<iframe src="https://embed.bolabaden.org/api/embed?service=YourService&url=https://yourservice.bolabaden.org" 
+-        width="100%" height="100%" frameborder="0"></iframe>
+-```
++### Technical Guides
+ 
+-## 🔒 Security
++- Comprehensive infrastructure documentation
++- Step-by-step deployment guides
++- Difficulty-based categorization
++- Prerequisites and technology requirements
+ 
+-- **Content Security Policy**: Proper CSP headers for iframe embedding
+-- **Sandbox Attributes**: Secure iframe sandboxing
+-- **Domain Validation**: Only trusted domains allowed for embedding
+-- **HTTPS Only**: All routes enforce HTTPS in production
++### Professional About
+ 
+-## 🚀 Performance
++- Authentic technical background
++- Self-taught expertise emphasis
++- Work preferences and communication style
++- Skills visualization with experience levels
+ 
+-- **Static Generation**: Pre-built static pages where possible
+-- **Image Optimization**: Optimized images with Next.js Image component
+-- **Code Splitting**: Automatic code splitting with Next.js
+-- **Caching**: Proper cache headers for static assets
++### Contact Integration
+ 
+-## 📝 Development Notes
++- Multiple communication channels
++- Professional availability status
++- Work preference specifications
++- Pre-filled contact templates
+ 
+-### Adding New Pages
++## Performance Optimization
+ 
+-1. Create new page in `app/` directory
+-2. Add navigation link to `components/Navbar.tsx`
+-3. Update sitemap and meta tags as needed
++- **Static Site Generation**: Pre-rendered pages for optimal performance
++- **Image Optimization**: Next.js automatic image optimization
++- **Code Splitting**: Automatic code splitting for faster loading
++- **SEO Optimization**: Comprehensive metadata and social sharing
++- **Accessibility**: WCAG 2.1 compliance with proper focus management
+ 
+-### Adding New Error Pages
++## Deployment
+ 
+-1. Add configuration to `errorConfigs` in `app/api/error/[status]/route.ts`
+-2. Test with: `https://bolabaden.org/api/error/[status]`
++The application is designed for deployment with Docker and includes:
+ 
+-### Modifying Iframe Embedding
++- **Multi-stage Dockerfile**: Optimized for production builds
++- **Standalone Output**: Reduced image size with Next.js standalone mode
++- **Environment Variables**: Configurable runtime settings
++- **Health Checks**: Application health monitoring
+ 
+-1. Update trusted domains in `app/api/embed/route.ts`
+-2. Modify HTML template for styling changes
+-3. Update CSP headers as needed
++## Contributing
+ 
+-## 🤝 Contributing
++This is a personal portfolio project, but feedback and suggestions are welcome:
+ 
+ 1. Fork the repository
+ 2. Create a feature branch
+ 3. Make your changes
+-4. Test thoroughly
+-5. Submit a pull request
++4. Submit a pull request
+ 
+-## 📄 License
++## Contact
+ 
+-This project is proprietary to Bolabaden (bolabaden.org).
++- **Email**: <webmaster@bolabaden.org>
+ 
+----
++Built using Next.js, TypeScript, and Tailwind CSS.
++
++- **GitHub**: [https://github.com/bolabaden](https://github.com/bolabaden)
++- **Website**: [https://bolabaden.org](https://bolabaden.org)
+ 
+-**Built with ❤️ by Boden (BO) for professional cloud infrastructure services.**
++## License
+ 
+-For questions or support, contact: [boden.crouch@gmail.com](mailto:boden.crouch@gmail.com)
++This project is open source and available under the [MIT License](LICENSE).
+diff --git a/app/api/embed/route.ts b/app/api/embed/route.ts
+deleted file mode 100644
+index 25a35eb..0000000
+--- a/app/api/embed/route.ts
++++ /dev/null
+@@ -1,122 +0,0 @@
+-import { NextRequest, NextResponse } from 'next/server'
+-
+-export async function GET(request: NextRequest) {
+-  const { searchParams } = new URL(request.url)
+-  const service = searchParams.get('service')
+-  const url = searchParams.get('url')
+-  
+-  if (!service || !url) {
+-    return NextResponse.json(
+-      { error: 'Missing required parameters: service and url' },
+-      { status: 400 }
+-    )
+-  }
+-
+-  // Validate that the URL is from a trusted subdomain
+-  const trustedDomains = [
+-    'bolabaden.org',
+-    '.bolabaden.org',
+-    'localhost',
+-    '127.0.0.1'
+-  ]
+-  
+-  const urlObj = new URL(url)
+-  const isValidDomain = trustedDomains.some(domain => 
+-    urlObj.hostname === domain || urlObj.hostname.endsWith(domain)
+-  )
+-  
+-  if (!isValidDomain) {
+-    return NextResponse.json(
+-      { error: 'URL not from trusted domain' },
+-      { status: 403 }
+-    )
+-  }
+-
+-  // Generate the iframe wrapper HTML
+-  const html = `
+-<!DOCTYPE html>
+-<html lang="en">
+-<head>
+-  <meta charset="UTF-8">
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-  <title>${service} - Bolabaden</title>
+-  <script src="https://cdn.tailwindcss.com"></script>
+-  <style>
+-    body { margin: 0; padding: 0; }
+-    .navbar { 
+-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+-      color: white;
+-      padding: 1rem;
+-      display: flex;
+-      justify-content: space-between;
+-      align-items: center;
+-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+-    }
+-    .logo { 
+-      font-size: 1.5rem; 
+-      font-weight: bold;
+-      display: flex;
+-      align-items: center;
+-      gap: 0.5rem;
+-    }
+-    .nav-links { 
+-      display: flex; 
+-      gap: 2rem;
+-      align-items: center;
+-    }
+-    .nav-links a { 
+-      color: white; 
+-      text-decoration: none;
+-      font-weight: 500;
+-      transition: opacity 0.2s;
+-    }
+-    .nav-links a:hover { 
+-      opacity: 0.8;
+-    }
+-    .iframe-container { 
+-      height: calc(100vh - 80px);
+-      width: 100%;
+-    }
+-    .iframe-container iframe { 
+-      width: 100%; 
+-      height: 100%; 
+-      border: none;
+-    }
+-    @media (max-width: 768px) {
+-      .nav-links { display: none; }
+-    }
+-  </style>
+-</head>
+-<body>
+-  <nav class="navbar">
+-    <div class="logo">
+-      <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+-        <ellipse cx="50" cy="45" rx="35" ry="20" fill="rgba(255,255,255,0.8)" />
+-        <ellipse cx="35" cy="50" rx="25" ry="15" fill="rgba(255,255,255,0.6)" />
+-        <ellipse cx="65" cy="50" rx="25" ry="15" fill="rgba(255,255,255,0.6)" />
+-        <text x="50" y="55" text-anchor="middle" fill="white" font-family="Arial" font-size="24" font-weight="bold">BO</text>
+-      </svg>
+-      <span>Bolabaden</span>
+-    </div>
+-    <div class="nav-links">
+-      <a href="https://bolabaden.org/">Home</a>
+-      <a href="https://bolabaden.org/services">Services</a>
+-      <a href="https://bolabaden.org/about">About</a>
+-      <a href="https://bolabaden.org/contact">Contact</a>
+-    </div>
+-  </nav>
+-  <div class="iframe-container">
+-    <iframe src="${url}" title="${service}" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"></iframe>
+-  </div>
+-</body>
+-</html>
+-  `
+-
+-  return new NextResponse(html, {
+-    headers: {
+-      'Content-Type': 'text/html',
+-      'X-Frame-Options': 'SAMEORIGIN',
+-      'Content-Security-Policy': "frame-ancestors 'self' *.bolabaden.org",
+-    },
+-  })
+-} 
+\ No newline at end of file
+diff --git a/app/api/error/[status]/route.ts b/app/api/error/[status]/route.ts
+index a67c389..70be297 100644
+--- a/app/api/error/[status]/route.ts
++++ b/app/api/error/[status]/route.ts
+@@ -1,60 +1,50 @@
+-import { NextRequest, NextResponse } from 'next/server'
++import { NextRequest } from 'next/server'
+ 
+-interface ErrorPageConfig {
+-  title: string
+-  message: string
+-  color: string
+-  bgColor: string
+-}
+-
+-const errorConfigs: Record<string, ErrorPageConfig> = {
+-  '400': {
++const errorMessages = {
++  400: {
+     title: 'Bad Request',
+-    message: 'The request could not be understood by the server.',
+-    color: 'orange',
+-    bgColor: 'from-orange-50 to-red-50'
++    message: 'The request could not be understood or was missing required parameters.',
++    technical: 'Request malformed or invalid syntax detected.'
+   },
+-  '401': {
++  401: {
+     title: 'Unauthorized',
+-    message: 'Authentication is required to access this resource.',
+-    color: 'red',
+-    bgColor: 'from-red-50 to-pink-50'
++    message: 'Authentication is required to access this service.',
++    technical: 'Valid credentials are required for this endpoint.'
+   },
+-  '403': {
+-    title: 'Forbidden',
+-    message: 'You don\'t have permission to access this resource.',
+-    color: 'red',
+-    bgColor: 'from-red-50 to-pink-50'
++  403: {
++    title: 'Access Denied',
++    message: 'You do not have permission to access this service.',
++    technical: 'Insufficient permissions for the requested resource.'
+   },
+-  '404': {
+-    title: 'Page Not Found',
+-    message: 'The page you\'re looking for doesn\'t exist or has been moved.',
+-    color: 'blue',
+-    bgColor: 'from-blue-50 to-indigo-50'
++  404: {
++    title: 'Service Not Found',
++    message: 'The service you\'re looking for seems to be offline or doesn\'t exist in our infrastructure.',
++    technical: 'Resource not found in the current service mesh.'
+   },
+-  '429': {
+-    title: 'Too Many Requests',
+-    message: 'You\'ve made too many requests. Please slow down and try again later.',
+-    color: 'yellow',
+-    bgColor: 'from-yellow-50 to-orange-50'
++  429: {
++    title: 'Rate Limited',
++    message: 'Too many requests. Please slow down and try again later.',
++    technical: 'Request rate limit exceeded for this endpoint.'
+   },
+-  '500': {
+-    title: 'Server Error',
+-    message: 'Something went wrong on our end. Our team has been notified.',
+-    color: 'red',
+-    bgColor: 'from-red-50 to-orange-50'
++  500: {
++    title: 'Internal Server Error',
++    message: 'Something went wrong on our end. Our monitoring systems have been notified.',
++    technical: 'An unexpected error occurred while processing the request.'
+   },
+-  '502': {
++  502: {
+     title: 'Bad Gateway',
+-    message: 'The server received an invalid response from the upstream server.',
+-    color: 'red',
+-    bgColor: 'from-red-50 to-orange-50'
++    message: 'The service is temporarily unavailable. Please try again in a moment.',
++    technical: 'Invalid response received from upstream server.'
+   },
+-  '503': {
++  503: {
+     title: 'Service Unavailable',
+-    message: 'The service is temporarily unavailable. Please try again later.',
+-    color: 'yellow',
+-    bgColor: 'from-yellow-50 to-red-50'
++    message: 'The service is currently undergoing maintenance or is temporarily overloaded.',
++    technical: 'Service temporarily unavailable due to overload or maintenance.'
++  },
++  504: {
++    title: 'Gateway Timeout',
++    message: 'The service took too long to respond. Please try again later.',
++    technical: 'Upstream server failed to respond within timeout period.'
+   }
+ }
+ 
+@@ -62,101 +52,149 @@ export async function GET(
+   request: NextRequest,
+   { params }: { params: { status: string } }
+ ) {
+-  const status = params.status
+-  const config = errorConfigs[status] || errorConfigs['500']
+-  
+-  const html = `
+-<!DOCTYPE html>
+-<html lang="en">
++  const status = parseInt(params.status, 10)
++  const errorInfo = errorMessages[status as keyof typeof errorMessages] || {
++    title: 'Unknown Error',
++    message: 'An unexpected error occurred.',
++    technical: `HTTP ${status} error encountered.`
++  }
++
++  // Get the original URL that caused the error from headers
++  const originalUrl = request.headers.get('x-original-url') || request.url
++
++  // Return HTML error page that matches the portfolio theme
++  const html = `<!DOCTYPE html>
++<html lang="en" class="dark">
+ <head>
+-  <meta charset="UTF-8">
+-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-  <title>${status} - ${config.title} | Bolabaden</title>
+-  <script src="https://cdn.tailwindcss.com"></script>
+-  <style>
+-    body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+-    .animate-bounce-slow { animation: bounce 3s infinite; }
+-    @keyframes bounce {
+-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+-      40% { transform: translateY(-10px); }
+-      60% { transform: translateY(-5px); }
+-    }
+-  </style>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title>Error ${status} - bolabaden.org</title>
++    <script src="https://cdn.tailwindcss.com"></script>
++    <style>
++        :root {
++            --background: 222 47% 11%;
++            --foreground: 210 20% 98%;
++            --primary: 217 91% 60%;
++        }
++        
++        body {
++            color: hsl(var(--foreground));
++            background: hsl(var(--background));
++            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
++        }
++        
++        .glass {
++            backdrop-filter: blur(10px);
++            background: rgba(255, 255, 255, 0.05);
++            border: 1px solid rgba(255, 255, 255, 0.1);
++        }
++        
++        .gradient-text {
++            background: linear-gradient(135deg, hsl(var(--primary)), hsl(217 32% 17%));
++            -webkit-background-clip: text;
++            -webkit-text-fill-color: transparent;
++            background-clip: text;
++        }
++        
++        .grid-pattern {
++            background-image: 
++                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
++                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
++            background-size: 20px 20px;
++        }
++        
++        @keyframes float {
++            0%, 100% { transform: translateY(0px); }
++            50% { transform: translateY(-10px); }
++        }
++        
++        .float-animation {
++            animation: float 3s ease-in-out infinite;
++        }
++    </style>
+ </head>
+-<body class="min-h-screen bg-gradient-to-br ${config.bgColor} dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+-  <div class="max-w-2xl mx-auto text-center relative">
+-    <!-- Logo -->
+-    <div class="mb-8 flex justify-center">
+-      <div class="flex items-center space-x-2">
+-        <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg">
+-          <ellipse cx="50" cy="45" rx="35" ry="20" fill="url(#cloudGradient)" opacity="0.8"/>
+-          <ellipse cx="35" cy="50" rx="25" ry="15" fill="url(#cloudGradient)" opacity="0.6"/>
+-          <ellipse cx="65" cy="50" rx="25" ry="15" fill="url(#cloudGradient)" opacity="0.6"/>
+-          <text x="50" y="55" text-anchor="middle" fill="white" font-family="Arial" font-size="24" font-weight="bold">BO</text>
+-          <defs>
+-            <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+-              <stop offset="0%" stop-color="#3b82f6"/>
+-              <stop offset="50%" stop-color="#2563eb"/>
+-              <stop offset="100%" stop-color="#1d4ed8"/>
+-            </linearGradient>
+-          </defs>
+-        </svg>
+-        <div class="flex flex-col">
+-          <span class="text-xl font-bold text-gray-800 dark:text-white">BO</span>
+-          <span class="text-sm text-gray-600 dark:text-gray-300 -mt-1">CLOUD</span>
+-        </div>
+-      </div>
+-    </div>
+-    
+-    <!-- Error Code -->
+-    <div class="mb-8">
+-      <h1 class="text-8xl md:text-9xl font-bold text-${config.color}-600 dark:text-${config.color}-400 mb-4">
+-        ${status}
+-      </h1>
+-      <div class="w-24 h-1 bg-${config.color}-600 dark:bg-${config.color}-400 mx-auto mb-6"></div>
+-    </div>
++<body class="min-h-screen flex items-center justify-center overflow-hidden">
++    <div class="absolute inset-0 grid-pattern opacity-20"></div>
+     
+-    <!-- Error Message -->
+-    <div class="mb-8">
+-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+-        ${config.title}
+-      </h2>
+-      <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-lg mx-auto">
+-        ${config.message}
+-      </p>
++    <div class="absolute inset-0 overflow-hidden">
++        <div class="absolute top-20 left-20 w-2 h-2 bg-blue-500 rounded-full float-animation" style="animation-delay: 0s;"></div>
++        <div class="absolute top-40 right-32 w-1 h-1 bg-purple-500 rounded-full float-animation" style="animation-delay: 1s;"></div>
++        <div class="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-blue-400 rounded-full float-animation" style="animation-delay: 2s;"></div>
+     </div>
+-    
+-    <!-- Action Buttons -->
+-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+-      <a href="https://bolabaden.org/" class="bg-${config.color}-600 hover:bg-${config.color}-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
+-        Go Home
+-      </a>
+-      <button onclick="window.history.back()" class="bg-white dark:bg-gray-800 text-${config.color}-600 dark:text-${config.color}-400 border-2 border-${config.color}-600 dark:border-${config.color}-400 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
+-        Go Back
+-      </button>
+-    </div>
+-    
+-    <!-- Helpful Links -->
+-    <div class="text-gray-600 dark:text-gray-400">
+-      <p class="mb-4">Need help?</p>
+-      <div class="flex flex-wrap justify-center gap-4">
+-        <a href="https://bolabaden.org/contact" class="hover:text-${config.color}-600 dark:hover:text-${config.color}-400 transition-colors">Contact Support</a>
+-        <a href="https://bolabaden.org/services" class="hover:text-${config.color}-600 dark:hover:text-${config.color}-400 transition-colors">Services</a>
+-        <a href="https://bolabaden.org/about" class="hover:text-${config.color}-600 dark:hover:text-${config.color}-400 transition-colors">About</a>
+-      </div>
++
++    <div class="container mx-auto px-4 py-12 relative z-10">
++        <div class="max-w-2xl mx-auto text-center">
++            <div class="mb-8">
++                <div class="glass rounded-2xl p-8 mb-6">
++                    <h1 class="text-6xl md:text-8xl font-bold gradient-text mb-4">${status}</h1>
++                </div>
++            </div>
++
++            <div class="mb-8">
++                <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">${errorInfo.title}</h2>
++                <p class="text-lg text-gray-300 mb-6 leading-relaxed">${errorInfo.message}</p>
++            </div>
++
++            <div class="glass rounded-lg p-6 mb-8">
++                <div class="flex items-center gap-3 mb-4">
++                    <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
++                    </svg>
++                    <h3 class="font-semibold text-white">Technical Details</h3>
++                </div>
++                <div class="text-sm text-gray-400 text-left">
++                    <div class="mb-2"><strong>Status:</strong> ${status}</div>
++                    <div class="mb-2"><strong>Error:</strong> ${errorInfo.technical}</div>
++                    <div class="mb-2"><strong>Time:</strong> ${new Date().toISOString()}</div>
++                    <div class="truncate"><strong>Path:</strong> ${originalUrl}</div>
++                </div>
++            </div>
++
++            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
++                <a href="/" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg">
++                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
++                    </svg>
++                    Return Home
++                </a>
++                <a href="/#services" class="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-all duration-200 rounded-lg text-white">
++                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
++                    </svg>
++                    Browse Services
++                </a>
++            </div>
++
++            <div class="text-center">
++                <p class="text-sm text-gray-400 mb-4">Need help? Can't find what you're looking for?</p>
++                <div class="flex flex-wrap justify-center gap-4 text-sm">
++                    <a href="mailto:boden.crouch@gmail.com" class="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1">
++                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
++                        </svg>
++                        Email Support
++                    </a>
++                    <a href="https://github.com/bolabaden" class="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1">
++                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
++                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
++                        </svg>
++                        Report Issue
++                    </a>
++                </div>
++            </div>
++
++            <div class="mt-8">
++                <div class="text-xs text-gray-500">
++                    bolabaden.org • Self-Hosted Infrastructure
++                </div>
++            </div>
++        </div>
+     </div>
+-    
+-    <!-- Decorative Elements -->
+-    <div class="absolute top-1/4 left-1/4 w-16 h-16 bg-${config.color}-500 rounded-full opacity-10 animate-bounce-slow"></div>
+-    <div class="absolute top-1/3 right-1/4 w-12 h-12 bg-indigo-500 rounded-full opacity-10 animate-bounce-slow" style="animation-delay: 1s;"></div>
+-    <div class="absolute bottom-1/4 left-1/3 w-20 h-20 bg-cyan-500 rounded-full opacity-10 animate-bounce-slow" style="animation-delay: 2s;"></div>
+-  </div>
+ </body>
+-</html>
+-  `
++</html>`
+ 
+-  return new NextResponse(html, {
+-    status: parseInt(status) || 500,
++  return new Response(html, {
++    status: status,
+     headers: {
+       'Content-Type': 'text/html',
+       'Cache-Control': 'no-cache, no-store, must-revalidate',
+@@ -1,71 +0,0 @@
+-import Link from 'next/link'
+-import Logo from '../../../components/Logo'
+-
+-export default function Error404() {
+-  return (
+-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+-      <div className="max-w-2xl mx-auto text-center">
+-        {/* Logo */}
+-        <div className="mb-8 flex justify-center">
+-          <Logo size={64} />
+-        </div>
+-        
+-        {/* Error Code */}
+-        <div className="mb-8">
+-          <h1 className="text-8xl md:text-9xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+-            404
+-          </h1>
+-          <div className="w-24 h-1 bg-blue-600 dark:bg-blue-400 mx-auto mb-6"></div>
+-        </div>
+-        
+-        {/* Error Message */}
+-        <div className="mb-8">
+-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+-            Page Not Found
+-          </h2>
+-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-lg mx-auto">
+-            The page you're looking for doesn't exist or has been moved. 
+-            Let's get you back to exploring our cloud infrastructure solutions.
+-          </p>
+-        </div>
+-        
+-        {/* Action Buttons */}
+-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+-          <Link
+-            href="/"
+-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-          >
+-            Go Home
+-          </Link>
+-          <Link
+-            href="/services"
+-            className="bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-          >
+-            View Services
+-          </Link>
+-        </div>
+-        
+-        {/* Helpful Links */}
+-        <div className="text-gray-600 dark:text-gray-400">
+-          <p className="mb-4">Popular pages:</p>
+-          <div className="flex flex-wrap justify-center gap-4">
+-            <Link href="/about" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+-              About BO
+-            </Link>
+-            <Link href="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+-              Contact
+-            </Link>
+-            <Link href="/services" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+-              Services
+-            </Link>
+-          </div>
+-        </div>
+-        
+-        {/* Decorative Elements */}
+-        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-blue-500 rounded-full opacity-10 animate-bounce-slow"></div>
+-        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-indigo-500 rounded-full opacity-10 animate-bounce-slow" style={{ animationDelay: '1s' }}></div>
+-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-cyan-500 rounded-full opacity-10 animate-bounce-slow" style={{ animationDelay: '2s' }}></div>
+-      </div>
+-    </div>
+-  )
+-} 
+\ No newline at end of file
+diff --git a/app/error-pages/500/page.tsx b/app/error-pages/500/page.tsx
+deleted file mode 100644
+index 59b09c3..0000000
+--- a/app/error-pages/500/page.tsx
++++ /dev/null
+@@ -1,68 +0,0 @@
+-import Link from 'next/link'
+-import Logo from '../../../components/Logo'
+-
+-export default function Error500() {
+-  return (
+-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
+-      <div className="max-w-2xl mx-auto text-center">
+-        {/* Logo */}
+-        <div className="mb-8 flex justify-center">
+-          <Logo size={64} />
+-        </div>
+-        
+-        {/* Error Code */}
+-        <div className="mb-8">
+-          <h1 className="text-8xl md:text-9xl font-bold text-red-600 dark:text-red-400 mb-4">
+-            500
+-          </h1>
+-          <div className="w-24 h-1 bg-red-600 dark:bg-red-400 mx-auto mb-6"></div>
+-        </div>
+-        
+-        {/* Error Message */}
+-        <div className="mb-8">
+-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+-            Server Error
+-          </h2>
+-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-lg mx-auto">
+-            Something went wrong on our end. Our cloud infrastructure team has been notified 
+-            and is working to resolve this issue quickly.
+-          </p>
+-        </div>
+-        
+-        {/* Action Buttons */}
+-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+-          <Link
+-            href="/"
+-            className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-          >
+-            Go Home
+-          </Link>
+-          <button
+-            onClick={() => window.location.reload()}
+-            className="bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border-2 border-red-600 dark:border-red-400 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-          >
+-            Try Again
+-          </button>
+-        </div>
+-        
+-        {/* Support Info */}
+-        <div className="text-gray-600 dark:text-gray-400">
+-          <p className="mb-4">Need immediate assistance?</p>
+-          <div className="flex flex-wrap justify-center gap-4">
+-            <Link href="/contact" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+-              Contact Support
+-            </Link>
+-            <Link href="/services" className="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+-              Service Status
+-            </Link>
+-          </div>
+-        </div>
+-        
+-        {/* Decorative Elements */}
+-        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-red-500 rounded-full opacity-10 animate-bounce-slow"></div>
+-        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-orange-500 rounded-full opacity-10 animate-bounce-slow" style={{ animationDelay: '1s' }}></div>
+-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-pink-500 rounded-full opacity-10 animate-bounce-slow" style={{ animationDelay: '2s' }}></div>
+-      </div>
+-    </div>
+-  )
+-} 
+\ No newline at end of file
+diff --git a/app/favicon.ico b/app/favicon.ico
+deleted file mode 100644
+index 718d6fe..0000000
+Binary files a/app/favicon.ico and /dev/null differ
+diff --git a/app/global-error.tsx b/app/global-error.tsx
+new file mode 100644
+index 0000000..750c1d2
+--- /dev/null
++++ b/app/global-error.tsx
+@@ -0,0 +1,181 @@
++'use client'
++
++import { motion } from 'framer-motion'
++import { RefreshCw, Home, AlertTriangle, Mail, Github } from 'lucide-react'
++
++export default function GlobalError({
++  error,
++  reset,
++}: {
++  error: Error & { digest?: string }
++  reset: () => void
++}) {
++  return (
++    <html>
++      <body className="min-h-screen bg-background flex items-center justify-center overflow-hidden">
++        {/* Background Grid */}
++        <div className="absolute inset-0 grid-pattern opacity-20" />
++        
++        {/* Floating Elements */}
++        <div className="absolute inset-0 overflow-hidden">
++          <motion.div
++            className="absolute top-20 left-20 w-2 h-2 bg-primary rounded-full"
++            animate={{
++              y: [0, -20, 0],
++              opacity: [0.3, 1, 0.3],
++            }}
++            transition={{
++              duration: 4,
++              repeat: Infinity,
++              repeatType: 'reverse',
++            }}
++          />
++          <motion.div
++            className="absolute top-40 right-32 w-1 h-1 bg-accent rounded-full"
++            animate={{
++              y: [0, 30, 0],
++              opacity: [0.5, 1, 0.5],
++            }}
++            transition={{
++              duration: 6,
++              repeat: Infinity,
++              repeatType: 'reverse',
++              delay: 2,
++            }}
++          />
++        </div>
++
++        <div className="container mx-auto px-4 py-12 relative z-10">
++          <div className="max-w-2xl mx-auto text-center">
++            {/* Error Code */}
++            <motion.div
++              initial={{ opacity: 0, scale: 0.5 }}
++              animate={{ opacity: 1, scale: 1 }}
++              transition={{ duration: 0.6 }}
++              className="mb-8"
++            >
++              <div className="glass rounded-2xl p-8 mb-6">
++                <div className="relative">
++                  <h1 className="text-6xl md:text-8xl font-bold gradient-text mb-4">
++                    500
++                  </h1>
++                  <motion.div
++                    className="absolute -top-4 -right-4"
++                    animate={{ rotate: [0, 10, -10, 0] }}
++                    transition={{ duration: 2, repeat: Infinity }}
++                  >
++                    <AlertTriangle className="h-8 w-8 text-red-500" />
++                  </motion.div>
++                </div>
++              </div>
++            </motion.div>
++
++            {/* Error Message */}
++            <motion.div
++              initial={{ opacity: 0, y: 20 }}
++              animate={{ opacity: 1, y: 0 }}
++              transition={{ duration: 0.6, delay: 0.2 }}
++              className="mb-8"
++            >
++              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
++                Infrastructure Malfunction
++              </h2>
++              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
++                Something unexpected happened in our infrastructure. Our monitoring 
++                systems have been alerted and we're investigating the issue.
++              </p>
++            </motion.div>
++
++            {/* Technical Details */}
++            <motion.div
++              initial={{ opacity: 0, y: 20 }}
++              animate={{ opacity: 1, y: 0 }}
++              transition={{ duration: 0.6, delay: 0.4 }}
++              className="glass rounded-lg p-6 mb-8"
++            >
++              <div className="flex items-center gap-3 mb-4">
++                <AlertTriangle className="h-5 w-5 text-red-400" />
++                <h3 className="font-semibold text-foreground">Error Details</h3>
++              </div>
++              <div className="text-sm text-muted-foreground text-left font-mono">
++                <div className="mb-2"><strong>Error:</strong> {error.message}</div>
++                {error.digest && (
++                  <div className="mb-2"><strong>Digest:</strong> {error.digest}</div>
++                )}
++                <div className="mb-2"><strong>Time:</strong> {new Date().toISOString()}</div>
++                <div className="text-xs text-muted-foreground/60 mt-3">
++                  This error has been automatically logged for investigation.
++                </div>
++              </div>
++            </motion.div>
++
++            {/* Action Buttons */}
++            <motion.div
++              initial={{ opacity: 0, y: 20 }}
++              animate={{ opacity: 1, y: 0 }}
++              transition={{ duration: 0.6, delay: 0.6 }}
++              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
++            >
++              <button
++                onClick={reset}
++                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-200 hover:scale-105 shadow-lg"
++              >
++                <RefreshCw className="h-4 w-4" />
++                Try Again
++              </button>
++              <a
++                href="/"
++                className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-all duration-200 rounded-lg"
++              >
++                <Home className="h-4 w-4" />
++                Return Home
++              </a>
++            </motion.div>
++
++            {/* Help Section */}
++            <motion.div
++              initial={{ opacity: 0, y: 20 }}
++              animate={{ opacity: 1, y: 0 }}
++              transition={{ duration: 0.6, delay: 0.8 }}
++              className="text-center"
++            >
++              <p className="text-sm text-muted-foreground mb-4">
++                If this error persists, please contact support
++              </p>
++              <div className="flex flex-wrap justify-center gap-4 text-sm">
++                <a 
++                  href="mailto:boden.crouch@gmail.com"
++                  className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
++                >
++                  <Mail className="h-4 w-4" />
++                  Email Support
++                </a>
++                <a 
++                  href="https://github.com/bolabaden"
++                  target="_blank"
++                  rel="noopener noreferrer"
++                  className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
++                >
++                  <Github className="h-4 w-4" />
++                  Report Issue
++                </a>
++              </div>
++            </motion.div>
++
++            {/* Brand Recognition */}
++            <motion.div
++              initial={{ opacity: 0 }}
++              animate={{ opacity: 1 }}
++              transition={{ duration: 1, delay: 1 }}
++              className="mt-8"
++            >
++              <div className="text-xs text-muted-foreground/60">
++                bolabaden.org • Self-Hosted Infrastructure
++              </div>
++            </motion.div>
++          </div>
++        </div>
++      </body>
++    </html>
++  )
++} 
+\ No newline at end of file
+diff --git a/app/globals.css b/app/globals.css
+index 0c373da..77b892a 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -3,84 +3,97 @@
+ @tailwind utilities;
+ 
+ :root {
+-  --background: #ffffff;
+-  --foreground: #0a0a0a;
+-  --primary: #2563eb;
+-  --primary-foreground: #ffffff;
+-  --secondary: #f1f5f9;
+-  --secondary-foreground: #334155;
+-  --accent: #06b6d4;
+-  --accent-foreground: #ffffff;
+-  --destructive: #ef4444;
+-  --destructive-foreground: #ffffff;
+-  --border: #e2e8f0;
+-  --ring: #2563eb;
+-}
+-
+-@media (prefers-color-scheme: dark) {
+-  :root {
+-    --background: #0a0a0a;
+-    --foreground: #ffffff;
+-    --primary: #3b82f6;
+-    --primary-foreground: #ffffff;
+-    --secondary: #1e293b;
+-    --secondary-foreground: #cbd5e1;
+-    --accent: #06b6d4;
+-    --accent-foreground: #ffffff;
+-    --destructive: #ef4444;
+-    --destructive-foreground: #ffffff;
+-    --border: #334155;
+-    --ring: #3b82f6;
+-  }
++  --background: 222 47% 11%;
++  --foreground: 210 20% 98%;
++  --primary: 217 91% 60%;
++  --primary-foreground: 222 47% 11%;
++  --secondary: 217 32% 17%;
++  --secondary-foreground: 210 20% 98%;
++  --muted: 217 19% 27%;
++  --muted-foreground: 215 20% 65%;
++  --accent: 217 32% 17%;
++  --accent-foreground: 210 20% 98%;
++  --destructive: 0 84% 60%;
++  --destructive-foreground: 210 20% 98%;
++  --border: 217 19% 27%;
++  --input: 217 19% 27%;
++  --ring: 217 91% 60%;
+ }
+ 
+ * {
+-  box-sizing: border-box;
++  border-color: hsl(var(--border));
+ }
+ 
+ body {
+-  color: var(--foreground);
+-  background: var(--background);
++  color: hsl(var(--foreground));
++  background: hsl(var(--background));
+   font-feature-settings: "rlig" 1, "calt" 1;
++  min-height: 100vh;
++}
++
++/* Custom scrollbar */
++::-webkit-scrollbar {
++  width: 8px;
+ }
+ 
+-.gradient-bg {
+-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
++::-webkit-scrollbar-track {
++  background: hsl(var(--background));
+ }
+ 
+-.glass-effect {
++::-webkit-scrollbar-thumb {
++  background: hsl(var(--muted));
++  border-radius: 4px;
++}
++
++::-webkit-scrollbar-thumb:hover {
++  background: hsl(var(--muted-foreground));
++}
++
++/* Selection */
++::selection {
++  background: hsl(var(--primary) / 0.2);
++  color: hsl(var(--primary-foreground));
++}
++
++/* Focus styles */
++.focus-ring {
++  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
++}
++
++/* Glassmorphism effect */
++.glass {
+   backdrop-filter: blur(10px);
+-  background: rgba(255, 255, 255, 0.1);
+-  border: 1px solid rgba(255, 255, 255, 0.2);
++  background: rgba(255, 255, 255, 0.05);
++  border: 1px solid rgba(255, 255, 255, 0.1);
+ }
+ 
+-.animate-fade-in {
+-  animation: fadeIn 0.6s ease-in-out;
++/* Gradient text */
++.gradient-text {
++  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
++  -webkit-background-clip: text;
++  -webkit-text-fill-color: transparent;
++  background-clip: text;
+ }
+ 
+-@keyframes fadeIn {
+-  from {
+-    opacity: 0;
+-    transform: translateY(20px);
+-  }
+-  to {
+-    opacity: 1;
+-    transform: translateY(0);
+-  }
++/* Smooth scroll */
++html {
++  scroll-behavior: smooth;
+ }
+ 
+-.animate-bounce-slow {
+-  animation: bounce 3s infinite;
++/* Loading animation */
++.loading {
++  @apply animate-pulse;
+ }
+ 
+-@keyframes bounce {
+-  0%, 20%, 50%, 80%, 100% {
+-    transform: translateY(0);
+-  }
+-  40% {
+-    transform: translateY(-10px);
+-  }
+-  60% {
+-    transform: translateY(-5px);
+-  }
++/* Grid pattern background */
++.grid-pattern {
++  background-image: 
++    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
++    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
++  background-size: 20px 20px;
+ }
++
++/* Code block styling */
++.code-block {
++  @apply bg-secondary/50 border border-border rounded-lg p-4 font-mono text-sm;
++} 
+\ No newline at end of file
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 3c938b0..cda8312 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -1,29 +1,44 @@
+ import type { Metadata } from 'next'
+-import { Inter } from 'next/font/google'
++import { Inter, JetBrains_Mono } from 'next/font/google'
+ import './globals.css'
+ 
+ const inter = Inter({ subsets: ['latin'] })
++const jetbrainsMono = JetBrains_Mono({ 
++  subsets: ['latin'],
++  variable: '--font-mono',
++})
+ 
+ export const metadata: Metadata = {
+-  title: 'Bolabaden - Professional Cloud Infrastructure Services',
+-  description: 'Expert cloud infrastructure solutions and services by Boden (BO). Specializing in scalable, reliable cloud architecture and deployment.',
+-  keywords: 'cloud infrastructure, DevOps, cloud architecture, Boden, BO, bolabaden.org',
+-  authors: [{ name: 'Boden (BO)' }],
+-  creator: 'Boden (BO)',
+-  publisher: 'Bolabaden',
+-  robots: 'index, follow',
++  title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
++  description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development. Available for remote work.',
++  keywords: ['infrastructure engineer', 'kubernetes', 'self-hosted', 'AI development', 'backend engineer', 'remote work'],
++  authors: [{ name: 'Boden Crouch' }],
++  creator: 'Boden Crouch',
+   openGraph: {
+-    title: 'Bolabaden - Professional Cloud Infrastructure Services',
+-    description: 'Expert cloud infrastructure solutions and services by Boden (BO)',
+-    url: 'https://bolabaden.org',
+-    siteName: 'Bolabaden',
+     type: 'website',
++    locale: 'en_US',
++    url: 'https://bolabaden.org',
++    title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
++    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development.',
++    siteName: 'Boden Crouch Portfolio',
+   },
+   twitter: {
+     card: 'summary_large_image',
+-    title: 'Bolabaden - Professional Cloud Infrastructure Services',
+-    description: 'Expert cloud infrastructure solutions and services by Boden (BO)',
++    title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
++    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development.',
+   },
++  robots: {
++    index: true,
++    follow: true,
++    googleBot: {
++      index: true,
++      follow: true,
++      'max-video-preview': -1,
++      'max-image-preview': 'large',
++      'max-snippet': -1,
++    },
++  },
++  metadataBase: new URL('https://bolabaden.org'),
+ }
+ 
+ export default function RootLayout({
+@@ -32,10 +47,10 @@ export default function RootLayout({
+   children: React.ReactNode
+ }) {
+   return (
+-    <html lang="en">
+-      <body className={inter.className}>
++    <html lang="en" className="dark">
++      <body className={`${inter.className} ${jetbrainsMono.variable} antialiased`}>
+         {children}
+       </body>
+     </html>
+   )
+-}
++} 
+\ No newline at end of file
+diff --git a/app/not-found.tsx b/app/not-found.tsx
+new file mode 100644
+index 0000000..69f02ae
+--- /dev/null
++++ b/app/not-found.tsx
+@@ -0,0 +1,206 @@
++'use client'
++
++import { motion } from 'framer-motion'
++import Link from 'next/link'
++import { 
++  Home, 
++  Search, 
++  ArrowLeft, 
++  Server, 
++  AlertTriangle,
++  Mail,
++  Github
++} from 'lucide-react'
++
++export default function NotFound() {
++  return (
++    <div className="min-h-screen bg-background flex items-center justify-center overflow-hidden">
++      {/* Background Grid */}
++      <div className="absolute inset-0 grid-pattern opacity-20" />
++      
++      {/* Floating Elements */}
++      <div className="absolute inset-0 overflow-hidden">
++        <motion.div
++          className="absolute top-20 left-20 w-2 h-2 bg-primary rounded-full"
++          animate={{
++            y: [0, -20, 0],
++            opacity: [0.3, 1, 0.3],
++          }}
++          transition={{
++            duration: 4,
++            repeat: Infinity,
++            repeatType: 'reverse',
++          }}
++        />
++        <motion.div
++          className="absolute top-40 right-32 w-1 h-1 bg-accent rounded-full"
++          animate={{
++            y: [0, 30, 0],
++            opacity: [0.5, 1, 0.5],
++          }}
++          transition={{
++            duration: 6,
++            repeat: Infinity,
++            repeatType: 'reverse',
++            delay: 2,
++          }}
++        />
++        <motion.div
++          className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-primary/60 rounded-full"
++          animate={{
++            y: [0, -15, 0],
++            opacity: [0.4, 0.8, 0.4],
++          }}
++          transition={{
++            duration: 5,
++            repeat: Infinity,
++            repeatType: 'reverse',
++            delay: 1,
++          }}
++        />
++      </div>
++
++      <div className="container mx-auto px-4 py-12 relative z-10">
++        <div className="max-w-2xl mx-auto text-center">
++          {/* Error Code */}
++          <motion.div
++            initial={{ opacity: 0, scale: 0.5 }}
++            animate={{ opacity: 1, scale: 1 }}
++            transition={{ duration: 0.6 }}
++            className="mb-8"
++          >
++            <div className="glass rounded-2xl p-8 mb-6">
++              <div className="relative">
++                <h1 className="text-8xl md:text-9xl font-bold gradient-text mb-4">
++                  404
++                </h1>
++                <motion.div
++                  className="absolute -top-4 -right-4"
++                  animate={{ rotate: [0, 10, -10, 0] }}
++                  transition={{ duration: 2, repeat: Infinity }}
++                >
++                  <AlertTriangle className="h-8 w-8 text-yellow-500" />
++                </motion.div>
++              </div>
++            </div>
++          </motion.div>
++
++          {/* Error Message */}
++          <motion.div
++            initial={{ opacity: 0, y: 20 }}
++            animate={{ opacity: 1, y: 0 }}
++            transition={{ duration: 0.6, delay: 0.2 }}
++            className="mb-8"
++          >
++            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
++              Service Not Found
++            </h2>
++            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
++              The service you're looking for seems to be offline or doesn't exist in our 
++              infrastructure. Even with 100+ services running, this one got away from us.
++            </p>
++          </motion.div>
++
++          {/* Technical Details */}
++          <motion.div
++            initial={{ opacity: 0, y: 20 }}
++            animate={{ opacity: 1, y: 0 }}
++            transition={{ duration: 0.6, delay: 0.4 }}
++            className="glass rounded-lg p-6 mb-8"
++          >
++            <div className="flex items-center gap-3 mb-4">
++              <Server className="h-5 w-5 text-primary" />
++              <h3 className="font-semibold text-foreground">System Status</h3>
++            </div>
++            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
++              <div className="text-center">
++                <div className="text-green-400 font-bold">99.5%</div>
++                <div className="text-muted-foreground">Infrastructure Uptime</div>
++              </div>
++              <div className="text-center">
++                <div className="text-primary font-bold">100+</div>
++                <div className="text-muted-foreground">Services Online</div>
++              </div>
++              <div className="text-center">
++                <div className="text-yellow-400 font-bold">1</div>
++                <div className="text-muted-foreground">Service Missing</div>
++              </div>
++            </div>
++          </motion.div>
++
++          {/* Action Buttons */}
++          <motion.div
++            initial={{ opacity: 0, y: 20 }}
++            animate={{ opacity: 1, y: 0 }}
++            transition={{ duration: 0.6, delay: 0.6 }}
++            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
++          >
++            <Link
++              href="/"
++              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-200 hover:scale-105 shadow-lg"
++            >
++              <Home className="h-4 w-4" />
++              Return Home
++            </Link>
++            <Link
++              href="/#services"
++              className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-all duration-200 rounded-lg"
++            >
++              <Search className="h-4 w-4" />
++              Browse Services
++            </Link>
++          </motion.div>
++
++          {/* Help Section */}
++          <motion.div
++            initial={{ opacity: 0, y: 20 }}
++            animate={{ opacity: 1, y: 0 }}
++            transition={{ duration: 0.6, delay: 0.8 }}
++            className="text-center"
++          >
++            <p className="text-sm text-muted-foreground mb-4">
++              Need help? Can't find what you're looking for?
++            </p>
++            <div className="flex flex-wrap justify-center gap-4 text-sm">
++              <Link 
++                href="mailto:boden.crouch@gmail.com"
++                className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
++              >
++                <Mail className="h-4 w-4" />
++                Email Support
++              </Link>
++              <Link 
++                href="https://github.com/bolabaden"
++                target="_blank"
++                rel="noopener noreferrer"
++                className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
++              >
++                <Github className="h-4 w-4" />
++                Report Issue
++              </Link>
++              <Link 
++                href="/#guides"
++                className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
++              >
++                <ArrowLeft className="h-4 w-4" />
++                Check Guides
++              </Link>
++            </div>
++          </motion.div>
++
++          {/* Brand Recognition */}
++          <motion.div
++            initial={{ opacity: 0 }}
++            animate={{ opacity: 1 }}
++            transition={{ duration: 1, delay: 1 }}
++            className="mt-8"
++          >
++            <div className="text-xs text-muted-foreground/60">
++              bolabaden.org • Self-Hosted Infrastructure
++            </div>
++          </motion.div>
++        </div>
++      </div>
++    </div>
++  )
++} 
+\ No newline at end of file
+diff --git a/app/page.tsx b/app/page.tsx
+index c6e808d..116f76a 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -1,224 +1,25 @@
+-import Link from 'next/link'
+-import Navbar from '../components/Navbar'
+-
+-export default function Home() {
++'use client'
++
++import { Navigation } from '@/components/navigation'
++import { HeroSection } from '@/components/hero-section'
++import { TechnicalShowcase } from '@/components/technical-showcase'
++import { ProjectsSection } from '@/components/projects-section'
++import { GuidesSection } from '@/components/guides-section'
++import { AboutSection } from '@/components/about-section'
++import { ContactSection } from '@/components/contact-section'
++import { Footer } from '@/components/footer'
++
++export default function HomePage() {
+   return (
+-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+-      <Navbar />
+-      
+-      {/* Hero Section */}
+-      <section className="relative overflow-hidden">
+-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+-          <div className="text-center">
+-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 animate-fade-in">
+-              Professional Cloud
+-              <span className="text-blue-600 dark:text-blue-400"> Infrastructure</span>
+-            </h1>
+-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto animate-fade-in">
+-              Expert cloud architecture and deployment solutions by <strong>Boden (BO)</strong>. 
+-              Scalable, reliable, and secure infrastructure for your business.
+-            </p>
+-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+-              <Link
+-                href="/contact"
+-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-              >
+-                Get Started Today
+-              </Link>
+-              <Link
+-                href="/services"
+-                className="bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg"
+-              >
+-                View Services
+-              </Link>
+-            </div>
+-          </div>
+-        </div>
+-        
+-        {/* Floating elements */}
+-        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-blue-500 rounded-full opacity-20 animate-bounce-slow"></div>
+-        <div className="absolute top-1/3 right-1/4 w-12 h-12 bg-indigo-500 rounded-full opacity-20 animate-bounce-slow" style={{ animationDelay: '1s' }}></div>
+-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-cyan-500 rounded-full opacity-20 animate-bounce-slow" style={{ animationDelay: '2s' }}></div>
+-      </section>
+-
+-      {/* Services Section */}
+-      <section className="py-20 bg-white dark:bg-gray-900">
+-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+-          <div className="text-center mb-16">
+-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+-              Cloud Infrastructure Services
+-            </h2>
+-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+-              Comprehensive cloud solutions tailored to your business needs
+-            </p>
+-          </div>
+-
+-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+-            {/* Service 1 */}
+-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+-                </svg>
+-              </div>
+-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+-                Cloud Architecture
+-              </h3>
+-              <p className="text-gray-600 dark:text-gray-300">
+-                Design and implement scalable cloud architectures using modern best practices and industry standards.
+-              </p>
+-            </div>
+-
+-            {/* Service 2 */}
+-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+-              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-6">
+-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+-                </svg>
+-              </div>
+-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+-                DevOps & CI/CD
+-              </h3>
+-              <p className="text-gray-600 dark:text-gray-300">
+-                Streamline your development workflow with automated deployment pipelines and DevOps practices.
+-              </p>
+-            </div>
+-
+-            {/* Service 3 */}
+-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-gray-800 dark:to-gray-700 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+-              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+-                </svg>
+-              </div>
+-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+-                Security & Monitoring
+-              </h3>
+-              <p className="text-gray-600 dark:text-gray-300">
+-                Implement robust security measures and comprehensive monitoring solutions for your infrastructure.
+-              </p>
+-            </div>
+-          </div>
+-        </div>
+-      </section>
+-
+-      {/* About Section */}
+-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900">
+-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+-            <div>
+-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+-                Meet <span className="text-blue-600 dark:text-blue-400">Boden (BO)</span>
+-              </h2>
+-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+-                With years of experience in cloud infrastructure and DevOps, I specialize in creating robust, 
+-                scalable solutions that grow with your business. From small startups to enterprise-level 
+-                deployments, I deliver reliable cloud architecture that you can depend on.
+-              </p>
+-              <div className="flex flex-wrap gap-4 mb-8">
+-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+-                  AWS
+-                </span>
+-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+-                  Docker
+-                </span>
+-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+-                  Kubernetes
+-                </span>
+-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+-                  Terraform
+-                </span>
+-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+-                  Traefik
+-                </span>
+-              </div>
+-              <Link
+-                href="/about"
+-                className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
+-              >
+-                Learn more about my experience
+-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+-                </svg>
+-              </Link>
+-            </div>
+-            <div className="lg:pl-8">
+-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+-                <div className="text-center">
+-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+-                    <span className="text-white font-bold text-2xl">BO</span>
+-                  </div>
+-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+-                    Boden
+-                  </h3>
+-                  <p className="text-blue-600 dark:text-blue-400 font-medium mb-4">
+-                    Cloud Infrastructure Specialist
+-                  </p>
+-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+-                    "Building reliable, scalable cloud solutions that empower businesses to focus on what they do best."
+-                  </p>
+-                </div>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-      </section>
+-
+-      {/* CTA Section */}
+-      <section className="py-20 bg-blue-600 dark:bg-blue-800">
+-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+-            Ready to Transform Your Infrastructure?
+-          </h2>
+-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+-            Let's discuss how we can build a cloud solution that scales with your business needs.
+-          </p>
+-          <Link
+-            href="/contact"
+-            className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors duration-200 inline-block"
+-          >
+-            Start Your Project
+-          </Link>
+-        </div>
+-      </section>
+-
+-      {/* Footer */}
+-      <footer className="bg-gray-900 text-white py-12">
+-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+-          <div className="grid md:grid-cols-4 gap-8">
+-            <div className="col-span-2">
+-              <div className="flex items-center space-x-3 mb-4">
+-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+-                  <span className="text-white font-bold text-sm">BO</span>
+-                </div>
+-                <span className="text-xl font-bold">Bolabaden</span>
+-              </div>
+-              <p className="text-gray-400 mb-4">
+-                Professional cloud infrastructure services by Boden (BO). 
+-                Reliable, scalable, and secure solutions for your business.
+-              </p>
+-              <p className="text-gray-400">
+-                © 2024 Bolabaden. All rights reserved.
+-              </p>
+-            </div>
+-            <div>
+-              <h3 className="text-lg font-semibold mb-4">Services</h3>
+-              <ul className="space-y-2 text-gray-400">
+-                <li><Link href="/services" className="hover:text-white transition-colors">Cloud Architecture</Link></li>
+-                <li><Link href="/services" className="hover:text-white transition-colors">DevOps & CI/CD</Link></li>
+-                <li><Link href="/services" className="hover:text-white transition-colors">Security & Monitoring</Link></li>
+-              </ul>
+-            </div>
+-            <div>
+-              <h3 className="text-lg font-semibold mb-4">Company</h3>
+-              <ul className="space-y-2 text-gray-400">
+-                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
+-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+-              </ul>
+-            </div>
+-          </div>
+-        </div>
+-      </footer>
+-    </div>
++    <main className="min-h-screen bg-background">
++      <Navigation />
++      <HeroSection />
++      <TechnicalShowcase />
++      <ProjectsSection />
++      <GuidesSection />
++      <AboutSection />
++      <ContactSection />
++      <Footer />
++    </main>
+   )
+-}
++}
+\ No newline at end of file
