@@ -142,9 +142,9 @@ export function AboutSection() {
               <h3 className="text-xl font-semibold mb-4">Technical Journey</h3>
               <div className="space-y-4 text-sm text-muted-foreground">
                 <p>
-                  Self-taught developer with 6+ years of hands-on experience building and maintaining 
+                  Self-taught developer with hands-on experience building and maintaining 
                   complex technical systems. Started with curiosity about how things work and evolved 
-                  into running 100+ self-hosted services across multiple cloud providers.
+                  into running multiple self-hosted services across cloud providers.
                 </p>
                 <p>
                   Specialized in infrastructure automation, container orchestration, and AI/ML 

@@ -1,61 +1,7 @@
-import { Service, Project, Guide, TechStack, ContactInfo } from './types'
+import { Project, Guide, TechStack, ContactInfo } from './types'
 
-export const services: Service[] = [
-  {
-    id: 'speedtest-tracker',
-    name: 'Speedtest Tracker',
-    description: 'Network diagnostics and speed testing with historical data tracking',
-    status: 'online',
-    category: 'monitoring',
-    technology: ['Docker', 'PHP', 'MySQL'],
-    uptime: 99.8,
-  },
-  {
-    id: 'lobechat',
-    name: 'LobeChat',
-    description: 'Open-source AI chat with multi-model support and extensible plugins',
-    status: 'online',
-    category: 'ai-ml',
-    technology: ['TypeScript', 'React', 'Docker'],
-    uptime: 99.5,
-  },
-  {
-    id: 'ai-research-wizard',
-    name: 'AI Research Wizard',
-    description: 'Research assistant for technical deep dives, code, and documentation',
-    status: 'online',
-    category: 'ai-ml',
-    technology: ['Python', 'FastAPI', 'Docker'],
-    uptime: 98.7,
-  },
-  {
-    id: 'tinyauth',
-    name: 'TinyAuth',
-    description: 'Minimal, secure authentication for self-hosted services',
-    status: 'online',
-    category: 'security',
-    technology: ['Go', 'SQLite', 'Docker'],
-    uptime: 99.9,
-  },
-  {
-    id: 'plex',
-    name: 'Plex Media Server',
-    description: 'Personal media streaming and management platform',
-    status: 'online',
-    category: 'media',
-    technology: ['Docker', 'Linux'],
-    uptime: 99.2,
-  },
-  {
-    id: 'traefik',
-    name: 'Traefik',
-    description: 'Reverse proxy and load balancer with automatic SSL',
-    status: 'online',
-    category: 'infrastructure',
-    technology: ['Docker', 'Go'],
-    uptime: 99.9,
-  },
-]
+// Service data is now fetched dynamically from the API
+// endpoint at /api/services
 
 export const projects: Project[] = [
   {
@@ -72,14 +18,14 @@ export const projects: Project[] = [
     updatedAt: new Date('2024-02-20'),
   },
   {
-    id: 'ai-research-wizard',
+    id: 'ai-researchwizard',
     title: 'AI Research Wizard',
     description: 'Enhanced GPT-researcher with custom integrations and UI improvements',
     longDescription: 'Modified version of GPT-researcher with enhanced capabilities for technical documentation, code analysis, and research automation. Includes custom integrations with multiple AI models and improved user interface.',
     technologies: ['Python', 'FastAPI', 'React', 'Docker'],
     category: 'ai-ml',
     status: 'active',
-    githubUrl: 'https://github.com/bolabaden/ai-research-wizard',
+    githubUrl: 'https://github.com/bolabaden/ai-researchwizard',
     liveUrl: 'https://research.bolabaden.org',
     featured: true,
     createdAt: new Date('2024-02-01'),

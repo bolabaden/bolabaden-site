@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/hero-section'
 import { TechnicalShowcase } from '@/components/technical-showcase'
 import { ProjectsSection } from '@/components/projects-section'
 import { GuidesSection } from '@/components/guides-section'
+import { EmbedsSection } from '@/components/embeds-section'
 import { AboutSection } from '@/components/about-section'
 import { ContactSection } from '@/components/contact-section'
 import { Footer } from '@/components/footer'
@@ -17,6 +18,7 @@ export default function HomePage() {
       <TechnicalShowcase />
       <ProjectsSection />
       <GuidesSection />
+      <EmbedsSection />
       <AboutSection />
       <ContactSection />
       <Footer />

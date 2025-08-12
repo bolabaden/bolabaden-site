@@ -126,7 +126,7 @@ export function GuidesSection() {
     {
       icon: CheckCircle,
       title: 'Real Infrastructure',
-      description: 'Based on actual running services with 100+ deployed applications'
+      description: 'Based on actual running services with live deployed applications'
     }
   ]
 

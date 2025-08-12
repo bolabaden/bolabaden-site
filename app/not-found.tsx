@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -13,6 +14,24 @@ import {
 } from 'lucide-react'
 
 export default function NotFound() {
+  const [stats, setStats] = useState<{ totalServices: number; avgUptime: number; onlineServices: number } | null>(null)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/services')
+        if (res.ok) {
+          const data = await res.json()
+          setStats({
+            totalServices: data?.stats?.totalServices ?? 0,
+            avgUptime: data?.stats?.avgUptime ?? 0,
+            onlineServices: data?.stats?.onlineServices ?? 0
+          })
+        }
+      } catch {}
+    }
+    fetchStats()
+  }, [])
   return (
     <div className="min-h-screen bg-background flex items-center justify-center overflow-hidden">
       {/* Background Grid */}
@@ -97,7 +116,7 @@ export default function NotFound() {
             </h2>
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
               The service you're looking for seems to be offline or doesn't exist in our 
-              infrastructure. Even with 100+ services running, this one got away from us.
+              infrastructure. Even with {stats?.totalServices ? `${stats.totalServices} services` : 'multiple services'} running, this one got away from us.
             </p>
           </motion.div>
 
@@ -114,11 +133,11 @@ export default function NotFound() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="text-center">
-                <div className="text-green-400 font-bold">99.5%</div>
+                <div className="text-green-400 font-bold">{stats ? `${stats.avgUptime.toFixed(1)}%` : '—'}</div>
                 <div className="text-muted-foreground">Infrastructure Uptime</div>
               </div>
               <div className="text-center">
-                <div className="text-primary font-bold">100+</div>
+                <div className="text-primary font-bold">{stats?.onlineServices ?? '—'}</div>
                 <div className="text-muted-foreground">Services Online</div>
               </div>
               <div className="text-center">

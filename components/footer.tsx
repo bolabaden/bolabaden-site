@@ -41,28 +41,28 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <button
-                  onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="#services"
                   className="hover:text-primary transition-colors"
                 >
                   Infrastructure
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="#projects"
                   className="hover:text-primary transition-colors"
                 >
                   Projects
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => document.getElementById('guides')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="/guides"
                   className="hover:text-primary transition-colors"
                 >
                   Guides
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -82,20 +82,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={() => document.getElementById('guides')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="/guides"
                   className="hover:text-primary transition-colors"
                 >
                   Documentation
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="#about"
                   className="hover:text-primary transition-colors"
                 >
                   About
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -115,12 +115,12 @@ export function Footer() {
               <li>Remote Work</li>
               <li>UTC-6 (Central)</li>
               <li>
-                <button
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  href="/contact"
                   className="hover:text-primary transition-colors"
                 >
                   Get in Touch
-                </button>
+                </Link>
               </li>
             </ul>
           </div>

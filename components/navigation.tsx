@@ -21,10 +21,11 @@ export function Navigation() {
 
   const navItems = [
     { href: '#services', label: 'Services' },
+    { href: '/dashboard', label: 'Dashboard' },
     { href: '#projects', label: 'Projects' },
-    { href: '#guides', label: 'Guides' },
+    { href: '/guides', label: 'Guides' },
     { href: '#about', label: 'About' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/contact', label: 'Contact' },
   ]
 
   const scrollToSection = (href: string) => {
@@ -38,7 +39,7 @@ export function Navigation() {
   return (
     <nav className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-      isScrolled ? "glass backdrop-blur-lg shadow-lg" : "bg-transparent"
+      "glass backdrop-blur-lg shadow-lg"
     )}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -53,13 +54,23 @@ export function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => scrollToSection(item.href)}
-                className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-1"
-              >
-                {item.label}
-              </button>
+              item.href.startsWith('#') ? (
+                <button
+                  key={item.href}
+                  onClick={() => scrollToSection(item.href)}
+                  className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-1"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-1"
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </div>
 
@@ -105,13 +116,24 @@ export function Navigation() {
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col space-y-4">
                 {navItems.map((item) => (
-                  <button
-                    key={item.href}
-                    onClick={() => scrollToSection(item.href)}
-                    className="text-left text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-2"
-                  >
-                    {item.label}
-                  </button>
+                  item.href.startsWith('#') ? (
+                    <button
+                      key={item.href}
+                      onClick={() => scrollToSection(item.href)}
+                      className="text-left text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-2"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-left text-muted-foreground hover:text-foreground transition-colors focus-ring rounded-md px-2 py-2"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )
                 ))}
                 <div className="flex items-center space-x-4 pt-4 border-t border-border">
                   <Link

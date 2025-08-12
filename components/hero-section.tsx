@@ -1,11 +1,31 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Github, Mail, Server, Code, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 export function HeroSection() {
+  const [stats, setStats] = useState<{ totalServices: number; avgUptime: number } | null>(null)
+  const [yearsExperience, setYearsExperience] = useState<number>(6)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/services')
+        if (res.ok) {
+          const data = await res.json()
+          setStats({ totalServices: data?.stats?.totalServices ?? 0, avgUptime: data?.stats?.avgUptime ?? 0 })
+        }
+      } catch {}
+    }
+    // Experience can be calculated based on a start year if desired
+    const startYear = 2023
+    const now = new Date().getFullYear()
+    setYearsExperience(Math.max(0, now - startYear))
+    fetchStats()
+  }, [])
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Grid */}
@@ -82,7 +102,7 @@ export function HeroSection() {
           >
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               I build, deploy, and maintain complex technical systems. Currently running{' '}
-              <span className="text-primary font-semibold">100+ self-hosted services</span>,
+              <span className="text-primary font-semibold">{stats?.totalServices ? `${stats.totalServices} self-hosted services` : 'multiple self-hosted services'}</span>,
               building open source projects, and sharing technical knowledge. Available for remote work.
             </p>
           </motion.div>
@@ -98,21 +118,21 @@ export function HeroSection() {
               <div className="flex items-center justify-center mb-2">
                 <Server className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">100+</div>
-              <div className="text-sm text-muted-foreground">Services Running</div>
+              <div className="text-2xl font-bold text-foreground">{stats?.totalServices ?? '—'}</div>
+              <div className="text-sm text-muted-foreground">Tracked Services</div>
             </div>
             <div className="glass rounded-lg p-4">
               <div className="flex items-center justify-center mb-2">
                 <Code className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">6+</div>
+              <div className="text-2xl font-bold text-foreground">{yearsExperience}+</div>
               <div className="text-sm text-muted-foreground">Years Experience</div>
             </div>
             <div className="glass rounded-lg p-4">
               <div className="flex items-center justify-center mb-2">
                 <Zap className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-foreground">99.5%</div>
+              <div className="text-2xl font-bold text-foreground">{stats ? `${stats.avgUptime.toFixed(1)}%` : '—'}</div>
               <div className="text-sm text-muted-foreground">Average Uptime</div>
             </div>
           </motion.div>

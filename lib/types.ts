@@ -9,6 +9,17 @@ export interface Service {
   technology?: string[]
   uptime?: number
   lastChecked?: Date
+  metrics?: {
+    cpu: number
+    memory: number
+    disk: number
+    network: {
+      in: number
+      out: number
+    }
+    requestsPerMinute: number
+    responseTime: number
+  }
 }
 
 export interface Project {
