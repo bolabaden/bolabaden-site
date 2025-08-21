@@ -1,5 +1,5 @@
 # Use Node.js 18 Alpine as base image
-FROM node:18-alpine AS base
+FROM node:24-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci || (echo "npm ci failed, trying npm install" && npm install && npm ci)
+RUN npm ci > /dev/null 2>&1 || (echo "npm ci failed, trying npm install" && npm install && npm ci)
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -43,9 +43,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3000
+ARG PORT=3000
+ENV PORT=$PORT
+EXPOSE $PORT
 
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+ARG HOSTNAME="0.0.0.0"
+ENV HOSTNAME=$HOSTNAME
 
-CMD ["node", "server.js"] 
+CMD ["node", "server.js"]

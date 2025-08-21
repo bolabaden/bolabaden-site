@@ -89,7 +89,7 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-primary font-medium">
-              Self-taught infrastructure & AI engineer
+              Self-taught infrastructure, fullstack, and AI engineer
             </p>
           </motion.div>
 
