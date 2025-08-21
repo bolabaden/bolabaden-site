@@ -2,6 +2,13 @@ import { notFound } from 'next/navigation'
 import { guides } from '@/lib/data'
 import { Section } from '@/components/section'
 
+// Generate static params for all guides at build time
+export async function generateStaticParams() {
+  return guides.map((guide) => ({
+    slug: guide.slug,
+  }))
+}
+
 export default function GuidePage({ params }: { params: { slug: string } }) {
   const guide = guides.find((g) => g.slug === params.slug)
   if (!guide) return notFound()
