@@ -46,6 +46,7 @@ jobs:
           
       - name: Temporarily move API directory (not compatible with static export)
         run: |
+          set -e
           if [ -d "app/api" ]; then
             mv app/api api_backup
           fi
