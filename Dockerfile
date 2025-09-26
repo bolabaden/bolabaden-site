@@ -1,5 +1,6 @@
-# Use Node.js 18 Alpine as base image
-FROM node:24-alpine AS base
+# syntax=docker/dockerfile:1.6
+# Use Node.js Alpine as base image
+FROM node:alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -9,7 +10,9 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci > /dev/null 2>&1 || (echo "npm ci failed, trying npm install" && npm install && npm ci)
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline --no-audit --progress=false || \
+    (echo "npm ci failed, trying npm install" && npm install --no-audit --progress=false && npm ci --prefer-offline --no-audit --progress=false)
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -22,17 +25,27 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+RUN --mount=type=cache,target=/app/.next/cache npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+ARG NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED=${NEXT_TELEMETRY_DISABLED}
+
+ARG PUID=1001
+ENV PUID=${PUID}
+
+ARG PGID=1001
+ENV PGID=${PGID}
+
+RUN addgroup --system --gid ${PGID} nodejs
+RUN adduser --system --uid ${PUID} --ingroup nodejs nextjs
+RUN chown -R nextjs:nodejs /app
 
 COPY --from=builder /app/public ./public
 
@@ -44,10 +57,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 
 ARG PORT=3000
-ENV PORT=$PORT
-EXPOSE $PORT
+ENV PORT=${PORT}
+EXPOSE ${PORT}
 
 ARG HOSTNAME="0.0.0.0"
-ENV HOSTNAME=$HOSTNAME
+ENV HOSTNAME=${HOSTNAME}
 
-CMD ["node", "server.js"]
+CMD ["node", "server.js"] 

@@ -172,7 +172,7 @@ export function ContactSection() {
           </div>
           <h3 className="text-2xl font-semibold mb-4">Currently Available</h3>
           <p className="text-muted-foreground mb-6">
-            Ready to take on new challenges in infrastructure, AI/ML, or full-stack development. 
+            Ready to take on new challenges in infrastructure, backend systems, or full-stack development. 
             Interested in both short-term consulting and long-term opportunities.
           </p>
         </div>

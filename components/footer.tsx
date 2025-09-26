@@ -16,7 +16,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">bolabaden.org</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Self-taught infrastructure & AI engineer building and sharing technical solutions.
+              Self-taught infrastructure engineer & software developer building and sharing technical solutions.
             </p>
             <div className="flex items-center gap-4">
               <Link
@@ -45,7 +45,7 @@ export function Footer() {
                   href="#services"
                   className="hover:text-primary transition-colors"
                 >
-                  Infrastructure
+                  Infrastructure & Services
                 </Link>
               </li>
               <li>

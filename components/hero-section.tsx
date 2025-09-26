@@ -89,7 +89,7 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-primary font-medium">
-              Self-taught infrastructure, fullstack, and AI engineer
+              Self-taught infrastructure engineer & software developer
             </p>
           </motion.div>
 
@@ -101,9 +101,7 @@ export function HeroSection() {
             className="mb-8"
           >
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              I build, deploy, and maintain complex technical systems. Currently running{' '}
-              <span className="text-primary font-semibold">{stats?.totalServices ? `${stats.totalServices} self-hosted services` : 'multiple self-hosted services'}</span>,
-              building open source projects, and sharing technical knowledge. Available for remote work.
+              I design, deploy, and maintain complex technical systems, create open source projects, and share technical knowledge. Open to remote opportunities.
             </p>
           </motion.div>
 
@@ -116,24 +114,10 @@ export function HeroSection() {
           >
             <div className="glass rounded-lg p-4">
               <div className="flex items-center justify-center mb-2">
-                <Server className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-foreground">{stats?.totalServices ?? '—'}</div>
-              <div className="text-sm text-muted-foreground">Tracked Services</div>
-            </div>
-            <div className="glass rounded-lg p-4">
-              <div className="flex items-center justify-center mb-2">
                 <Code className="h-8 w-8 text-primary" />
               </div>
               <div className="text-2xl font-bold text-foreground">{yearsExperience}+</div>
               <div className="text-sm text-muted-foreground">Years Experience</div>
-            </div>
-            <div className="glass rounded-lg p-4">
-              <div className="flex items-center justify-center mb-2">
-                <Zap className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-foreground">{stats ? `${stats.avgUptime.toFixed(1)}%` : '—'}</div>
-              <div className="text-sm text-muted-foreground">Average Uptime</div>
             </div>
           </motion.div>
 

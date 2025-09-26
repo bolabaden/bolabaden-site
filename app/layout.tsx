@@ -9,23 +9,23 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
-  description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development. Available for remote work.',
-  keywords: ['infrastructure engineer', 'kubernetes', 'self-hosted', 'AI development', 'backend engineer', 'remote work'],
+  title: 'Boden Crouch | Self-Taught Infrastructure Engineer',
+  description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, cloud platforms, and backend development. Available for remote work.',
+  keywords: ['infrastructure engineer', 'kubernetes', 'self-hosted', 'cloud platforms', 'backend engineer', 'remote work'],
   authors: [{ name: 'Boden Crouch' }],
   creator: 'Boden Crouch',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://bolabaden.org',
-    title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
-    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development.',
+    title: 'Boden Crouch | Self-Taught Infrastructure Engineer',
+    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, cloud platforms, and backend development.',
     siteName: 'Boden Crouch Portfolio',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Boden Crouch | Self-Taught Infrastructure & AI Engineer',
-    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, AI tools, and backend development.',
+    title: 'Boden Crouch | Self-Taught Infrastructure Engineer',
+    description: 'Professional portfolio showcasing expertise in self-hosted infrastructure, Kubernetes, cloud platforms, and backend development.',
   },
   robots: {
     index: true,

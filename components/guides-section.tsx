@@ -164,10 +164,6 @@ export function GuidesSection() {
                   <CheckCircle className="h-4 w-4 text-primary" />
                   <span>Kubernetes cluster deployment</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary" />
-                  <span>Tailscale mesh networking</span>
-                </li>
               </ul>
             </div>
             <div>
@@ -182,7 +178,7 @@ export function GuidesSection() {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />
-                  <span>AI/ML services and LLM deployment</span>
+                  <span>Database systems and data management</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />

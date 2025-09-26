@@ -147,8 +147,8 @@ export function AboutSection() {
                   into running multiple self-hosted services across cloud providers.
                 </p>
                 <p>
-                  Specialized in infrastructure automation, container orchestration, and AI/ML 
-                  integrations. Experience spans from small personal projects to production-grade 
+                  Specialized in infrastructure automation, container orchestration, and backend 
+                  systems. Experience spans from small personal projects to production-grade 
                   systems with high availability requirements.
                 </p>
                 <p>
@@ -172,9 +172,9 @@ export function AboutSection() {
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <div className="font-medium text-foreground">AI/ML Integration</div>
+                    <div className="font-medium text-foreground">Backend Development</div>
                     <div className="text-sm text-muted-foreground">
-                      Building practical AI tools and research automation systems
+                      Building robust APIs, microservices, and database architectures
                     </div>
                   </div>
                 </div>
@@ -234,7 +234,7 @@ export function AboutSection() {
           <p className="text-muted-foreground mb-6">
             I'm interested in remote positions where I can contribute to complex technical systems, 
             mentor other developers, and continue learning new technologies. Particularly excited 
-            about opportunities in infrastructure, AI/ML, and developer tooling.
+            about opportunities in infrastructure, backend development, and developer tooling.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

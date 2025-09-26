@@ -20,11 +20,10 @@ export function Navigation() {
   }, [])
 
   const navItems = [
-    { href: '#services', label: 'Services' },
     { href: '/dashboard', label: 'Dashboard' },
-    { href: '#projects', label: 'Projects' },
+    { href: '/#projects', label: 'Projects' },
     { href: '/guides', label: 'Guides' },
-    { href: '#about', label: 'About' },
+    { href: '/#about', label: 'About' },
     { href: '/contact', label: 'Contact' },
   ]
 

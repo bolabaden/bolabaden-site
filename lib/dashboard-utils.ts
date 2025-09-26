@@ -18,18 +18,17 @@ export const formatBytes = (bytes: number): string => {
 export const getHealthColor = (value: number, inverse = false): string => {
   if (inverse) {
     // For metrics where higher is better (like uptime)
-    if (value >= 98) return 'text-green-500'
-    if (value >= 95) return 'text-green-400'
-    if (value >= 90) return 'text-yellow-500'
-    if (value >= 80) return 'text-orange-500'
-    return 'text-red-500'
+    if (value >= 98) return 'uptime-excellent'
+    if (value >= 95) return 'uptime-good'
+    if (value >= 90) return 'uptime-fair'
+    return 'uptime-poor'
   } else {
     // For metrics where lower is better (like CPU usage)
-    if (value >= 90) return 'text-red-500'
-    if (value >= 75) return 'text-orange-500'
-    if (value >= 60) return 'text-yellow-500'
-    if (value >= 40) return 'text-green-400'
-    return 'text-green-500'
+    if (value >= 90) return 'health-critical'
+    if (value >= 75) return 'health-poor'
+    if (value >= 60) return 'health-fair'
+    if (value >= 40) return 'health-good'
+    return 'health-excellent'
   }
 }
 
@@ -37,18 +36,17 @@ export const getHealthColor = (value: number, inverse = false): string => {
 export const getHealthBgColor = (value: number, inverse = false): string => {
   if (inverse) {
     // For metrics where higher is better (like uptime)
-    if (value >= 98) return 'bg-green-500/20'
-    if (value >= 95) return 'bg-green-400/20'
-    if (value >= 90) return 'bg-yellow-500/20'
-    if (value >= 80) return 'bg-orange-500/20'
-    return 'bg-red-500/20'
+    if (value >= 98) return 'status-online'
+    if (value >= 95) return 'status-online'
+    if (value >= 90) return 'status-maintenance'
+    return 'status-offline'
   } else {
     // For metrics where lower is better (like CPU usage)
-    if (value >= 90) return 'bg-red-500/20'
-    if (value >= 75) return 'bg-orange-500/20'
-    if (value >= 60) return 'bg-yellow-500/20'
-    if (value >= 40) return 'bg-green-400/20'
-    return 'bg-green-500/20'
+    if (value >= 90) return 'status-offline'
+    if (value >= 75) return 'status-offline'
+    if (value >= 60) return 'status-maintenance'
+    if (value >= 40) return 'status-online'
+    return 'status-online'
   }
 }
 

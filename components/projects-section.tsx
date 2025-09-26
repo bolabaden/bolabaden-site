@@ -7,8 +7,7 @@ import {
   Github, 
   ExternalLink, 
   Calendar, 
-  Star, 
-  GitFork, 
+  Star,
   Code,
   Zap,
   Server,
@@ -135,25 +134,6 @@ const ProjectCard = ({ project, featured = false }: { project: Project, featured
   </motion.div>
 )
 
-const CategoryCard = ({ icon: Icon, title, description, count }: { 
-  icon: any, 
-  title: string, 
-  description: string, 
-  count: number 
-}) => (
-  <motion.div
-    whileHover={{ scale: 1.05 }}
-    className="glass rounded-lg p-6 text-center hover:bg-white/5 transition-all duration-300"
-  >
-    <div className="p-3 bg-primary/20 rounded-lg w-fit mx-auto mb-4">
-      <Icon className="h-8 w-8 text-primary" />
-    </div>
-    <h3 className="font-semibold text-foreground mb-2">{title}</h3>
-    <p className="text-sm text-muted-foreground mb-3">{description}</p>
-    <div className="text-2xl font-bold text-primary">{count}</div>
-    <div className="text-xs text-muted-foreground">Active Projects</div>
-  </motion.div>
-)
 
 export function ProjectsSection() {
   const [activeFilter, setActiveFilter] = useState<string>('all')
@@ -164,28 +144,7 @@ export function ProjectsSection() {
     : projects.filter(project => project.category === activeFilter)
 
   const featuredProjects = projects.filter(p => p.featured)
-  const regularProjects = projects.filter(p => !p.featured)
 
-  const categoryStats = [
-    {
-      icon: Server,
-      title: 'Infrastructure',
-      description: 'Cloud deployment and orchestration automation',
-      count: projects.filter(p => p.category === 'infrastructure').length
-    },
-    {
-      icon: Brain,
-      title: 'AI & ML',
-      description: 'Machine learning tools and AI integrations',
-      count: projects.filter(p => p.category === 'ai-ml').length
-    },
-    {
-      icon: Network,
-      title: 'Networking',
-      description: 'Mesh networks and secure communications',
-      count: projects.filter(p => p.category === 'networking').length
-    }
-  ]
 
   return (
     <Section 
@@ -194,14 +153,6 @@ export function ProjectsSection() {
       subtitle="All services are live, self-hosted, and available for public use. Click to explore."
       background="default"
     >
-      {/* Category Overview */}
-      <div className="mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {categoryStats.map((stat, index) => (
-            <CategoryCard key={index} {...stat} />
-          ))}
-        </div>
-      </div>
 
       {/* Featured Projects */}
       {featuredProjects.length > 0 && (

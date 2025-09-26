@@ -80,6 +80,136 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Stealth iframe styles - completely invisible embedding */
+.stealth-iframe-container {
+  overflow: hidden !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.stealth-iframe-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.stealth-iframe {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  resize: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.stealth-iframe::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Hide scrollbars globally for iframe content */
+iframe[scrolling="no"] {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+iframe[scrolling="no"]::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Ultra-aggressive scrollbar removal for seamless embedding */
+iframe {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+iframe::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+iframe::-webkit-scrollbar-track {
+  display: none !important;
+  background: transparent !important;
+}
+
+iframe::-webkit-scrollbar-thumb {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Remove any possible scrollbar space */
+iframe {
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Force seamless appearance */
+.seamless-iframe-container {
+  overflow: hidden !important;
+  border: none !important;
+  background: transparent !important;
+  contain: layout style paint !important;
+  isolation: isolate !important;
+}
+
+.seamless-iframe {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  contain: layout style paint !important;
+  will-change: height !important;
+  transform: translateZ(0) !important; /* Force GPU acceleration */
+}
+
+.seamless-iframe::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Ultra-modern scrollbar hiding using CSS containment */
+@supports (scrollbar-width: none) {
+  .seamless-iframe {
+    scrollbar-width: none !important;
+  }
+}
+
+@supports not (scrollbar-width: none) {
+  .seamless-iframe::-webkit-scrollbar {
+    display: none !important;
+    -webkit-appearance: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+
+/* Final fallback for older browsers */
+.seamless-iframe {
+  -webkit-overflow-scrolling: touch !important;
+  overflow: -moz-scrollbars-none !important;
+  -ms-overflow-style: -ms-autohiding-scrollbar !important;
+}
+
 /* Loading animation */
 .loading {
   @apply animate-pulse;

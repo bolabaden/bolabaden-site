@@ -5,6 +5,31 @@ import { Project, Guide, TechStack, ContactInfo } from './types'
 
 export const projects: Project[] = [
   {
+    id: 'bolabaden-infra',
+    title: 'Bolabaden Infrastructure',
+    description: 'The infrastructure running https://bolabaden.org and its services.',
+    technologies: ['Docker', 'Kubernetes', 'Traefik', 'Redis', 'MongoDB', 'Portainer', 'Docker Socket Proxy'],
+    category: 'infrastructure',
+    status: 'active',
+    githubUrl: 'https://github.com/bolabaden/bolabaden-infra',
+    featured: true,
+    createdAt: new Date('2025-02-01'),
+    updatedAt: new Date('2025-09-26'),
+  },
+  {
+    id: 'bolabaden-site',
+    title: 'Bolabaden NextJS Website',
+    description: 'The NextJS website running https://bolabaden.org.',
+    technologies: ['NextJS', 'Tailwind CSS', 'TypeScript', 'React', 'Docker'],
+    category: 'frontend',
+    status: 'active',
+    githubUrl: 'https://github.com/bolabaden/bolabaden-site',
+    liveUrl: 'https://bolabaden.org',
+    featured: true,
+    createdAt: new Date('2025-02-01'),
+    updatedAt: new Date('2025-09-26'),
+  },
+  {
     id: 'cloudcradle',
     title: 'CloudCradle',
     description: 'Oracle Cloud deployment automation with infrastructure as code',
@@ -14,8 +39,8 @@ export const projects: Project[] = [
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/cloudcradle',
     featured: true,
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-02-20'),
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-02-20'),
   },
   {
     id: 'ai-researchwizard',
@@ -26,8 +51,26 @@ export const projects: Project[] = [
     category: 'ai-ml',
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/ai-researchwizard',
-    liveUrl: 'https://research.bolabaden.org',
+    liveUrl: 'https://gptr.bolabaden.org',
     featured: true,
+    createdAt: new Date('2025-02-01'),
+    updatedAt: new Date('2025-03-10'),
+  },
+  {
+    id: 'llm_fallbacks',
+    title: 'LLM Fallbacks',
+    description: 'A Python library for managing fallbacks, filtering, and sorting for various LLM providers.',
+    longDescription: `Features:
+🔄 Automatic Fallbacks: Gracefully handle API failures by providing alternative models
+📊 Model Filtering: Filter models based on various criteria like cost, context length, and capabilities
+💰 Cost Optimization: Sort models by cost to optimize your API usage
+🧠 Model Discovery: Discover available models and their capabilities
+🛠️ GUI Tool: Includes a GUI tool for exploring and filtering available models`,
+    technologies: ['Python', 'LiteLLM', 'LLM'],
+    category: 'ai-ml',
+    status: 'active',
+    githubUrl: 'https://github.com/bolabaden/llm_fallbacks',
+    featured: false,
     createdAt: new Date('2024-02-01'),
     updatedAt: new Date('2024-03-10'),
   },
@@ -41,50 +84,12 @@ export const projects: Project[] = [
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/constellation',
     featured: true,
-    createdAt: new Date('2024-03-15'),
-    updatedAt: new Date('2024-04-05'),
-  },
-  {
-    id: 'tailscale-mesh',
-    title: 'Tailscale Mesh Network',
-    description: 'Secure mesh networking solution for distributed services',
-    longDescription: 'Implementation of Tailscale for creating secure, encrypted connections between distributed services across multiple cloud providers and on-premises infrastructure.',
-    technologies: ['Tailscale', 'Linux', 'Docker', 'Kubernetes'],
-    category: 'networking',
-    status: 'completed',
-    featured: false,
-    createdAt: new Date('2023-12-01'),
-    updatedAt: new Date('2024-01-10'),
+    createdAt: new Date('2025-03-15'),
+    updatedAt: new Date('2025-04-05'),
   },
 ]
 
 export const guides: Guide[] = [
-  {
-    id: 'oracle-cloud-k8s-setup',
-    title: 'Oracle Cloud Kubernetes Setup',
-    description: 'Complete guide to setting up a production-ready Kubernetes cluster on Oracle Cloud',
-    content: `# Oracle Cloud Kubernetes Setup
-
-This guide walks you through setting up a production-ready Kubernetes cluster on Oracle Cloud Infrastructure (OCI).
-
-## Prerequisites
-
-- Oracle Cloud account with appropriate permissions
-- OCI CLI configured
-- kubectl installed locally
-
-## Step 1: Create VCN and Subnets
-
-First, we'll create a Virtual Cloud Network (VCN) with public and private subnets...`,
-    category: 'infrastructure',
-    difficulty: 'intermediate',
-    estimatedTime: '2-3 hours',
-    prerequisites: ['Oracle Cloud account', 'Basic Kubernetes knowledge'],
-    technologies: ['Oracle Cloud', 'Kubernetes', 'Docker'],
-    createdAt: new Date('2024-01-20'),
-    updatedAt: new Date('2024-02-15'),
-    slug: 'oracle-cloud-k8s-setup',
-  },
   {
     id: 'self-hosted-media-stack',
     title: 'Self-Hosted Media Stack',

@@ -182,12 +182,22 @@ The design system is built with Tailwind CSS and includes:
 
 ## Deployment
 
+The application supports multiple deployment methods:
+
+### GitHub Pages (Static Site)
+- **Live Site**: https://bolabaden.github.io/bolabaden-site
+- **Automatic Deployment**: Triggered on push to main/master branch
+- **Static Export**: Optimized for GitHub Pages hosting
+- **Documentation**: See [docs/github-pages-deployment.md](docs/github-pages-deployment.md)
+
+### Docker (Full Application)
 The application is designed for deployment with Docker and includes:
 
 - **Multi-stage Dockerfile**: Optimized for production builds
 - **Standalone Output**: Reduced image size with Next.js standalone mode
 - **Environment Variables**: Configurable runtime settings
 - **Health Checks**: Application health monitoring
+- **API Routes**: Full backend functionality with container orchestration
 
 ## Contributing
 
