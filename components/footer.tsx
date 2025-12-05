@@ -24,14 +24,18 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Visit Boden Crouch's GitHub profile"
               >
-                <Github className="h-5 w-5" />
+                <Github className="h-5 w-5" aria-hidden="true" />
+                <span className="sr-only">GitHub</span>
               </Link>
               <Link
                 href="mailto:boden.crouch@gmail.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Send email to Boden Crouch"
               >
-                <Mail className="h-5 w-5" />
+                <Mail className="h-5 w-5" aria-hidden="true" />
+                <span className="sr-only">Email</span>
               </Link>
             </div>
           </div>
@@ -128,7 +132,7 @@ export function Footer() {
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            © 2025 Boden Crouch. All rights reserved.
+            © {new Date().getFullYear()} Boden Crouch. All rights reserved.
           </p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <Link
@@ -140,8 +144,10 @@ export function Footer() {
             <button
               onClick={scrollToTop}
               className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-secondary/50"
+              aria-label="Scroll to top of page"
             >
-              <ArrowUp className="h-4 w-4" />
+              <ArrowUp className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">Scroll to top</span>
             </button>
           </div>
         </div>

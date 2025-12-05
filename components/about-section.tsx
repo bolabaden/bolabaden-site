@@ -251,8 +251,9 @@ export function AboutSection() {
             <a
               href="mailto:boden.crouch@gmail.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              aria-label="Send email to Boden Crouch"
             >
-              <MessageSquare className="h-4 w-4" />
+              <MessageSquare className="h-4 w-4" aria-hidden="true" />
               Get in Touch
             </a>
             <a
@@ -260,8 +261,9 @@ export function AboutSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-colors rounded-lg"
+              aria-label="Visit Boden Crouch's GitHub profile (opens in new tab)"
             >
-              <Code className="h-4 w-4" />
+              <Code className="h-4 w-4" aria-hidden="true" />
               View My Code
             </a>
           </div>

@@ -189,7 +189,7 @@ export function HeroSection() {
                 "focus-ring"
               )}
             >
-              <Mail className="h-5 w-5" />
+              <Mail className="h-5 w-5" aria-hidden="true" />
               Contact Me
             </Link>
             <Link
@@ -201,8 +201,9 @@ export function HeroSection() {
                 "glass hover:bg-white/10",
                 "focus-ring"
               )}
+              aria-label="Visit Boden Crouch's GitHub profile (opens in new tab)"
             >
-              <Github className="h-5 w-5" />
+              <Github className="h-5 w-5" aria-hidden="true" />
               GitHub Profile
             </Link>
           </motion.div>
@@ -222,19 +223,19 @@ export function HeroSection() {
                 href="#services" 
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                Browse All Services <ArrowRight className="h-4 w-4" />
+                Browse All Services <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link 
                 href="#projects" 
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                View Projects <ArrowRight className="h-4 w-4" />
+                View Projects <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link 
                 href="#guides" 
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                Technical Guides <ArrowRight className="h-4 w-4" />
+                Technical Guides <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </motion.div>
