@@ -1,5 +1,8 @@
-.env.example
-next-env.d.ts
+.jest-cache
 .next
+.env
+.*
+!.env.example
+next-env.d.ts
 node_modules
 out
