@@ -2,6 +2,7 @@
 
 import { NextResponse } from 'next/server'
 import { fetchAllUserRepos, EnhancedGitHubRepo } from '@/lib/github-enhanced'
+import { enrichProject, shouldIncludeProject } from '@/lib/project-mapper'
 import { Project } from '@/lib/types'
 
 /**
@@ -122,19 +123,19 @@ export async function GET(request: Request) {
     // Fetch all repos from all specified users
     const allRepos = await fetchAllUserRepos(usernames)
     
-    // Apply filters
-    let filteredRepos = allRepos
+    // Apply intelligent filtering
+    const filteredRepos = allRepos.filter(repo => 
+      shouldIncludeProject(repo, {
+        includeArchived,
+        includeForks: false, // Never include forks by default
+        minStars,
+      })
+    )
     
-    if (!includeArchived) {
-      filteredRepos = filteredRepos.filter(r => !r.archived)
-    }
-    
-    if (minStars > 0) {
-      filteredRepos = filteredRepos.filter(r => r.stargazers_count >= minStars)
-    }
-    
-    // Convert repos to Project format
-    const projects = filteredRepos.map(repoToProject)
+    // Convert repos to Project format and enrich with metadata
+    const projects = filteredRepos
+      .map(repoToProject)
+      .map(enrichProject) // Add human-curated context
     
     // Sort by last push (most recent first)
     const sortedProjects = projects.sort((a, b) => {
