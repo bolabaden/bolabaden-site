@@ -174,7 +174,7 @@ export function GuidesSection() {
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />
-                  <span>Media stack with Plex and *arr apps</span>
+                  <span>Monitoring stack with Prometheus and Grafana</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />

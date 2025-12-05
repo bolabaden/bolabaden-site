@@ -16,7 +16,7 @@ export function CategoryDistribution({ data }: CategoryDistributionProps) {
     const classMap: Record<string, string> = {
       'infrastructure': 'category-infrastructure',
       'monitoring': 'category-monitoring',
-      'media': 'category-media',
+      'database': 'category-database',
       'ai-ml': 'category-ai-ml',
       'security': 'category-security',
       'development': 'category-development',

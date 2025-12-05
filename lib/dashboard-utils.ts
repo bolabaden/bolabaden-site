@@ -101,7 +101,7 @@ export const getCategoryDisplayName = (category: string): string => {
   const categories: Record<string, string> = {
     'infrastructure': 'Infrastructure',
     'monitoring': 'Monitoring',
-    'media': 'Media',
+    'database': 'Database',
     'ai-ml': 'AI & ML',
     'security': 'Security',
     'development': 'Development',

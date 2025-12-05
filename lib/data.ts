@@ -176,32 +176,50 @@ response = chain.call(prompt, max_cost=5)
 
 export const guides: Guide[] = [
   {
-    id: 'self-hosted-media-stack',
-    title: 'Self-Hosted Media Stack',
-    description: 'Deploy a complete media automation stack with Plex, Radarr, Sonarr, and more',
-    content: `# Self-Hosted Media Stack
+    id: 'kubernetes-monitoring-stack',
+    title: 'Kubernetes Monitoring with Prometheus & Grafana',
+    description: 'Deploy a complete monitoring stack for Kubernetes clusters with alerting and visualization',
+    content: `# Kubernetes Monitoring Stack
 
-Build your own Netflix-like streaming service with automated content management.
+Build production-grade monitoring for your Kubernetes clusters with Prometheus, Grafana, and AlertManager.
 
-## Services Included
+## Components Included
 
-- Plex Media Server
-- Radarr (Movie automation)
-- Sonarr (TV show automation)
-- Overseerr (Request management)
-- Jellyfin (Alternative player)
+- Prometheus (Metrics collection and storage)
+- Grafana (Visualization and dashboards)
+- AlertManager (Alert routing and notification)
+- Node Exporter (Hardware and OS metrics)
+- kube-state-metrics (Kubernetes object metrics)
 
-## Docker Compose Setup
+## Deployment with Helm
 
-Here's the complete docker-compose.yml configuration...`,
-    category: 'media',
-    difficulty: 'beginner',
-    estimatedTime: '1-2 hours',
-    prerequisites: ['Docker', 'Basic networking knowledge'],
-    technologies: ['Docker', 'Plex', 'Radarr', 'Sonarr'],
+\`\`\`bash
+# Add Prometheus community Helm repo
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# Install kube-prometheus-stack
+helm install prometheus prometheus-community/kube-prometheus-stack \\
+  --namespace monitoring --create-namespace \\
+  --set prometheus.prometheusSpec.retention=15d \\
+  --set grafana.adminPassword=secure-password-here
+\`\`\`
+
+## Key Features
+
+- Automatic service discovery
+- Pre-built Grafana dashboards
+- Alert rules for common issues
+- Long-term metric retention
+- High availability support`,
+    category: 'infrastructure',
+    difficulty: 'intermediate',
+    estimatedTime: '2-3 hours',
+    prerequisites: ['Kubernetes cluster', 'Helm 3', 'kubectl access'],
+    technologies: ['Kubernetes', 'Prometheus', 'Grafana', 'Helm'],
     createdAt: new Date('2024-02-10'),
-    updatedAt: new Date('2024-03-05'),
-    slug: 'self-hosted-media-stack',
+    updatedAt: new Date('2025-12-05'),
+    slug: 'kubernetes-monitoring-stack',
   },
 ]
 
@@ -284,7 +302,7 @@ export const serviceCategories = {
   'infrastructure': 'Infrastructure',
   'monitoring': 'Monitoring',
   'security': 'Security',
-  'media': 'Media',
   'networking': 'Networking',
   'development': 'Development',
+  'database': 'Database',
 } 
