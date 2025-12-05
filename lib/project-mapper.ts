@@ -4,6 +4,7 @@
  */
 
 import { Project } from './types'
+import { EnhancedGitHubRepo } from './github-enhanced'
 
 interface ProjectMetadata {
   longDescription?: string
