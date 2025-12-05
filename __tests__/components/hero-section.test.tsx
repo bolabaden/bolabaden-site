@@ -103,11 +103,15 @@ describe('HeroSection', () => {
   })
 
   it('has proper accessibility attributes', () => {
-    render(<HeroSection />)
+    const { container } = render(<HeroSection />)
     
-    // Check for semantic HTML structure
-    const section = screen.getByRole('banner', { hidden: true }) || document.querySelector('section')
+    // Check for semantic HTML structure (section element)
+    const section = container.querySelector('section')
     expect(section).toBeInTheDocument()
+    
+    // Check for main heading
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toBeInTheDocument()
   })
 })
 
