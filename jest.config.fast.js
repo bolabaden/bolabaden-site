@@ -5,8 +5,14 @@
  * Use this for pure logic tests (lib/*, utils/*, etc.)
  */
 
-module.exports = {
-  preset: 'ts-jest',
+const nextJest = require('next/jest')
+
+// Create a minimal Next.js jest config without full compilation
+const createJestConfig = nextJest({
+  dir: './',
+})
+
+const customJestConfig = {
   testEnvironment: 'node', // Much faster than jsdom for non-component tests
   
   // Only run fast unit tests
@@ -23,19 +29,8 @@ module.exports = {
   // Skip setup file for pure unit tests (big speedup)
   setupFilesAfterEnv: ['<rootDir>/jest.setup.fast.js'],
   
-  // Transform TypeScript files
-  transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: {
-        jsx: 'react',
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
-      },
-    }],
-  },
-  
   // Faster test execution
-  maxWorkers: '50%', // Use half CPU cores
+  maxWorkers: 2, // Limit to 2 workers for faster startup
   cache: true,
   cacheDirectory: '<rootDir>/.jest-cache',
   
@@ -49,5 +44,13 @@ module.exports = {
   
   // Timeouts
   testTimeout: 5000, // 5 second max per test
+  
+  // Skip transformation for faster tests
+  transformIgnorePatterns: [
+    '/node_modules/',
+    '^.+\\.module\\.(css|sass|scss)$',
+  ],
 }
+
+module.exports = createJestConfig(customJestConfig)
 
