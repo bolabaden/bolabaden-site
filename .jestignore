@@ -1,0 +1,10 @@
+# Ignore slow/problematic files during fast tests
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.config.js
+*.config.ts
+

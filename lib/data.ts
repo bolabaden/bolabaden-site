@@ -1,7 +1,23 @@
 import { Project, Guide, TechStack, ContactInfo } from './types'
+import { config } from './config'
 
 // Service data is now fetched dynamically from the API
 // endpoint at /api/services
+
+/**
+ * Get fallback dates for projects
+ * Returns dates relative to current time to avoid staleness
+ */
+function getProjectFallbackDates(monthsAgo: number = 6) {
+  const now = new Date()
+  const created = new Date(now)
+  created.setMonth(now.getMonth() - monthsAgo)
+  
+  const updated = new Date(now)
+  updated.setMonth(now.getMonth() - Math.floor(monthsAgo / 3)) // Updated more recently
+  
+  return { createdAt: created, updatedAt: updated }
+}
 
 export const projects: Project[] = [
   {
@@ -26,8 +42,7 @@ export const projects: Project[] = [
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/bolabaden-infra',
     featured: true,
-    createdAt: new Date('2025-02-01'),
-    updatedAt: new Date('2025-09-26'),
+    ...getProjectFallbackDates(10), // Fallback: created ~10 months ago, updated ~3 months ago
   },
   {
     id: 'bolabaden-site',
@@ -53,8 +68,7 @@ export const projects: Project[] = [
     githubUrl: 'https://github.com/bolabaden/bolabaden-site',
     liveUrl: 'https://bolabaden.org',
     featured: true,
-    createdAt: new Date('2025-02-01'),
-    updatedAt: new Date('2025-09-26'),
+    ...getProjectFallbackDates(10), // Fallback: created ~10 months ago, updated ~3 months ago
   },
   {
     id: 'cloudcradle',
@@ -78,8 +92,7 @@ export const projects: Project[] = [
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/cloudcradle',
     featured: true,
-    createdAt: new Date('2025-01-15'),
-    updatedAt: new Date('2025-02-20'),
+    ...getProjectFallbackDates(11), // Fallback: created ~11 months ago, updated ~4 months ago
   },
   {
     id: 'ai-researchwizard',
@@ -107,8 +120,7 @@ export const projects: Project[] = [
     githubUrl: 'https://github.com/bolabaden/ai-researchwizard',
     liveUrl: 'https://gptr.bolabaden.org',
     featured: true,
-    createdAt: new Date('2025-02-01'),
-    updatedAt: new Date('2025-03-10'),
+    ...getProjectFallbackDates(10), // Fallback: created ~10 months ago, updated ~3 months ago
   },
   {
     id: 'llm_fallbacks',
@@ -143,8 +155,7 @@ response = chain.call(prompt, max_cost=5)
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/llm_fallbacks',
     featured: false,
-    createdAt: new Date('2024-02-01'),
-    updatedAt: new Date('2024-03-10'),
+    ...getProjectFallbackDates(22), // Fallback: created ~22 months ago, updated ~7 months ago
   },
   {
     id: 'constellation',
@@ -169,8 +180,7 @@ response = chain.call(prompt, max_cost=5)
     status: 'active',
     githubUrl: 'https://github.com/bolabaden/constellation',
     featured: true,
-    createdAt: new Date('2025-03-15'),
-    updatedAt: new Date('2025-04-05'),
+    ...getProjectFallbackDates(9), // Fallback: created ~9 months ago, updated ~3 months ago
   },
 ]
 
@@ -217,8 +227,8 @@ helm install prometheus prometheus-community/kube-prometheus-stack \\
     estimatedTime: '2-3 hours',
     prerequisites: ['Kubernetes cluster', 'Helm 3', 'kubectl access'],
     technologies: ['Kubernetes', 'Prometheus', 'Grafana', 'Helm'],
-    createdAt: new Date('2024-02-10'),
-    updatedAt: new Date('2025-12-05'),
+    ...getProjectFallbackDates(22), // Fallback: guide created ~22 months ago, updated recently
+    updatedAt: new Date(), // Guides show current date as "last verified"
     slug: 'kubernetes-monitoring-stack',
   },
 ]

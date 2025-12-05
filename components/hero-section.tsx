@@ -6,10 +6,11 @@ import { ArrowRight, Github, Mail, Server, Code, Zap, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { getYearsOfExperience } from '@/lib/config'
 
 export function HeroSection() {
   const [stats, setStats] = useState<{ totalServices: number; avgUptime: number } | null>(null)
-  const [yearsExperience, setYearsExperience] = useState<number>(6)
+  const [yearsExperience, setYearsExperience] = useState<number>(getYearsOfExperience())
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -21,10 +22,8 @@ export function HeroSection() {
         }
       } catch {}
     }
-    // Experience can be calculated based on a start year if desired
-    const startYear = 2023
-    const now = new Date().getFullYear()
-    setYearsExperience(Math.max(0, now - startYear))
+    // Calculate years of experience dynamically from config
+    setYearsExperience(getYearsOfExperience())
     fetchStats()
   }, [])
   return (

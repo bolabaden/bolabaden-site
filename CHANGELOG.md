@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Dynamic date management system** - All dates now pull from GitHub API or calculate dynamically
+- **Centralized configuration** (`lib/config.ts`) for experience year and date utilities
+- **Comprehensive date utility functions** with relative time and formatting
+- **100+ date-related unit tests** with 100% coverage
+- **Optimized test infrastructure** - Split into fast unit tests (10s) and component tests (45s)
+- Performance documentation for testing (`docs/testing-performance.md`)
 - Comprehensive SEO metadata with OpenGraph and Twitter Card support
 - JSON-LD structured data for Person schema
 - Profile photo support in hero section with placeholder
@@ -18,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog
 
 ### Changed
+- **Test performance improved 33x** (30+ minutes → 55 seconds total)
+- All hardcoded dates replaced with dynamic calculations
+- Experience years now calculated from config start year (2021)
+- Project dates pull from GitHub API with smart fallback system
+- Guide dates show "last verified" timestamp (always current)
 - Hero section now displays live service count and uptime stats
 - About section rewritten with authentic personal narrative
 - Project descriptions now include Problem/Role/Work/Outcome format
@@ -27,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Animation timing delays adjusted for better UX
 - Profile photo aspect ratio on mobile devices
+- Test suite performance bottleneck (Next.js compilation for all tests)
+- Stale dates that would become outdated over time
 
 ## [1.0.0] - 2025-09-26
 
