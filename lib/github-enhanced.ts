@@ -306,12 +306,18 @@ export function transformCommitActivityToGraph(
  * Calculate recent commit count (last 30 days)
  * @param activity - GitHub commit activity array
  * @returns Number of commits in last 30 days
+ * 
+ * Note: GitHub's commit_activity uses weekly buckets (starting Sunday),
+ * so we include any week that falls within or touches the 30-day window.
+ * This is more inclusive to avoid missing commits near the boundary.
  */
 export function calculateRecentCommits(activity: GitHubCommitActivity[]): number {
-  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000)
+  // Use 31 days to be inclusive of boundary weeks
+  // GitHub commit activity is weekly, not daily, so we need to account for week alignment
+  const thirtyOneDaysAgo = Date.now() - (31 * 24 * 60 * 60 * 1000)
   
   return activity
-    .filter(week => week.week * 1000 >= thirtyDaysAgo)
+    .filter(week => week.week * 1000 >= thirtyOneDaysAgo)
     .reduce((sum, week) => sum + week.total, 0)
 }
 

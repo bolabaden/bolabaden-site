@@ -259,6 +259,10 @@ describe('GitHub API functions', () => {
 
   describe('getEnhancedRepoStats', () => {
     it('should fetch and combine all stats', async () => {
+      const now = Date.now()
+      const twoWeeksAgo = Math.floor((now - (14 * 24 * 60 * 60 * 1000)) / 1000)
+      const oneWeekAgo = Math.floor((now - (7 * 24 * 60 * 60 * 1000)) / 1000)
+      
       const mockRepo = {
         name: 'test-repo',
         created_at: '2024-01-01',
@@ -276,9 +280,10 @@ describe('GitHub API functions', () => {
         has_issues: true,
       }
 
+      // Use recent timestamps so calculateRecentCommits works correctly
       const mockActivity: GitHubCommitActivity[] = [
-        { week: 1672531200, total: 5, days: [1, 0, 2, 1, 0, 1, 0] },
-        { week: 1673136000, total: 10, days: [2, 3, 1, 1, 2, 1, 0] },
+        { week: twoWeeksAgo, total: 5, days: [1, 0, 2, 1, 0, 1, 0] },
+        { week: oneWeekAgo, total: 10, days: [2, 3, 1, 1, 2, 1, 0] },
       ]
 
       const mockLanguages = { TypeScript: 50000, JavaScript: 10000 }
@@ -296,7 +301,7 @@ describe('GitHub API functions', () => {
       expect(result?.stars).toBe(10)
       expect(result?.forks).toBe(2)
       expect(result?.totalCommits).toBe(15)
-      expect(result?.recentCommitsCount).toBe(15)
+      expect(result?.recentCommitsCount).toBe(15) // Both weeks are within 30 days
       expect(result?.primaryLanguage).toBe('TypeScript')
       expect(result?.contributorCount).toBe(1)
     })
