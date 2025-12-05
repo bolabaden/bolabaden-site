@@ -18,8 +18,10 @@ import {
   Loader2
 } from 'lucide-react'
 import { Section } from './section'
+import { EnhancedProjectCard } from './enhanced-project-card'
 import { projects as fallbackProjects } from '@/lib/data'
 import { Project } from '@/lib/types'
+import { EnhancedRepoStats } from '@/lib/github-enhanced'
 import { cn } from '@/lib/utils'
 
 const StatusBadge = ({ status }: { status: Project['status'] }) => {
@@ -141,6 +143,7 @@ const ProjectCard = ({ project, featured = false }: { project: Project, featured
 export function ProjectsSection() {
   const [activeFilter, setActiveFilter] = useState<string>('all')
   const [projects, setProjects] = useState<Project[]>(fallbackProjects)
+  const [githubStats, setGithubStats] = useState<Record<string, EnhancedRepoStats>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -148,7 +151,7 @@ export function ProjectsSection() {
     async function fetchProjects() {
       try {
         setLoading(true)
-        const response = await fetch('/api/projects')
+        const response = await fetch('/api/projects/enhanced')
         
         if (!response.ok) {
           throw new Error('Failed to fetch projects')
@@ -163,7 +166,21 @@ export function ProjectsSection() {
           updatedAt: new Date(p.updatedAt),
         }))
         
+        // Process GitHub stats - convert date strings and commit activity dates
+        const processedStats: Record<string, EnhancedRepoStats> = {}
+        Object.entries(data.githubStats || {}).forEach(([projectId, stats]: [string, any]) => {
+          if (stats) {
+            processedStats[projectId] = {
+              ...stats,
+              updatedAt: new Date(stats.updatedAt),
+              createdAt: new Date(stats.createdAt),
+              lastPush: new Date(stats.lastPush),
+            }
+          }
+        })
+        
         setProjects(projectsWithDates)
+        setGithubStats(processedStats)
         setError(null)
       } catch (err) {
         console.error('Failed to fetch projects:', err)
@@ -213,7 +230,14 @@ export function ProjectsSection() {
               <h3 className="text-2xl font-semibold mb-8 text-center">Featured Projects</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} featured />
+                  <EnhancedProjectCard 
+                    key={project.id} 
+                    project={project} 
+                    featured 
+                    githubStats={githubStats[project.id]}
+                    CategoryIcon={CategoryIcon}
+                    StatusBadge={StatusBadge}
+                  />
                 ))}
               </div>
             </div>
@@ -242,7 +266,13 @@ export function ProjectsSection() {
           {/* All Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <EnhancedProjectCard 
+                key={project.id} 
+                project={project}
+                githubStats={githubStats[project.id]}
+                CategoryIcon={CategoryIcon}
+                StatusBadge={StatusBadge}
+              />
             ))}
           </div>
 
