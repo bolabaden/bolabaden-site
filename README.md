@@ -9,7 +9,7 @@ Welcome to **bolabaden**—a dual-purpose, production-grade platform that serves
 **Maintainer:** Boden Crouch — [boden.crouch@gmail.com](mailto:boden.crouch@gmail.com)
 
 **Currently Deployed:** 
-- **Commit:** [`710b10c`](https://github.com/bolabaden/bolabaden-site/commit/710b10c) (2025-12-05)
+- **Commit:** [`24c2069`](https://github.com/bolabaden/bolabaden-site/commit/24c2069) (2025-12-05)
 - **Live Site:** [https://bolabaden.org](https://bolabaden.org)
 - **Status:** ✅ Active — 99.9% uptime over 90 days
 
