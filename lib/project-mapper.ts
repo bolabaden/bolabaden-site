@@ -1,6 +1,6 @@
 /**
  * Maps GitHub repositories to curated project descriptions
- * Provides human-written context for auto-discovered projects
+ * Provides context for auto-discovered projects
  */
 
 import { Project } from './types'
@@ -18,7 +18,7 @@ interface ProjectMetadata {
 
 /**
  * Curated metadata for known projects
- * This adds human touch to dynamically discovered repos
+ * This adds context to dynamically discovered repos
  */
 export const PROJECT_METADATA: Record<string, ProjectMetadata> = {
   'bolabaden-infra': {
@@ -30,13 +30,11 @@ export const PROJECT_METADATA: Record<string, ProjectMetadata> = {
 
 **Key Technical Work:**
 • Built comprehensive Docker Compose orchestration with 20+ interconnected services
-• Implemented Traefik reverse proxy with automatic SSL, health checks, and self-healing via deunhealth
-• Standardized environment variable handling and secrets management across all services
-• Created QUICK_START.sh for reproducible local deployments
+• Implemented Traefik reverse proxy with automatic SSL via letsencrypt, self-healing and onboarding bash scripts to get setup.
 
 **Outcome:** Achieved 99.9% uptime over 90 days; reduced update process from 12 manual steps to 2 automated steps; eliminated configuration drift incidents.
 
-**Tech Stack:** Docker, Traefik, Redis, MongoDB, Prometheus, Grafana, Portainer`,
+**Tech Stack:** Docker, Traefik, Nomad, Grafana, Authentik, Crowdsec, Watchtower, Coolify, Firecrawl, Headscale, LLM Services`,
   },
   
   'bolabaden-site': {
@@ -44,7 +42,7 @@ export const PROJECT_METADATA: Record<string, ProjectMetadata> = {
     customTitle: 'Bolabaden NextJS Website',
     longDescription: `**Problem:** Previous site served heavy pages with no SSR caching and slow initial paint (2.8s FCP).
 
-**My Role:** Frontend/Fullstack Developer — Migrated to Next.js and optimized for production.
+**My Role:** Frontend/Fullstack Developer.
 
 **Key Technical Work:**
 • Migrated to Next.js 14 with App Router and incremental static regeneration
@@ -134,8 +132,8 @@ export const PROJECT_METADATA: Record<string, ProjectMetadata> = {
 \`\`\`python
 from llm_fallbacks import FallbackChain
 chain = FallbackChain([
-    {"model":"gpt-4", "max_ctx": 8192, "cost_score": 10},
-    {"model":"gpt-3.5-turbo", "max_ctx": 4096, "cost_score": 2},
+    {"model":"gpt-5", "max_ctx": 4096, "cost_score": 10},
+    {"model":"gpt-5.1", "max_ctx": 8192, "cost_score": 2},
 ])
 response = chain.call(prompt, max_cost=5)
 \`\`\`
