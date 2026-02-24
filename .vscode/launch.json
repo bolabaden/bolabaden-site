@@ -1,0 +1,67 @@
+{
+  // Source: https://nextjs.org/docs/app/guides/debugging (canonical, verified Feb 2026)
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Attach Node inspector to the running dev server.
+      // Uses NODE_OPTIONS for the inspector to avoid deprecated flag messages.
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev -- --port 3002",
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      }
+    },
+    {
+      // Launch Chrome and attach it to the running Next.js dev server for client-side breakpoints.
+      // Requires the dev server to already be running on port 3002.
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3002"
+    },
+    {
+      // Same as above but using Firefox.
+      // Requires the "Firefox Debugger" extension: firefox-devtools.vscode-firefox-debug
+      "name": "Next.js: debug client-side (Firefox)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:3002",
+      "reAttach": true,
+      "pathMappings": [
+        {
+          "url": "webpack://_N_E",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    },
+    {
+      // One-shot full-stack: starts the dev server and opens the browser debugger.
+      // Use NODE_OPTIONS for the inspector (avoids deprecation warnings).
+      "name": "Next.js: debug full stack",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "args": [
+        "dev",
+        "--port",
+        "3002"
+      ],
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "killOnServerStop": true,
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}"
+      }
+    }
+  ],
+  "compounds": []
+}

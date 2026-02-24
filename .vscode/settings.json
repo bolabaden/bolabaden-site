@@ -1,0 +1,88 @@
+{
+  // ── TypeScript ─────────────────────────────────────────────────────────
+  // Use the workspace-local TypeScript version instead of VS Code's bundled one.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // Prompt once to switch to workspace tsdk (avoids silent version mismatches).
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  // Prefer the @/ alias pattern that matches tsconfig paths.
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // ── ESLint ─────────────────────────────────────────────────────────────
+  // Auto-fix lint errors on save (explicit = only when Save is triggered).
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // ── Tailwind CSS IntelliSense ──────────────────────────────────────────
+  // Tailwind v4 uses a CSS-first config (@import "tailwindcss" in globals.css).
+  // Treat .css files as Tailwind CSS so the IntelliSense extension activates.
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  // Trigger Tailwind completions inside className strings.
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  // ── Formatting ─────────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  // Prettier is the de-facto standard formatter for Next.js/TypeScript projects.
+  // Install via: npm install -D prettier  (extension: esbenp.prettier-vscode)
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Override: keep TypeScript/TSX using Prettier explicitly.
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Use Tailwind extension to format CSS (it understands @apply, @theme etc).
+  "[css]": {
+    "editor.defaultFormatter": "bradlc.vscode-tailwindcss"
+  },
+
+  // ── Editor ergonomics ──────────────────────────────────────────────────
+  "editor.rulers": [100],
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.inlayHints.enabled": "on",
+  // Show import cost hints (requires `wix.vscode-import-cost` extension).
+
+  // ── Performance: exclude build artifacts ──────────────────────────────
+  // Keep .next OUT of file search and change-watching to avoid slowdowns.
+  // (Next.js local dev guide explicitly recommends this on Windows.)
+  "search.exclude": {
+    "**/.next/**": true,
+    "**/out/**": true,
+    "**/node_modules/**": true
+  },
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/out/**": true,
+    "**/node_modules/**": true
+  },
+
+  // ── File nesting (declutters explorer) ────────────────────────────────
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "next.config.*": "next-env.d.ts, postcss.config.*",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, .npmrc, .nvmrc, .node-version",
+    ".eslintrc*": "eslint.config.*",
+    "*.tsx": "${capture}.test.tsx, ${capture}.test.ts, ${capture}.spec.tsx, ${capture}.spec.ts",
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts"
+  }
+}

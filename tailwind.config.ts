@@ -2,9 +2,9 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -43,7 +43,7 @@ const config: Config = {
         category: {
           infrastructure: '#3b82f6',
           monitoring: '#10b981',
-          media: '#f59e0b',
+          database: '#f59e0b',
           'ai-ml': '#8b5cf6',
           security: '#ef4444',
           development: '#ec4899',
@@ -134,7 +134,7 @@ const config: Config = {
         '.category-monitoring': {
           'background-color': '#10b981',
         },
-        '.category-media': {
+        '.category-database': {
           'background-color': '#f59e0b',
         },
         '.category-ai-ml': {

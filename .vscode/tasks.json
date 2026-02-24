@@ -1,0 +1,114 @@
+{
+  // VS Code Tasks: https://code.visualstudio.com/docs/debugtest/tasks
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // ── Dev server ──────────────────────────────────────────────────────
+      // Starts Next.js with Turbopack (default in Next.js 15).
+      // Marked as background so VS Code considers it "running" without blocking.
+      "label": "next: dev",
+      "type": "shell",
+      "command": "npm run dev -- --port 3002",
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": {
+        "owner": "next-dev-background",
+        "pattern": {
+          "regexp": "^NEVER_MATCH_SENTINEL_xyzzy:(\\d+):(\\d+):\\s+(error|warning):\\s+(.*)$",
+          "file": 0,
+          "line": 1,
+          "column": 2,
+          "severity": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\s*>\\s*next",
+          "endsPattern": "Ready in|\\- Local:"
+        }
+      }
+    },
+    {
+      // ── Production build ────────────────────────────────────────────────
+      // Runs next build; TypeScript errors surface in the Problems panel via $tsc.
+      "label": "next: build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": false,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      // ── Type-check only (no emit) ────────────────────────────────────────
+      // Runs tsc --noEmit for fast type feedback without a full build.
+      "label": "next: type-check",
+      "type": "shell",
+      "command": "npx tsc --noEmit",
+      "group": "test",
+      "isBackground": false,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      // ── Lint ─────────────────────────────────────────────────────────────
+      "label": "next: lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "group": "test",
+      "isBackground": false,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": [
+        "$eslint-stylish"
+      ]
+    },
+    {
+      // ── Static export (GitHub Pages) ─────────────────────────────────────
+      // Mirrors the deploy-pages.yml workflow for local testing.
+      "label": "next: build (github-pages)",
+      "type": "shell",
+      "command": "DEPLOY_TARGET=github-pages npm run build",
+      "windows": {
+        "command": "cmd /C \"set DEPLOY_TARGET=github-pages && npm run build\""
+      },
+      "group": "build",
+      "isBackground": false,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": "$tsc"
+    }
+  ]
+}

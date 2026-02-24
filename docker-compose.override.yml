@@ -1,0 +1,59 @@
+# Docker Compose override for replacing the error-pages container
+# Copy this configuration to replace your existing error-pages service
+
+version: '3.8'
+
+services:
+  error-pages:
+    # bolabaden.org website - error pages and main site
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bolabaden-error-pages
+    hostname: bolabaden-error-pages
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      publicnet:
+        ipv4_address: ${TRAEFIK_ERROR_PAGES_IPV4_ADDRESS:-10.76.128.45}
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    labels:
+      deunhealth.restart.on.unhealthy: "true"
+      traefik.enable: "true"
+      
+      # Error middleware configuration
+      traefik.http.middlewares.error-pages.errors.status: "400-599"
+      traefik.http.middlewares.error-pages.errors.service: error-pages
+      traefik.http.middlewares.error-pages.errors.query: "/api/error/{status}"
+      
+      # Service configuration
+      traefik.http.services.error-pages.loadbalancer.server.port: 3000
+      
+      # Main website router
+      traefik.http.routers.bolabaden-main.rule: "Host(`bolabaden.org`)"
+      traefik.http.routers.bolabaden-main.entrypoints: websecure
+      traefik.http.routers.bolabaden-main.tls.certresolver: letsencrypt
+      traefik.http.routers.bolabaden-main.service: error-pages
+      
+      # Catch-all router for 404s with lowest priority
+      traefik.http.routers.bolabaden-catchall.rule: "PathPrefix(`/`)"
+      traefik.http.routers.bolabaden-catchall.priority: 1
+      traefik.http.routers.bolabaden-catchall.entrypoints: websecure
+      traefik.http.routers.bolabaden-catchall.tls.certresolver: letsencrypt
+      traefik.http.routers.bolabaden-catchall.service: error-pages
+      traefik.http.routers.bolabaden-catchall.middlewares: error-pages
+      
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  publicnet:
+    external: true 

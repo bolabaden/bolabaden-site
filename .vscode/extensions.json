@@ -1,0 +1,29 @@
+{
+  // Recommended extensions for this Next.js 15 + TypeScript + Tailwind v4 project.
+  // VS Code will prompt team members to install these when opening the workspace.
+  "recommendations": [
+    // ── Core language support ────────────────────────────────────────────
+    // Tailwind CSS IntelliSense: autocomplete, hover, linting for Tailwind classes
+    "bradlc.vscode-tailwindcss",
+    // ESLint: surfaces next/core-web-vitals rule violations inline
+    "dbaeumer.vscode-eslint",
+    // Prettier: consistent code formatting (configure via .prettierrc)
+    "esbenp.prettier-vscode",
+
+    // ── Debugging ───────────────────────────────────────────────────────
+    // Firefox Debugger: required for the "debug client-side (Firefox)" launch config
+    "firefox-devtools.vscode-firefox-debug",
+
+    // ── Infrastructure (Docker / GitHub Actions) ─────────────────────────
+    // Docker: syntax highlighting, image management, COPY/RUN IntelliSense in Dockerfile
+    "ms-azuretools.vscode-docker",
+    // GitHub Actions: validate workflow YAML, view run statuses inline
+    "github.vscode-github-actions",
+
+    // ── Quality-of-life ──────────────────────────────────────────────────
+    // Path IntelliSense: autocomplete filesystem paths in import strings
+    "christian-kohler.path-intellisense",
+    // Error Lens: inline diagnostic messages without hovering
+    "usernamehw.errorlens"
+  ]
+}
