@@ -149,8 +149,7 @@ function StatCard({
 }
 
 function ContributionGrid({ weeks }: { weeks: { days: ContributionDay[] }[] }) {
-  const months: string[] = [];
-  const monthPositions: number[] = [];
+  const monthByWeek = new Map<number, string>();
 
   let currentMonth = "";
   weeks.forEach((week, wi) => {
@@ -161,43 +160,47 @@ function ContributionGrid({ weeks }: { weeks: { days: ContributionDay[] }[] }) {
       });
       if (m !== currentMonth) {
         currentMonth = m;
-        months.push(m);
-        monthPositions.push(wi);
+        monthByWeek.set(wi, m);
       }
     }
   });
 
   return (
     <div className="overflow-x-auto pb-2">
-      {/* Month labels */}
-      <div className="relative mb-1" style={{ width: weeks.length * 14 }}>
-        {monthPositions.map((pos, i) => (
-          <span
-            key={months[i]}
-            className="absolute text-xs text-muted-foreground"
-            style={{ left: pos * 14 }}
-          >
-            {months[i]}
-          </span>
-        ))}
-      </div>
+      <div className="inline-flex flex-col gap-0.5 min-w-max">
+        <div className="flex gap-0.5 h-4 mb-1">
+          {weeks.map((_, wi) => {
+            const monthLabel = monthByWeek.get(wi);
 
-      {/* Grid */}
-      <div className="flex gap-0.5">
-        {weeks.map((week, wi) => (
-          <div key={wi} className="flex flex-col gap-0.5">
-            {week.days.map((day) => (
-              <div
-                key={day.date}
-                className={cn(
-                  "w-3 h-3 rounded-sm transition-all",
-                  levelColors[day.level],
+            return (
+              <div key={`month-${wi}`} className="w-3 relative shrink-0">
+                {monthLabel && (
+                  <span className="absolute left-0 top-0 text-xs text-muted-foreground whitespace-nowrap">
+                    {monthLabel}
+                  </span>
                 )}
-                title={`${day.date}: ${day.count} contribution${day.count !== 1 ? "s" : ""}`}
-              />
-            ))}
-          </div>
-        ))}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Grid */}
+        <div className="flex gap-0.5">
+          {weeks.map((week, wi) => (
+            <div key={wi} className="flex flex-col gap-0.5">
+              {week.days.map((day) => (
+                <div
+                  key={day.date}
+                  className={cn(
+                    "w-3 h-3 rounded-sm transition-all",
+                    levelColors[day.level],
+                  )}
+                  title={`${day.date}: ${day.count} contribution${day.count !== 1 ? "s" : ""}`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -771,9 +774,14 @@ export function GitHubStatsSection() {
                         </span>
                       </div>
                       <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-gradient-to-r from-primary to-primary/50 h-full rounded-full transition-all duration-700"
-                          style={{ width: `${lang.percentage}%` }}
+                        <progress
+                          className={cn(
+                            "github-progress-bar",
+                            "github-language-progress",
+                          )}
+                          max={100}
+                          value={Math.max(0, Math.min(100, lang.percentage))}
+                          aria-label={`${lang.name} usage ${lang.percentage}%`}
                         />
                       </div>
                     </div>
@@ -817,9 +825,14 @@ export function GitHubStatsSection() {
                             </span>
                           </div>
                           <div className="w-full bg-white/5 rounded-full h-1.5">
-                            <div
-                              className="bg-primary/60 h-full rounded-full"
-                              style={{ width: `${pct}%` }}
+                            <progress
+                              className={cn(
+                                "github-progress-bar",
+                                "github-activity-progress",
+                              )}
+                              max={100}
+                              value={Math.max(0, Math.min(100, pct))}
+                              aria-label={`${cfg?.label ?? type} ${pct.toFixed(1)}%`}
                             />
                           </div>
                         </div>

@@ -1,45 +1,62 @@
-# Use the official Node.js runtime as a parent image
-FROM node:18-alpine AS base
+ARG NODE_ENV=production
 
-# Install dependencies only when needed
+FROM node:20-alpine AS base
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV
 
-# Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci --include=dev --prefer-offline --no-audit
 
-# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+
+ARG NEXT_PUBLIC_SEARXNG_URL
+ARG NEXT_PUBLIC_SEARXNG_SEARCH_PATH=/search
+ARG SEARXNG_FALLBACK_ENABLED=true
+ENV NEXT_PUBLIC_SEARXNG_URL=$NEXT_PUBLIC_SEARXNG_URL
+ENV NEXT_PUBLIC_SEARXNG_SEARCH_PATH=$NEXT_PUBLIC_SEARXNG_SEARCH_PATH
+ENV SEARXNG_FALLBACK_ENABLED=$SEARXNG_FALLBACK_ENABLED
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the application
 RUN npm run build
 
-# Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create a non-root user
+ARG NEXT_PUBLIC_SEARXNG_URL
+ARG NEXT_PUBLIC_SEARXNG_SEARCH_PATH=/search
+ARG SEARXNG_FALLBACK_ENABLED=true
+ENV NEXT_PUBLIC_SEARXNG_URL=$NEXT_PUBLIC_SEARXNG_URL
+ENV NEXT_PUBLIC_SEARXNG_SEARCH_PATH=$NEXT_PUBLIC_SEARXNG_SEARCH_PATH
+ENV SEARXNG_FALLBACK_ENABLED=$SEARXNG_FALLBACK_ENABLED
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy built application
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3000
+ARG HOSTNAME=0.0.0.0
+ENV HOSTNAME=$HOSTNAME
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ARG PORT=3000
+ENV PORT=$PORT
+EXPOSE $PORT
 
 CMD ["node", "server.js"] 

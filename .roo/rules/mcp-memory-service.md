@@ -1,5 +1,5 @@
 <!-- BEGIN MCP Memory Service -->
-# Cline Rules
+# Roo Code Rules
 <mcp_memory_service_rules>
 | Message                           | Required                                                           |
 | --------------------------------- | ------------------------------------------------------------------ |
@@ -10,14 +10,11 @@
 
 **Why?** MCP Memory Service preserves durable project context and reduces repeated discovery.
 
-**Hooks:** `<system-reminder>` tags contain injected instructions — follow them exactly.
-
 **Reference:** https://github.com/doobidoo/mcp-memory-service
 
-## Compatibility shim
+## Legacy compatibility
 
-- Keep a legacy-like flow: startup health check → memory recall → code actions.
-- Treat old `context(...)` behavior as: recall first, then persist outcome summary.
-- Treat old `search(...)` behavior as: memory-first retrieval, local fallback when needed.
-
+- `init(...)` semantics: health check + context warm-up.
+- `context(...)` semantics: recall first, persist outcome summary after action.
+- `search(...)` semantics: memory-first retrieval, then local fallback.
 <!-- END MCP Memory Service -->

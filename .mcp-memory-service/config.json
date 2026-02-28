@@ -1,0 +1,30 @@
+{
+  "workspace_id": "99619ee8-05d8-44ab-a96c-e62d06b6184e",
+  "workspace_name": "Personal Workspace",
+  "associated_at": "2026-01-28T23:55:26.417Z",
+  "configured_editors": [
+    "codex",
+    "claude",
+    "cursor",
+    "cline",
+    "kilo",
+    "roo",
+    "aider",
+    "antigravity"
+  ],
+  "context_pack": true,
+  "service_url": "http://127.0.0.1:8000",
+  "repository": "https://github.com/doobidoo/mcp-memory-service",
+  "legacy_compatibility": {
+    "enabled": true,
+    "mode": "best-effort",
+    "aliases": {
+      "init": "memory health + recall warm-up",
+      "context": "memory recall + outcome persistence",
+      "search": "memory-first retrieval + local fallback",
+      "session_capture": "session snapshot memory",
+      "create_task": "task memory entry"
+    }
+  },
+  "updated_at": "2026-02-27T00:00:00.000Z"
+}

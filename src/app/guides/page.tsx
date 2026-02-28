@@ -1,24 +1,42 @@
-import Link from 'next/link'
-import { Metadata } from 'next'
-import { guides } from '@/lib/data'
-import { Section } from '@/components/section'
-import { PageLayout } from '@/components/page-layout'
+import Link from "next/link";
+import { Metadata } from "next";
+import { Section } from "@/components/section";
+import { PageLayout } from "@/components/page-layout";
+import { getGuides } from "@/lib/guides";
 
 export const metadata: Metadata = {
-  title: 'Technical Guides',
-  description: 'Browse detailed technical guides on Kubernetes, Docker, Terraform, and infrastructure engineering.',
-}
+  title: "Technical Guides",
+  description:
+    "Browse detailed technical guides on Kubernetes, Docker, Terraform, and infrastructure engineering.",
+};
+export const dynamic = "force-dynamic";
 
-export default function GuidesIndexPage() {
+export default async function GuidesIndexPage() {
+  const guides = await getGuides();
+
   return (
     <PageLayout>
-      <Section id="guides-index" title="All Guides" subtitle="Browse detailed technical guides.">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <Section
+        id="guides-index"
+        title="All Guides"
+        subtitle="Browse detailed technical guides."
+      >
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {guides.map((g) => (
-            <div key={g.id} className="glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300">
-              <h3 className="font-semibold text-foreground text-lg mb-2">{g.title}</h3>
-              <p className="text-muted-foreground text-sm mb-3">{g.description}</p>
-              <Link href={`/guides/${g.slug}`} className="text-primary hover:text-primary/80 text-sm font-medium">
+            <div
+              key={g.id}
+              className="p-6 transition-all duration-300 rounded-lg glass hover:bg-white/5"
+            >
+              <h3 className="mb-2 text-lg font-semibold text-foreground">
+                {g.title}
+              </h3>
+              <p className="mb-3 text-sm text-muted-foreground">
+                {g.description}
+              </p>
+              <Link
+                href={`/guides/${g.slug}`}
+                className="text-sm font-medium text-primary hover:text-primary/80"
+              >
                 Read Guide →
               </Link>
             </div>
@@ -26,7 +44,5 @@ export default function GuidesIndexPage() {
         </div>
       </Section>
     </PageLayout>
-  )
+  );
 }
-
-

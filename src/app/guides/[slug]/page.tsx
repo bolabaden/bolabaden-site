@@ -1,14 +1,12 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { guides } from "@/lib/data";
 import { Section } from "@/components/section";
 import { PageLayout } from "@/components/page-layout";
 import { MarkdownContent } from "@/components/markdown-content";
+import { getGuides } from "@/lib/guides";
 
-export async function generateStaticParams() {
-  return guides.map((guide) => ({ slug: guide.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,
@@ -16,6 +14,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const guides = await getGuides();
   const guide = guides.find((g) => g.slug === slug);
   if (!guide) return { title: "Guide Not Found" };
   return {
@@ -30,6 +29,7 @@ export default async function GuidePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const guides = await getGuides();
   const guide = guides.find((g) => g.slug === slug);
   if (!guide) return notFound();
 

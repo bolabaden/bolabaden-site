@@ -9,6 +9,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SEARXNG_URL: ${NEXT_PUBLIC_SEARXNG_URL:-https://searx.be}
+        NEXT_PUBLIC_SEARXNG_SEARCH_PATH: ${NEXT_PUBLIC_SEARXNG_SEARCH_PATH:-/search}
+        SEARXNG_FALLBACK_ENABLED: ${SEARXNG_FALLBACK_ENABLED:-true}
     container_name: bolabaden-error-pages
     hostname: bolabaden-error-pages
     extra_hosts:
@@ -20,24 +24,40 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      - GUIDES_DIR=${GUIDES_DIR:-/app/guides}
+      - HOME_LIVE_SERVICES_ENABLED=${HOME_LIVE_SERVICES_ENABLED:-true}
+      - HOME_PROJECTS_ENABLED=${HOME_PROJECTS_ENABLED:-true}
+      - HOME_GUIDES_ENABLED=${HOME_GUIDES_ENABLED:-true}
+      - HOME_GITHUB_STATS_ENABLED=${HOME_GITHUB_STATS_ENABLED:-true}
+      - HOME_ABOUT_ENABLED=${HOME_ABOUT_ENABLED:-true}
+      - HOME_CONTACT_ENABLED=${HOME_CONTACT_ENABLED:-true}
+      - NEXT_PUBLIC_SITE_DOMAIN=${NEXT_PUBLIC_SITE_DOMAIN:-bolabaden.org}
+      - NEXT_PUBLIC_SEARXNG_URL=${NEXT_PUBLIC_SEARXNG_URL:-https://searx.be}
+      - NEXT_PUBLIC_SEARXNG_SEARCH_PATH=${NEXT_PUBLIC_SEARXNG_SEARCH_PATH:-/search}
+      - SEARXNG_FALLBACK_ENABLED=${SEARXNG_FALLBACK_ENABLED:-true}
+    # Optional: mount custom markdown guides from host into container.
+    # If this mount exists, the app loads guides from /app/guides and will not
+    # fall back to bundled defaults.
+    # volumes:
+    #   - ./guides:/app/guides:ro
     labels:
       deunhealth.restart.on.unhealthy: "true"
       traefik.enable: "true"
-      
+
       # Error middleware configuration
       traefik.http.middlewares.error-pages.errors.status: "400-599"
       traefik.http.middlewares.error-pages.errors.service: error-pages
       traefik.http.middlewares.error-pages.errors.query: "/api/error/{status}"
-      
+
       # Service configuration
       traefik.http.services.error-pages.loadbalancer.server.port: 3000
-      
+
       # Main website router
       traefik.http.routers.bolabaden-main.rule: "Host(`bolabaden.org`)"
       traefik.http.routers.bolabaden-main.entrypoints: websecure
       traefik.http.routers.bolabaden-main.tls.certresolver: letsencrypt
       traefik.http.routers.bolabaden-main.service: error-pages
-      
+
       # Catch-all router for 404s with lowest priority
       traefik.http.routers.bolabaden-catchall.rule: "PathPrefix(`/`)"
       traefik.http.routers.bolabaden-catchall.priority: 1
@@ -45,10 +65,10 @@ services:
       traefik.http.routers.bolabaden-catchall.tls.certresolver: letsencrypt
       traefik.http.routers.bolabaden-catchall.service: error-pages
       traefik.http.routers.bolabaden-catchall.middlewares: error-pages
-      
+
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -56,4 +76,4 @@ services:
 
 networks:
   publicnet:
-    external: true 
+    external: true

@@ -1,8 +1,8 @@
-<!-- BEGIN ContextStream -->
-### When to Use ContextStream Search:
-✅ Project is indexed and fresh
-✅ Looking for code by meaning/concept
-✅ Need semantic understanding
+<!-- BEGIN MCP Memory Service -->
+### When to Use MCP Memory First:
+✅ Need prior decisions, architecture context, or recent task outcomes
+✅ Starting a new session and restoring project state
+✅ Narrowing search scope before local file scanning
 
 ---
-<!-- END ContextStream -->
+<!-- END MCP Memory Service -->

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { 
-  CheckCircle, 
+import { useState } from "react";
+import {
+  CheckCircle,
   AlertCircle,
   Circle,
   Search,
@@ -11,172 +11,190 @@ import {
   Cpu,
   HardDrive,
   Clock,
-  RefreshCw
-} from 'lucide-react'
-import { motion } from 'framer-motion'
-import { getStatusConfig, getCategoryDisplayName } from '@/lib/dashboard-utils'
-import { cn } from '@/lib/utils'
+  RefreshCw,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { getStatusConfig, getCategoryDisplayName } from "@/lib/dashboard-utils";
+import { cn } from "@/lib/utils";
 
 interface ServiceTableProps {
-  services: any[]
-  onRefresh: () => void
-  loading: boolean
+  services: any[];
+  onRefreshAction: () => void;
+  loading: boolean;
 }
 
-export function ServiceTable({ services, onRefresh, loading }: ServiceTableProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sortBy, setSortBy] = useState<string>('name')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const [filter, setFilter] = useState<string>('all')
-  
+export function ServiceTable({
+  services,
+  onRefreshAction,
+  loading,
+}: ServiceTableProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<string>("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [filter, setFilter] = useState<string>("all");
+
   const handleSort = (field: string) => {
     if (sortBy === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortBy(field)
-      setSortDirection('asc')
+      setSortBy(field);
+      setSortDirection("asc");
     }
-  }
-  
+  };
+
   // Apply filtering
-  let filteredServices = services
-  
-  if (filter !== 'all') {
-    filteredServices = filteredServices.filter(service => service.status === filter)
+  let filteredServices = services;
+
+  if (filter !== "all") {
+    filteredServices = filteredServices.filter(
+      (service) => service.status === filter,
+    );
   }
-  
+
   // Apply search
   if (searchTerm) {
-    const term = searchTerm.toLowerCase()
-    filteredServices = filteredServices.filter(service => 
-      service.name.toLowerCase().includes(term) || 
-      service.description.toLowerCase().includes(term) ||
-      service.category.toLowerCase().includes(term) ||
-      (service.technology && service.technology.some((tech: string) => 
-        tech.toLowerCase().includes(term)
-      ))
-    )
+    const term = searchTerm.toLowerCase();
+    filteredServices = filteredServices.filter(
+      (service) =>
+        service.name.toLowerCase().includes(term) ||
+        service.description.toLowerCase().includes(term) ||
+        service.category.toLowerCase().includes(term) ||
+        (service.technology &&
+          service.technology.some((tech: string) =>
+            tech.toLowerCase().includes(term),
+          )),
+    );
   }
-  
+
   // Apply sorting
   filteredServices = [...filteredServices].sort((a, b) => {
-    let valA, valB
-    
-    if (sortBy === 'name') {
-      valA = a.name
-      valB = b.name
-    } else if (sortBy === 'status') {
-      const statusOrder: Record<string, number> = { 'online': 0, 'maintenance': 1, 'offline': 2 }
-      valA = statusOrder[a.status]
-      valB = statusOrder[b.status]
-    } else if (sortBy === 'category') {
-      valA = a.category
-      valB = b.category
-    } else if (sortBy === 'uptime') {
-      valA = a.uptime || 0
-      valB = b.uptime || 0
-    } else if (sortBy === 'cpu') {
-      valA = a.metrics?.cpu || 0
-      valB = b.metrics?.cpu || 0
+    let valA, valB;
+
+    if (sortBy === "name") {
+      valA = a.name;
+      valB = b.name;
+    } else if (sortBy === "status") {
+      const statusOrder: Record<string, number> = {
+        online: 0,
+        maintenance: 1,
+        offline: 2,
+      };
+      valA = statusOrder[a.status];
+      valB = statusOrder[b.status];
+    } else if (sortBy === "category") {
+      valA = a.category;
+      valB = b.category;
+    } else if (sortBy === "uptime") {
+      valA = a.uptime || 0;
+      valB = b.uptime || 0;
+    } else if (sortBy === "cpu") {
+      valA = a.metrics?.cpu || 0;
+      valB = b.metrics?.cpu || 0;
     } else {
-      valA = a[sortBy]
-      valB = b[sortBy]
+      valA = a[sortBy];
+      valB = b[sortBy];
     }
-    
-    if (valA < valB) return sortDirection === 'asc' ? -1 : 1
-    if (valA > valB) return sortDirection === 'asc' ? 1 : -1
-    return 0
-  })
-  
-  const StatusIndicator = ({ status }: { status: 'online' | 'offline' | 'maintenance' }) => {
+
+    if (valA < valB) return sortDirection === "asc" ? -1 : 1;
+    if (valA > valB) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const StatusIndicator = ({
+    status,
+  }: {
+    status: "online" | "offline" | "maintenance";
+  }) => {
     const iconConfig = {
       online: CheckCircle,
       offline: AlertCircle,
-      maintenance: Circle
-    }
-    
-    const Icon = iconConfig[status]
-    const { color, bg } = getStatusConfig(status)
-    
+      maintenance: Circle,
+    };
+
+    const Icon = iconConfig[status];
+    const { color, bg } = getStatusConfig(status);
+
     return (
-      <div className={cn('flex items-center gap-2', color)}>
-        <div className={cn('p-1 rounded-full', bg)}>
+      <div className={cn("flex items-center gap-2", color)}>
+        <div className={cn("p-1 rounded-full", bg)}>
           <Icon className="h-3 w-3" />
         </div>
         <span className="text-sm font-medium capitalize">{status}</span>
       </div>
-    )
-  }
-  
+    );
+  };
+
   const getProgressClass = (value: number) => {
-    if (value >= 90) return 'progress-fill-high'
-    if (value >= 70) return 'progress-fill-medium-high'
-    if (value >= 50) return 'progress-fill-medium'
-    return 'progress-fill-low'
-  }
+    if (value >= 90) return "service-progress-fill-high";
+    if (value >= 70) return "service-progress-fill-medium-high";
+    if (value >= 50) return "service-progress-fill-medium";
+    return "service-progress-fill-low";
+  };
 
   const ProgressBar = ({ value }: { value: number }) => {
+    const safeValue = Math.max(0, Math.min(100, Number(value) || 0));
+
     return (
-      <div className="progress-bar">
-        <div 
-          className={`progress-fill ${getProgressClass(value)}`} 
-          style={{ width: `${value}%` }} 
-        />
-      </div>
-    )
-  }
-  
+      <progress
+        className={cn("service-progress-bar", getProgressClass(safeValue))}
+        max={100}
+        value={safeValue}
+        aria-label={`${safeValue}%`}
+      />
+    );
+  };
+
   return (
     <div className="mt-8">
       {/* Filters and Search */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2">
           <button
-            onClick={() => setFilter('all')}
+            onClick={() => setFilter("all")}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-              filter === 'all'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary/50 text-secondary-foreground hover:bg-secondary/70'
+              "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              filter === "all"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary/50 text-secondary-foreground hover:bg-secondary/70",
             )}
           >
             All
           </button>
           <button
-            onClick={() => setFilter('online')}
+            onClick={() => setFilter("online")}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-              filter === 'online'
-                ? 'bg-green-600 text-white'
-                : 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
+              "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              filter === "online"
+                ? "bg-green-600 text-white"
+                : "bg-green-600/20 text-green-400 hover:bg-green-600/30",
             )}
           >
             Online
           </button>
           <button
-            onClick={() => setFilter('maintenance')}
+            onClick={() => setFilter("maintenance")}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-              filter === 'maintenance'
-                ? 'bg-yellow-600 text-white'
-                : 'bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30'
+              "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              filter === "maintenance"
+                ? "bg-yellow-600 text-white"
+                : "bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30",
             )}
           >
             Maintenance
           </button>
           <button
-            onClick={() => setFilter('offline')}
+            onClick={() => setFilter("offline")}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-              filter === 'offline'
-                ? 'bg-red-600 text-white'
-                : 'bg-red-600/20 text-red-400 hover:bg-red-600/30'
+              "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+              filter === "offline"
+                ? "bg-red-600 text-white"
+                : "bg-red-600/20 text-red-400 hover:bg-red-600/30",
             )}
           >
             Offline
           </button>
         </div>
-        
+
         <div className="flex gap-3 w-full sm:w-auto">
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -188,70 +206,83 @@ export function ServiceTable({ services, onRefresh, loading }: ServiceTableProps
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
-          <motion.button 
+
+          <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={onRefresh}
+            onClick={onRefreshAction}
             disabled={loading}
+            aria-label="Refresh services table"
+            title="Refresh services table"
             className="p-2 bg-secondary/20 rounded-lg hover:bg-secondary/30 transition-colors"
           >
-            <RefreshCw className={cn(
-              "h-5 w-5 text-primary", 
-              loading && "animate-spin"
-            )} />
+            <RefreshCw
+              className={cn("h-5 w-5 text-primary", loading && "animate-spin")}
+            />
           </motion.button>
         </div>
       </div>
-      
+
       {/* Table */}
       <div className="glass rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('name')}
+                  onClick={() => handleSort("name")}
                 >
                   <div className="flex items-center gap-1">
                     Service
-                    {sortBy === 'name' && (
-                      sortDirection === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                    )}
+                    {sortBy === "name" &&
+                      (sortDirection === "asc" ? (
+                        <SortAsc className="h-3 w-3" />
+                      ) : (
+                        <SortDesc className="h-3 w-3" />
+                      ))}
                   </div>
                 </th>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('status')}
+                  onClick={() => handleSort("status")}
                 >
                   <div className="flex items-center gap-1">
                     Status
-                    {sortBy === 'status' && (
-                      sortDirection === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                    )}
+                    {sortBy === "status" &&
+                      (sortDirection === "asc" ? (
+                        <SortAsc className="h-3 w-3" />
+                      ) : (
+                        <SortDesc className="h-3 w-3" />
+                      ))}
                   </div>
                 </th>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('category')}
+                  onClick={() => handleSort("category")}
                 >
                   <div className="flex items-center gap-1">
                     Category
-                    {sortBy === 'category' && (
-                      sortDirection === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                    )}
+                    {sortBy === "category" &&
+                      (sortDirection === "asc" ? (
+                        <SortAsc className="h-3 w-3" />
+                      ) : (
+                        <SortDesc className="h-3 w-3" />
+                      ))}
                   </div>
                 </th>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('uptime')}
+                  onClick={() => handleSort("uptime")}
                 >
                   <div className="flex items-center gap-1">
                     <Clock className="h-3 w-3 mr-1" />
                     Uptime
-                    {sortBy === 'uptime' && (
-                      sortDirection === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />
-                    )}
+                    {sortBy === "uptime" &&
+                      (sortDirection === "asc" ? (
+                        <SortAsc className="h-3 w-3" />
+                      ) : (
+                        <SortDesc className="h-3 w-3" />
+                      ))}
                   </div>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -277,25 +308,32 @@ export function ServiceTable({ services, onRefresh, loading }: ServiceTableProps
             <tbody>
               {filteredServices.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-10 text-center text-muted-foreground"
+                  >
                     No services match your filters
                   </td>
                 </tr>
               ) : (
                 filteredServices.map((service) => (
-                  <tr 
-                    key={service.id} 
+                  <tr
+                    key={service.id}
                     className="border-b border-white/5 hover:bg-white/5 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div>
-                        <div className="font-medium text-sm text-foreground">{service.name}</div>
-                        <div className="text-xs text-muted-foreground mt-1">{service.description}</div>
+                        <div className="font-medium text-sm text-foreground">
+                          {service.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {service.description}
+                        </div>
                         {service.technology && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {service.technology.map((tech: string) => (
-                              <span 
-                                key={tech} 
+                              <span
+                                key={tech}
                                 className="text-xs bg-secondary/30 text-secondary-foreground px-2 py-0.5 rounded"
                               >
                                 {tech}
@@ -314,13 +352,18 @@ export function ServiceTable({ services, onRefresh, loading }: ServiceTableProps
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={cn(
-                        "text-sm font-medium", 
-                        service.uptime >= 99 ? "text-green-500" :
-                        service.uptime >= 95 ? "text-green-400" :
-                        service.uptime >= 90 ? "text-yellow-500" : 
-                        "text-red-500"
-                      )}>
+                      <span
+                        className={cn(
+                          "text-sm font-medium",
+                          service.uptime >= 99
+                            ? "text-green-500"
+                            : service.uptime >= 95
+                              ? "text-green-400"
+                              : service.uptime >= 90
+                                ? "text-yellow-500"
+                                : "text-red-500",
+                        )}
+                      >
                         {service.uptime}%
                       </span>
                     </td>
@@ -362,5 +405,5 @@ export function ServiceTable({ services, onRefresh, loading }: ServiceTableProps
         </div>
       </div>
     </div>
-  )
+  );
 }

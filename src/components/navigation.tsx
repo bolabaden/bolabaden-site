@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback, FormEvent } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Menu, X, Github, Mail, Search } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import { config } from '@/lib/config'
+import { useState, useEffect, useCallback, FormEvent } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X, Github, Mail, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { config } from "@/lib/config";
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/#projects', label: 'Projects' },
-  { href: '/guides', label: 'Guides' },
-  { href: '/#embeds', label: 'Live Services' },
-  { href: '/#github-stats', label: 'GitHub Stats' },
-  { href: '/#about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-] as const
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/guides", label: "Guides" },
+  { href: "/#embeds", label: "Live Services" },
+  { href: "/#github-stats", label: "GitHub Stats" },
+  { href: "/#about", label: "About" },
+  { href: "/contact", label: "Contact" },
+] as const;
 
 function NavLink({
   href,
@@ -25,102 +25,116 @@ function NavLink({
   onClick,
   className,
 }: {
-  href: string
-  label: string
-  pathname: string
-  onClick?: () => void
-  className?: string
+  href: string;
+  label: string;
+  pathname: string | null;
+  onClick?: () => void;
+  className?: string;
 }) {
-  const isHashLink = href.includes('#')
+  const currentPathname = pathname ?? "";
+  const isHashLink = href.includes("#");
   const isActive =
-    href === pathname ||
-    (href === '/' && pathname === '/') ||
-    (!isHashLink && pathname.startsWith(href))
+    href === currentPathname ||
+    (href === "/" && currentPathname === "/") ||
+    (!isHashLink && currentPathname.startsWith(href));
 
   const handleClick = useCallback(() => {
     if (isHashLink) {
-      const [pagePath, hash] = href.split('#')
-      if (!pagePath || pagePath === '/' ? pathname === '/' : pathname === pagePath) {
-        const el = document.getElementById(hash)
+      const [pagePath, hash] = href.split("#");
+      if (
+        !pagePath || pagePath === "/"
+          ? currentPathname === "/"
+          : currentPathname === pagePath
+      ) {
+        const el = document.getElementById(hash);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' })
-          onClick?.()
-          return
+          el.scrollIntoView({ behavior: "smooth" });
+          onClick?.();
+          return;
         }
       }
     }
-    onClick?.()
-  }, [href, pathname, onClick, isHashLink])
+    onClick?.();
+  }, [href, currentPathname, onClick, isHashLink]);
 
   return (
     <Link
       href={href}
       onClick={handleClick}
       className={cn(
-        'transition-colors focus-ring rounded-md px-2 py-1',
+        "transition-colors focus-ring rounded-md px-2 py-1",
         isActive
-          ? 'text-primary font-medium'
-          : 'text-muted-foreground hover:text-foreground',
+          ? "text-primary font-medium"
+          : "text-muted-foreground hover:text-foreground",
         className,
       )}
     >
       {label}
     </Link>
-  )
+  );
 }
 
 export function Navigation() {
-  const pathname = usePathname()
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
-    setIsMobileMenuOpen(false)
-  }, [pathname])
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   const handleSearch = (e: FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) return
-    const searxUrl = config.getSubdomainUrl('searxng')
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
     window.open(
-      `${searxUrl}/search?q=${encodeURIComponent(searchQuery.trim())}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
-    setSearchQuery('')
-  }
+      config.getSearxngSearchResolverUrl(searchQuery.trim()),
+      "_blank",
+      "noopener,noreferrer",
+    );
+    setSearchQuery("");
+  };
 
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        'glass backdrop-blur-lg shadow-lg',
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "glass backdrop-blur-lg shadow-lg",
       )}
     >
       {/* SearXNG search bar */}
-      <div className="border-b border-border/50 bg-black/20">
+      <div className="border-b border-primary/30 bg-primary/10">
         <div className="container mx-auto px-4">
-          <form onSubmit={handleSearch} className="flex items-center gap-2 py-1.5">
-            <Search className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center gap-2 py-2"
+            aria-label="SearXNG search"
+          >
+            <span className="shrink-0 rounded-md border border-primary/40 bg-primary/20 px-2 py-1 text-[11px] font-semibold text-primary">
+              SearXNG
+            </span>
+            <Search
+              className="h-4 w-4 text-primary shrink-0"
+              aria-hidden="true"
+            />
             <input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search with SearXNG…"
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+              className="w-full rounded-md border border-primary/30 bg-background/70 px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/40"
               aria-label="Search with SearXNG"
             />
             <button
               type="submit"
-              className="shrink-0 text-xs text-primary hover:text-primary/80 transition-colors font-medium px-2 py-1 rounded"
+              className="shrink-0 rounded-md border border-primary/40 bg-primary/20 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/30"
             >
               Search
             </button>
@@ -174,9 +188,13 @@ export function Navigation() {
           <button
             onClick={() => setIsMobileMenuOpen((v) => !v)}
             className="md:hidden text-foreground hover:text-primary transition-colors focus-ring rounded-md p-2"
-            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
       </div>
@@ -186,7 +204,7 @@ export function Navigation() {
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
             className="md:hidden glass backdrop-blur-lg border-t border-border"
@@ -227,5 +245,5 @@ export function Navigation() {
         )}
       </AnimatePresence>
     </nav>
-  )
-} 
+  );
+}

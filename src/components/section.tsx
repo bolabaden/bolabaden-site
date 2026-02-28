@@ -28,7 +28,7 @@ export function Section({
   const backgroundClasses = {
     default: 'bg-background',
     muted: 'bg-secondary/20',
-    gradient: 'bg-gradient-to-br from-background to-secondary/20'
+    gradient: 'bg-linear-to-br from-background to-secondary/20'
   }
 
   return (

@@ -1,36 +1,80 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowRight, Github, Mail, Server, Code, Zap, User } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { cn } from '@/lib/utils'
-import { config, getYearsOfExperience } from '@/lib/config'
-import { FloatingElements } from './floating-elements'
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Github,
+  Mail,
+  Server,
+  Code,
+  Zap,
+  User,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { config, getYearsOfExperience } from "@/lib/config";
+import { FloatingElements } from "./floating-elements";
 
 export function HeroSection() {
-  const [stats, setStats] = useState<{ totalServices: number; avgUptime: number } | null>(null)
-  const [yearsExperience, setYearsExperience] = useState<number>(getYearsOfExperience())
+  const [stats, setStats] = useState<{
+    totalServices: number;
+    avgUptime: number;
+  } | null>(null);
+  const [yearsExperience, setYearsExperience] = useState<number>(
+    getYearsOfExperience(),
+  );
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('/api/services')
+        const res = await fetch("/api/services");
         if (res.ok) {
-          const data = await res.json()
-          setStats({ totalServices: data?.stats?.totalServices ?? 0, avgUptime: data?.stats?.avgUptime ?? 0 })
+          const data = await res.json();
+          setStats({
+            totalServices: data?.stats?.totalServices ?? 0,
+            avgUptime: data?.stats?.avgUptime ?? 0,
+          });
         }
       } catch {}
-    }
-    setYearsExperience(getYearsOfExperience())
-    fetchStats()
-  }, [])
+    };
+    setYearsExperience(getYearsOfExperience());
+    fetchStats();
+  }, []);
+
+  const heroStats = [
+    {
+      id: "experience",
+      icon: Code,
+      value: `${yearsExperience}+`,
+      label: "Years Experience",
+      href: "/#about",
+      title: "See technical background and experience details",
+    },
+    {
+      id: "services",
+      icon: Server,
+      value: `${stats?.totalServices ?? "8+"}`,
+      label: "Live Services",
+      href: "/#embeds",
+      title: "Browse live self-hosted services",
+    },
+    {
+      id: "uptime",
+      icon: Zap,
+      value: stats?.avgUptime ? `${stats.avgUptime.toFixed(1)}%` : "99.9%",
+      label: "Avg Uptime",
+      href: "/dashboard",
+      title: "Open full monitoring dashboard",
+    },
+  ];
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
-      
+
       {/* Floating Elements */}
       <FloatingElements />
 
@@ -45,7 +89,7 @@ export function HeroSection() {
           >
             <div className="relative w-32 h-32 rounded-full overflow-hidden ring-4 ring-primary/30 shadow-2xl">
               {/* Placeholder - replace /images/profile.jpg with actual photo */}
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <div className="w-full h-full bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                 <User className="w-16 h-16 text-primary" aria-hidden="true" />
               </div>
               {/* When you have a photo, uncomment this and comment out the div above:
@@ -60,7 +104,7 @@ export function HeroSection() {
               */}
             </div>
           </motion.div>
-          
+
           {/* Main Heading */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -69,10 +113,8 @@ export function HeroSection() {
             className="mb-6"
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4">
-              Hi, I&apos;m{' '}
-              <span className="gradient-text">
-                {config.OWNER_NAME}
-              </span>
+              Hi, I&apos;m{" "}
+              <span className="gradient-text">{config.OWNER_NAME}</span>
             </h1>
             <p className="text-xl md:text-2xl text-primary font-medium">
               {config.JOB_SUBTITLE}
@@ -98,27 +140,24 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-2xl mx-auto"
           >
-            <div className="glass rounded-lg p-4">
-              <div className="flex items-center justify-center mb-2">
-                <Code className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-foreground">{yearsExperience}+</div>
-              <div className="text-sm text-muted-foreground">Years Experience</div>
-            </div>
-            <div className="glass rounded-lg p-4">
-              <div className="flex items-center justify-center mb-2">
-                <Server className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-foreground">{stats?.totalServices ?? '8+'}</div>
-              <div className="text-sm text-muted-foreground">Live Services</div>
-            </div>
-            <div className="glass rounded-lg p-4">
-              <div className="flex items-center justify-center mb-2">
-                <Zap className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-2xl font-bold text-foreground">{stats?.avgUptime ? `${stats.avgUptime.toFixed(1)}%` : '99.9%'}</div>
-              <div className="text-sm text-muted-foreground">Avg Uptime</div>
-            </div>
+            {heroStats.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                title={item.title}
+                className="glass rounded-lg p-4 hover:bg-white/10 transition-all duration-300 focus-ring"
+              >
+                <div className="flex items-center justify-center mb-2">
+                  <item.icon className="h-8 w-8 text-primary" />
+                </div>
+                <div className="text-2xl font-bold text-foreground">
+                  {item.value}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {item.label}
+                </div>
+              </Link>
+            ))}
           </motion.div>
 
           {/* Hire Me CTA */}
@@ -129,7 +168,14 @@ export function HeroSection() {
             className="mb-8"
           >
             <p className="text-muted-foreground text-sm mb-4">
-              Hiring? <Link href={config.RESUME_PATH} className="text-primary hover:text-primary/80 font-medium underline">Download my resume (PDF)</Link> — Available for full-time or contract roles.
+              Hiring?{" "}
+              <Link
+                href={config.RESUME_PATH}
+                className="text-primary hover:text-primary/80 font-medium underline"
+              >
+                Download my resume (PDF)
+              </Link>{" "}
+              — Available for full-time or contract roles.
             </p>
           </motion.div>
 
@@ -146,7 +192,7 @@ export function HeroSection() {
                 "inline-flex items-center gap-2 px-8 py-4 rounded-lg font-medium text-lg transition-all duration-200",
                 "bg-primary text-primary-foreground hover:bg-primary/90",
                 "shadow-lg hover:shadow-xl hover:scale-105",
-                "focus-ring"
+                "focus-ring",
               )}
             >
               <Mail className="h-5 w-5" aria-hidden="true" />
@@ -159,7 +205,7 @@ export function HeroSection() {
               className={cn(
                 "inline-flex items-center gap-2 px-8 py-4 rounded-lg font-medium text-lg transition-all duration-200",
                 "glass hover:bg-white/10",
-                "focus-ring"
+                "focus-ring",
               )}
               aria-label={`Visit ${config.OWNER_NAME}'s GitHub profile (opens in new tab)`}
             >
@@ -176,31 +222,35 @@ export function HeroSection() {
             className="text-center"
           >
             <p className="text-muted-foreground mb-4">
-              Looking for a technical engineer who can build, deploy, and maintain complex systems? Let's discuss how I can help your team.
+              Looking for a technical engineer who can build, deploy, and
+              maintain complex systems? Let's discuss how I can help your team.
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <Link 
-                href="/#embeds" 
+              <Link
+                href="/#embeds"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                Browse All Services <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                Browse All Services{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link 
-                href="/#projects" 
+              <Link
+                href="/#projects"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                View Projects <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                View Projects{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link 
-                href="/#guides" 
+              <Link
+                href="/#guides"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
-                Technical Guides <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                Technical Guides{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </motion.div>
         </div>
       </div>
     </section>
-  )
-} 
+  );
+}

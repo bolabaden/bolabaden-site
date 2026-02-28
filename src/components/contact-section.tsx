@@ -1,46 +1,46 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { config } from '@/lib/config'
-import { 
-  Mail, 
-  Github, 
-  Clock, 
-  MapPin, 
-  MessageSquare, 
+import { motion } from "framer-motion";
+import { config } from "@/lib/config";
+import {
+  Mail,
+  Github,
+  Clock,
+  MapPin,
+  MessageSquare,
   Calendar,
   CheckCircle,
   Phone,
   Video,
   FileText,
   Users,
-  Globe
-} from 'lucide-react'
-import { Section } from './section'
-import { contactInfo } from '@/lib/data'
-import { cn } from '@/lib/utils'
+  Globe,
+} from "lucide-react";
+import { Section } from "./section";
+import { contactInfo } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
-const ContactMethod = ({ 
-  icon: Icon, 
-  title, 
-  description, 
+const ContactMethod = ({
+  icon: Icon,
+  title,
+  description,
   preferred = false,
   href,
-  external = false
-}: { 
-  icon: any, 
-  title: string, 
-  description: string, 
-  preferred?: boolean,
-  href?: string,
-  external?: boolean
+  external = false,
+}: {
+  icon: any;
+  title: string;
+  description: string;
+  preferred?: boolean;
+  href?: string;
+  external?: boolean;
 }) => {
   const content = (
     <motion.div
       whileHover={{ scale: 1.02 }}
       className={cn(
-        'glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300',
-        preferred && 'border-2 border-primary/30 bg-primary/5'
+        "glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300",
+        preferred && "border-2 border-primary/30 bg-primary/5",
       )}
     >
       {preferred && (
@@ -50,10 +50,12 @@ const ContactMethod = ({
         </div>
       )}
       <div className="flex items-start gap-4">
-        <div className={cn(
-          'p-3 rounded-lg',
-          preferred ? 'bg-primary/20' : 'bg-primary/10'
-        )}>
+        <div
+          className={cn(
+            "p-3 rounded-lg",
+            preferred ? "bg-primary/20" : "bg-primary/10",
+          )}
+        >
           <Icon className="h-6 w-6 text-primary" />
         </div>
         <div>
@@ -62,28 +64,32 @@ const ContactMethod = ({
         </div>
       </div>
     </motion.div>
-  )
+  );
 
   if (href) {
     return (
-      <a 
+      <a
         href={href}
-        target={external ? '_blank' : undefined}
-        rel={external ? 'noopener noreferrer' : undefined}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
         className="block focus-ring rounded-lg"
       >
         {content}
       </a>
-    )
+    );
   }
 
-  return content
-}
+  return content;
+};
 
-const InfoCard = ({ icon: Icon, label, value }: { 
-  icon: any, 
-  label: string, 
-  value: string 
+const InfoCard = ({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: any;
+  label: string;
+  value: string;
 }) => (
   <div className="flex items-center gap-3">
     <div className="p-2 bg-primary/20 rounded-lg">
@@ -94,70 +100,101 @@ const InfoCard = ({ icon: Icon, label, value }: {
       <div className="font-medium text-foreground">{value}</div>
     </div>
   </div>
-)
+);
 
-const PreferenceCard = ({ icon: Icon, title, items }: { 
-  icon: any, 
-  title: string, 
-  items: string[] 
-}) => (
-  <motion.div
-    whileHover={{ scale: 1.02 }}
-    className="glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300"
-  >
-    <div className="flex items-center gap-3 mb-4">
-      <div className="p-2 bg-primary/20 rounded-lg">
-        <Icon className="h-5 w-5 text-primary" />
+const PreferenceCard = ({
+  icon: Icon,
+  title,
+  items,
+  href,
+  external,
+}: {
+  icon: any;
+  title: string;
+  items: string[];
+  href?: string;
+  external?: boolean;
+}) => {
+  const content = (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      className="glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300 h-full"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-primary/20 rounded-lg">
+          <Icon className="h-5 w-5 text-primary" />
+        </div>
+        <h3 className="font-semibold text-foreground">{title}</h3>
       </div>
-      <h3 className="font-semibold text-foreground">{title}</h3>
-    </div>
-    <ul className="space-y-2">
-      {items.map((item, index) => (
-        <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
-          <CheckCircle className="h-3 w-3 text-primary" />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  </motion.div>
-)
+      <ul className="space-y-2">
+        {items.map((item, index) => (
+          <li
+            key={index}
+            className="flex items-center gap-2 text-sm text-muted-foreground"
+          >
+            <CheckCircle className="h-3 w-3 text-primary" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+
+  if (!href) {
+    return content;
+  }
+
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className="block h-full"
+    >
+      {content}
+    </a>
+  );
+};
 
 export function ContactSection() {
   const contactMethods = [
     {
       icon: Mail,
-      title: 'Email',
-      description: 'Best for detailed discussions, project proposals, and formal communications',
+      title: "Email",
+      description:
+        "Best for detailed discussions, project proposals, and formal communications",
       preferred: true,
       href: `mailto:${contactInfo.email}`,
-      external: false
+      external: false,
     },
     {
       icon: Github,
-      title: 'GitHub',
-      description: 'View my code, contribute to projects, or discuss technical implementations',
+      title: "GitHub",
+      description:
+        "View my code, contribute to projects, or discuss technical implementations",
       preferred: false,
       href: contactInfo.github,
-      external: true
+      external: true,
     },
     {
       icon: MessageSquare,
-      title: 'Text-based Chat',
-      description: 'Quick questions, technical discussions, and project coordination',
+      title: "Text-based Chat",
+      description:
+        "Quick questions, technical discussions, and project coordination",
       preferred: true,
       href: `mailto:${contactInfo.email}?subject=Chat%20Request`,
-      external: false
-    }
-  ]
+      external: false,
+    },
+  ];
 
-  const workTypes = []
-  if (contactInfo.workPreferences.fullTime) workTypes.push('Full-time')
-  if (contactInfo.workPreferences.contract) workTypes.push('Contract')
-  if (contactInfo.workPreferences.partTime) workTypes.push('Part-time')
+  const workTypes = [];
+  if (contactInfo.workPreferences.fullTime) workTypes.push("Full-time");
+  if (contactInfo.workPreferences.contract) workTypes.push("Contract");
+  if (contactInfo.workPreferences.partTime) workTypes.push("Part-time");
 
   return (
-    <Section 
-      id="contact" 
+    <Section
+      id="contact"
       title="Let's Connect"
       subtitle="Looking for a technical engineer who can build, deploy, and maintain complex systems? Let's discuss how I can help your team."
       background="gradient"
@@ -168,13 +205,14 @@ export function ContactSection() {
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium text-green-400 capitalize">
-              {contactInfo.availability.replace('-', ' ')}
+              {contactInfo.availability.replace("-", " ")}
             </span>
           </div>
           <h3 className="text-2xl font-semibold mb-4">Currently Available</h3>
           <p className="text-muted-foreground mb-6">
-            Ready to take on new challenges in infrastructure, backend systems, or full-stack development. 
-            Interested in both short-term consulting and long-term opportunities.
+            Ready to take on new challenges in infrastructure, backend systems,
+            or full-stack development. Interested in both short-term consulting
+            and long-term opportunities.
           </p>
         </div>
       </div>
@@ -207,7 +245,9 @@ export function ContactSection() {
 
       {/* Contact Methods */}
       <div className="mb-16">
-        <h3 className="text-2xl font-semibold mb-8 text-center">Get in Touch</h3>
+        <h3 className="text-2xl font-semibold mb-8 text-center">
+          Get in Touch
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contactMethods.map((method, index) => (
             <ContactMethod key={index} {...method} />
@@ -217,22 +257,33 @@ export function ContactSection() {
 
       {/* Work Preferences */}
       <div className="mb-16">
-        <h3 className="text-2xl font-semibold mb-8 text-center">Work Preferences</h3>
+        <h3 className="text-2xl font-semibold mb-8 text-center">
+          Work Preferences
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <PreferenceCard
             icon={MessageSquare}
             title="Communication"
             items={contactInfo.preferredCommunication}
+            href={`mailto:${contactInfo.email}`}
           />
           <PreferenceCard
             icon={Calendar}
             title="Work Types"
             items={workTypes}
+            href="/contact"
           />
           <PreferenceCard
             icon={Globe}
             title="Remote Work"
-            items={['Fully remote', 'Distributed teams', 'Async collaboration', 'Flexible hours']}
+            items={[
+              "Fully remote",
+              "Distributed teams",
+              "Async collaboration",
+              "Flexible hours",
+            ]}
+            href={contactInfo.github}
+            external
           />
         </div>
       </div>
@@ -240,7 +291,9 @@ export function ContactSection() {
       {/* Communication Style */}
       <div className="mb-16">
         <div className="glass rounded-lg p-8 max-w-4xl mx-auto">
-          <h3 className="text-xl font-semibold mb-6 text-center">Communication Style</h3>
+          <h3 className="text-xl font-semibold mb-6 text-center">
+            Communication Style
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -261,8 +314,12 @@ export function ContactSection() {
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>• Phone calls by appointment only</li>
-                <li>• Video calls for initial meetings or complex discussions</li>
-                <li>• Prefer written follow-ups for all verbal communications</li>
+                <li>
+                  • Video calls for initial meetings or complex discussions
+                </li>
+                <li>
+                  • Prefer written follow-ups for all verbal communications
+                </li>
                 <li>• Response time may vary for real-time communications</li>
               </ul>
             </div>
@@ -276,12 +333,13 @@ export function ContactSection() {
           <Mail className="h-16 w-16 text-primary mx-auto mb-4" />
           <h3 className="text-2xl font-semibold mb-4">Ready to Start?</h3>
           <p className="text-muted-foreground mb-6">
-            Whether you have a specific project in mind or want to discuss potential opportunities, 
-            I'd love to hear from you. Let's build something amazing together.
+            Whether you have a specific project in mind or want to discuss
+            potential opportunities, I'd love to hear from you. Let's build
+            something amazing together.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href={`mailto:${contactInfo.email}?subject=Project%20Inquiry&body=Hi%20${encodeURIComponent(config.OWNER_NAME.split(' ')[0])},%0D%0A%0D%0AI'm%20interested%20in%20discussing%20a%20potential%20opportunity.%20Here%20are%20some%20details:%0D%0A%0D%0AProject%20Type:%20%0D%0ADuration:%20%0D%0ATech%20Stack:%20%0D%0ATeam%20Size:%20%0D%0A%0D%0ALooking%20forward%20to%20hearing%20from%20you!`}
+              href={`mailto:${contactInfo.email}?subject=Project%20Inquiry&body=Hi%20${encodeURIComponent(config.OWNER_NAME.split(" ")[0])},%0D%0A%0D%0AI'm%20interested%20in%20discussing%20a%20potential%20opportunity.%20Here%20are%20some%20details:%0D%0A%0D%0AProject%20Type:%20%0D%0ADuration:%20%0D%0ATech%20Stack:%20%0D%0ATeam%20Size:%20%0D%0A%0D%0ALooking%20forward%20to%20hearing%20from%20you!`}
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               <Mail className="h-4 w-4" />
@@ -300,5 +358,5 @@ export function ContactSection() {
         </div>
       </div>
     </Section>
-  )
-} 
+  );
+}

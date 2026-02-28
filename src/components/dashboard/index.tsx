@@ -89,6 +89,8 @@ export function Dashboard() {
             whileTap={{ scale: 0.95 }}
             onClick={fetchData}
             disabled={loading}
+            aria-label="Refresh dashboard data"
+            title="Refresh dashboard data"
             className="ml-3 p-1.5 bg-secondary/20 rounded-lg hover:bg-secondary/30 transition-colors"
           >
             <RefreshCw className={`h-4 w-4 text-primary ${loading ? 'animate-spin' : ''}`} />
@@ -111,7 +113,7 @@ export function Dashboard() {
       </div>
       
       {/* Services Table */}
-      <ServiceTable services={services} onRefresh={fetchData} loading={loading} />
+      <ServiceTable services={services} onRefreshAction={fetchData} loading={loading} />
     </div>
   )
 }

@@ -19,7 +19,12 @@ const eslintConfig = [
       "@typescript-eslint/no-require-imports": "off",
       "@next/next/no-html-link-for-pages": "off",
       "react/no-unescaped-entities": "off",
-      "prefer-const": "off",
+      "prefer-const": "error",
+    },
+  },
+  {
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
     },
   },
 ];

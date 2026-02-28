@@ -279,9 +279,11 @@ export function EnhancedProjectCard({
                       </span>
                     </div>
                     <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-primary to-primary/60 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${lang.percentage}%` }}
+                      <progress
+                        className="enhanced-language-bar"
+                        max={100}
+                        value={Math.max(0, Math.min(100, lang.percentage))}
+                        aria-label={`${lang.name} usage ${lang.percentage.toFixed(1)}%`}
                       />
                     </div>
                   </div>

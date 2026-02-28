@@ -3,6 +3,13 @@
  * Every site-wide value lives here. Components import from config, never hardcode.
  */
 
+function envFlag(name: string, defaultValue: boolean = true): boolean {
+  const raw = process.env[name];
+  if (raw === undefined) return defaultValue;
+  const normalized = raw.toString().trim().toLowerCase();
+  return !["false", "0", "no", "off"].includes(normalized);
+}
+
 export const config = {
   /** Owner / personal identity */
   OWNER_NAME: process.env.NEXT_PUBLIC_OWNER_NAME || "Boden Crouch",
@@ -24,6 +31,8 @@ export const config = {
   /** Site / domain */
   SITE_DOMAIN: process.env.NEXT_PUBLIC_SITE_DOMAIN || "bolabaden.org",
   SITE_NAME: process.env.NEXT_PUBLIC_SITE_NAME || "bolabaden.org",
+  SEARXNG_PUBLIC_URL: "https://searx.be",
+  SEARXNG_SEARCH_PATH: process.env.NEXT_PUBLIC_SEARXNG_SEARCH_PATH || "/search",
   RESUME_PATH:
     process.env.NEXT_PUBLIC_RESUME_PATH || "/Boden_Crouch_Resume.pdf",
 
@@ -77,6 +86,26 @@ export const config = {
     SKILLS: 3600,
   },
 
+  /** Homepage section toggles */
+  get HOME_LIVE_SERVICES_ENABLED() {
+    return envFlag("HOME_LIVE_SERVICES_ENABLED", true);
+  },
+  get HOME_PROJECTS_ENABLED() {
+    return envFlag("HOME_PROJECTS_ENABLED", true);
+  },
+  get HOME_GUIDES_ENABLED() {
+    return envFlag("HOME_GUIDES_ENABLED", true);
+  },
+  get HOME_GITHUB_STATS_ENABLED() {
+    return envFlag("HOME_GITHUB_STATS_ENABLED", true);
+  },
+  get HOME_ABOUT_ENABLED() {
+    return envFlag("HOME_ABOUT_ENABLED", true);
+  },
+  get HOME_CONTACT_ENABLED() {
+    return envFlag("HOME_CONTACT_ENABLED", true);
+  },
+
   /** Computed helpers — call as functions */
   get SITE_URL() {
     return `https://${this.SITE_DOMAIN}`;
@@ -84,8 +113,30 @@ export const config = {
   get GITHUB_URL() {
     return `https://github.com/${this.GITHUB_OWNER}`;
   },
+  get SEARXNG_URL() {
+    return process.env.NEXT_PUBLIC_SEARXNG_URL || this.SEARXNG_PUBLIC_URL;
+  },
+  get SEARXNG_FALLBACK_ENABLED() {
+    return (
+      envFlag("SEARXNG_FALLBACK_ENABLED", true) &&
+      envFlag("NEXT_PUBLIC_SEARXNG_FALLBACK_ENABLED", true)
+    );
+  },
   getSubdomainUrl(sub: string) {
     return `https://${sub}.${this.SITE_DOMAIN}`;
+  },
+  getSearxngSearchResolverUrl(query: string) {
+    return `/api/searx/search?q=${encodeURIComponent(query)}`;
+  },
+  getSearxngSearchUrl(query: string) {
+    const baseUrl = this.SEARXNG_URL.replace(/\/+$/, "");
+    const rawPath = this.SEARXNG_SEARCH_PATH.trim();
+    const searchPath = rawPath
+      ? rawPath.startsWith("/")
+        ? rawPath
+        : `/${rawPath}`
+      : "/search";
+    return `${baseUrl}${searchPath}?q=${encodeURIComponent(query)}`;
   },
   getFallbackDates: () => {
     const now = new Date();

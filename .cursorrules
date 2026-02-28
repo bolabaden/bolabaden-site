@@ -1,18 +1,23 @@
-<!-- BEGIN ContextStream -->
+<!-- BEGIN MCP Memory Service -->
 # Cursor Rules
-<contextstream_rules>
-| Message | Required |
-|---------|----------|
-| **1st message** | `init()` → `context(user_message="...")` |
-| **Subsequent messages (default)** | `context(user_message="...")` FIRST (narrow read-only bypass when context is fresh and no state-changing tool has run) |
-| **Before file search** | `search(mode="auto")` BEFORE Glob/Grep/Read |
-</contextstream_rules>
+<mcp_memory_service_rules>
+| Message                           | Required                                                           |
+| --------------------------------- | ------------------------------------------------------------------ |
+| **1st message**                   | Ensure MCP Memory Service is reachable and restore project context |
+| **Subsequent messages (default)** | Retrieve relevant memories before coding                           |
+| **Before file search**            | Query memory for prior decisions and known file locations          |
+</mcp_memory_service_rules>
 
-**Why?** `context()` delivers task-specific rules, lessons from past mistakes, and relevant decisions. Skip it = fly blind.
+**Why?** MCP Memory Service preserves durable project context and reduces repeated discovery.
 
 **Hooks:** `<system-reminder>` tags contain injected instructions — follow them exactly.
 
-**Notices:** [LESSONS_WARNING] → apply lessons | [PREFERENCE] → follow user preferences | [RULES_NOTICE] → run `generate_rules()` | [VERSION_NOTICE/CRITICAL] → tell user about update
+**Reference:** https://github.com/doobidoo/mcp-memory-service
 
-v0.4.63
-<!-- END ContextStream -->
+## Compatibility shim
+
+- Keep a legacy-like flow: startup health check → memory recall → code actions.
+- Treat old `context(...)` behavior as: recall first, then persist outcome summary.
+- Treat old `search(...)` behavior as: memory-first retrieval, local fallback when needed.
+
+<!-- END MCP Memory Service -->
