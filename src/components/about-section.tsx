@@ -47,6 +47,32 @@ const SkillCard = ({ skill }: { skill: TechStack }) => {
     categoryIcons[skill.category as keyof typeof categoryIcons] || Code;
   const repositories = skill.repositories || [];
   const hasRepositories = repositories.length > 0;
+  const hasInsights = Boolean(skill.insights);
+  const evidenceHighlights = (skill.insights?.evidenceHighlights || [])
+    .filter(Boolean)
+    .slice(0, 4);
+  const metricTiles = skill.insights
+    ? [
+        {
+          label: "Repos",
+          value: `${skill.insights.repositoryCount}`,
+        },
+        {
+          label: "Primary Share",
+          value: `${skill.insights.primaryLanguageSharePct}%`,
+        },
+        {
+          label: "Owners",
+          value: `${skill.insights.ownerCount}`,
+        },
+        {
+          label: "Evidence",
+          value: `${skill.insights.evidenceConfidencePct}%`,
+        },
+      ]
+    : [];
+  const categoryLabel = skill.category.replace("-", "/");
+  const levelLabel = `${skill.level.charAt(0).toUpperCase()}${skill.level.slice(1)}`;
   const fallbackExperienceLabel =
     skill.yearsOfExperience < 1
       ? `${Math.max(1, Math.round(skill.yearsOfExperience * 12))} months active usage`
@@ -82,7 +108,7 @@ const SkillCard = ({ skill }: { skill: TechStack }) => {
               <h4 className="font-semibold text-foreground text-sm">
                 {skill.name}
               </h4>
-              <p className="text-xs text-muted-foreground">{skill.category}</p>
+              <p className="text-xs text-muted-foreground">{categoryLabel}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -92,7 +118,7 @@ const SkillCard = ({ skill }: { skill: TechStack }) => {
                 levelColors[skill.level],
               )}
             >
-              {skill.level}
+              {levelLabel}
             </span>
             {hasRepositories && (
               <ChevronDown
@@ -106,13 +132,39 @@ const SkillCard = ({ skill }: { skill: TechStack }) => {
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground mb-2">
-          {skill.description}
+        <p className="text-xs leading-relaxed text-muted-foreground mb-3">
+          {skill.description ||
+            `${skill.name} in active use across recent projects.`}
         </p>
 
-        <div className="text-xs text-muted-foreground">
-          <span className="font-medium">{experienceText}</span>
+        <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+          <span className="rounded-md border border-border bg-muted/40 px-2 py-1 font-medium text-foreground">
+            {experienceText}
+          </span>
+          {hasInsights && skill.insights && (
+            <span className="rounded-md border border-border bg-muted/40 px-2 py-1">
+              Activity {skill.insights.activityScorePct}%
+            </span>
+          )}
         </div>
+
+        {metricTiles.length > 0 && (
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {metricTiles.map((metric) => (
+              <div
+                key={`${skill.name}-${metric.label}`}
+                className="rounded-md border border-border bg-background/30 px-2 py-1.5"
+              >
+                <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  {metric.label}
+                </div>
+                <div className="text-xs font-semibold text-foreground">
+                  {metric.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </button>
 
       <AnimatePresence initial={false}>
@@ -124,6 +176,25 @@ const SkillCard = ({ skill }: { skill: TechStack }) => {
             transition={{ duration: 0.25 }}
             className="mt-4 border-t border-border pt-3"
           >
+            {evidenceHighlights.length > 0 && (
+              <div className="mb-3 rounded-md border border-border bg-muted/20 p-2.5">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-foreground">
+                  Evidence Highlights
+                </p>
+                <ul className="space-y-1">
+                  {evidenceHighlights.map((highlight, index) => (
+                    <li
+                      key={`${skill.name}-highlight-${index}`}
+                      className="flex items-start gap-1.5 text-xs text-muted-foreground"
+                    >
+                      <span className="mt-0.75 h-1.5 w-1.5 rounded-full bg-primary" />
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <p className="text-xs font-medium text-foreground mb-2">
               Repositories using {skill.name}
             </p>

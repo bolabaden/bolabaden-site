@@ -83,51 +83,64 @@ export function SideToc({ items }: SideTocProps) {
     <>
       <aside
         aria-label="Section table of contents"
-        className="pointer-events-none fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 md:block xl:left-6"
+        className="pointer-events-none fixed left-3 top-32 bottom-4 z-40 hidden md:block xl:left-6"
       >
-        <nav className="pointer-events-auto glass w-56 rounded-2xl border border-primary/20 p-3 shadow-2xl">
-          <p className="mb-3 px-2 text-xs font-semibold tracking-wide text-primary/90 uppercase">
-            Sections
-          </p>
+        <nav
+          className="pointer-events-auto relative h-full w-28"
+          aria-label="Sections timeline"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute left-6 top-0 bottom-0 w-px bg-primary/30"
+          />
 
-          <ul className="space-y-1.5">
+          <ul className="relative flex h-full flex-col justify-between py-2">
             {visibleItems.map((item, index) => {
               const isActive = item.id === activeId;
               const isReached = activeIndex >= 0 && index <= activeIndex;
 
               return (
-                <li key={item.id}>
+                <li key={item.id} className="relative pl-1">
                   <motion.button
                     type="button"
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={{ scale: 0.96 }}
                     animate={{
-                      scale: isActive ? 1.07 : isReached ? 1.02 : 1,
-                      x: isActive ? 4 : 0,
+                      scale: isActive ? 1.1 : isReached ? 1.03 : 1,
+                      x: isActive ? 3 : 0,
                     }}
                     transition={{ type: "spring", stiffness: 320, damping: 28 }}
                     onClick={() => scrollToSection(item.id)}
                     className={cn(
-                      "group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left text-sm transition-all duration-300 focus-ring",
+                      "group relative flex w-full items-center rounded-full px-2 py-5 text-left transition-all duration-300 focus-ring",
                       isActive
-                        ? "bg-primary/18 text-foreground"
-                        : isReached
-                          ? "bg-primary/10 text-foreground/90"
-                          : "text-muted-foreground hover:bg-primary/8 hover:text-foreground",
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
                     )}
+                    aria-label={`Jump to ${item.label} section`}
                     aria-current={isActive ? "location" : undefined}
                   >
                     <span
                       className={cn(
-                        "h-2.5 w-2.5 rounded-full transition-all duration-300",
+                        "relative z-10 ml-4 h-2.5 w-2.5 rounded-full transition-all duration-300",
                         isActive
                           ? "bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.9)]"
                           : isReached
                             ? "bg-primary/70"
-                            : "bg-muted-foreground/40 group-hover:bg-primary/60",
+                            : "bg-muted-foreground/40 group-hover:bg-primary/60 group-focus-visible:bg-primary/60",
                       )}
                       aria-hidden="true"
-                    />
-                    <span className="truncate font-medium">{item.label}</span>
+                    >
+                      <span
+                        className={cn(
+                          "pointer-events-none absolute left-1/2 -top-4 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium transition-all duration-300",
+                          isActive
+                            ? "text-primary"
+                            : "text-muted-foreground/80 group-hover:text-foreground/90",
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                    </span>
                   </motion.button>
                 </li>
               );
@@ -140,8 +153,12 @@ export function SideToc({ items }: SideTocProps) {
         aria-label="Quick section navigation"
         className="pointer-events-none fixed inset-x-2 bottom-3 z-40 md:hidden"
       >
-        <nav className="pointer-events-auto glass rounded-2xl border border-primary/20 px-2 py-2 shadow-2xl">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+        <nav className="pointer-events-auto rounded-2xl bg-background/85 px-3 py-2 backdrop-blur-xl">
+          <div className="relative flex items-center justify-between gap-2 overflow-x-auto pb-1">
+            <span
+              aria-hidden="true"
+              className="absolute left-3 right-3 top-1/2 z-0 h-px -translate-y-1/2 bg-primary/30"
+            />
             {visibleItems.map((item, index) => {
               const isActive = item.id === activeId;
               const isReached = activeIndex >= 0 && index <= activeIndex;
@@ -152,22 +169,39 @@ export function SideToc({ items }: SideTocProps) {
                   type="button"
                   whileTap={{ scale: 0.96 }}
                   animate={{
-                    scale: isActive ? 1.06 : isReached ? 1.02 : 1,
+                    scale: isActive ? 1.12 : isReached ? 1.03 : 1,
                     y: isActive ? -1 : 0,
                   }}
                   transition={{ type: "spring", stiffness: 340, damping: 30 }}
                   onClick={() => scrollToSection(item.id)}
                   className={cn(
-                    "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-300 focus-ring",
+                    "group relative z-10 shrink-0 rounded-full px-2 py-3 transition-all duration-300 focus-ring",
                     isActive
-                      ? "border-primary/70 bg-primary/20 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
+                      ? "text-foreground"
                       : isReached
-                        ? "border-primary/45 bg-primary/12 text-foreground/90"
-                        : "border-border bg-background/55 text-muted-foreground",
+                        ? "text-foreground/90"
+                        : "text-muted-foreground",
                   )}
+                  aria-label={`Jump to ${item.label} section`}
                   aria-current={isActive ? "location" : undefined}
                 >
-                  {item.label}
+                  <span
+                    className={cn(
+                      "block h-2.5 w-2.5 rounded-full transition-all duration-300",
+                      isActive
+                        ? "bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.7)]"
+                        : isReached
+                          ? "bg-primary/70"
+                          : "bg-muted-foreground/40 group-hover:bg-primary/60",
+                    )}
+                    aria-hidden="true"
+                  />
+                  {isActive && (
+                    <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1.5 whitespace-nowrap text-[10px] font-medium text-primary">
+                      {item.label}
+                    </span>
+                  )}
+                  <span className="sr-only">{item.label}</span>
                 </motion.button>
               );
             })}

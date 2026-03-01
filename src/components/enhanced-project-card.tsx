@@ -24,7 +24,6 @@ import { EnhancedRepoStats } from "@/lib/github-enhanced";
 import { getRelativeTime, formatDate } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import { CommitGraph } from "./commit-graph";
-import { MarkdownContent } from "./markdown-content";
 
 interface EnhancedProjectCardProps {
   project: Project;
@@ -94,7 +93,7 @@ export function EnhancedProjectCard({
       onHoverStart={() => setShowCommitGraph(true)}
       onHoverEnd={() => setShowCommitGraph(false)}
       className={cn(
-        "glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300 h-full flex flex-col relative overflow-hidden",
+        "glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300 flex flex-col relative overflow-hidden",
         featured && "border-2 border-primary/30",
       )}
     >
@@ -252,14 +251,6 @@ export function EnhancedProjectCard({
         {project.description}
       </p>
 
-      {project.longDescription && (
-        <MarkdownContent
-          content={project.longDescription}
-          compact
-          className="mb-4 text-muted-foreground/80"
-        />
-      )}
-
       {/* Language breakdown with visual bars */}
       {githubStats?.languages &&
         Object.keys(githubStats.languages).length > 0 && (
@@ -412,7 +403,7 @@ export function EnhancedProjectCard({
       </div>
 
       {/* Links */}
-      <div className="mt-auto flex items-center gap-3">
+      <div className="flex items-center gap-3">
         {project.githubUrl && (
           <Link
             href={project.githubUrl}

@@ -4,11 +4,11 @@ import { MainNavbar } from "@/components/main-navbar";
 import { MainFooter } from "@/components/main-footer";
 
 /**
- * Shared page layout for all main-design pages (everything except /about).
- * Uses the emerald/slate color scheme. The /about page uses its own layout
- * with the glassmorphism Navigation + Footer to look like a different site.
+ * Shared layout for main-design pages (everything except /about).
+ * Uses the emerald/slate color scheme from the modern design system.
+ * The pt-28 accounts for the sticky nav with search bar.
  */
-export function PageLayout({ children }: { children: React.ReactNode }) {
+export function MainPageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="theme-main min-h-screen bg-[#0b0d10] text-slate-100">
       <MainNavbar />

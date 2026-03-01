@@ -375,6 +375,24 @@ function round(value: number, digits: number = 3): number {
   return Math.round(value * factor) / factor;
 }
 
+function formatPercent(value: number): number {
+  return Math.round(clamp(value, 0, 1) * 100);
+}
+
+function buildSkillNarrative(input: {
+  language: string;
+  repositories: number;
+  owners: number;
+  primarySharePct: number;
+  activityScorePct: number;
+  evidenceConfidencePct: number;
+}): string {
+  const repoText = `${input.repositories} repo${input.repositories === 1 ? "" : "s"}`;
+  const ownerText = `${input.owners} owner${input.owners === 1 ? "" : "s"}`;
+
+  return `${input.language} appears in ${repoText} across ${ownerText}, with ${input.primarySharePct}% primary-language share, ${input.activityScorePct}% activity, and ${input.evidenceConfidencePct}% evidence confidence.`;
+}
+
 function parsePositiveInt(
   value: string | null,
   fallback: number,
@@ -1121,6 +1139,7 @@ function scoreLanguage(
   experienceLabel: string;
   level: TechStack["level"];
   description: string;
+  insights: NonNullable<TechStack["insights"]>;
   repositories: TechStack["repositories"];
   evidenceSummary: string[];
   evidenceScore: number;
@@ -1263,12 +1282,23 @@ function scoreLanguage(
     1,
   );
   const ownerBreadth = language.ownerSet.size;
-  const description =
-    `${language.repoCount} repo${language.repoCount === 1 ? "" : "s"}, ` +
-    `${Math.round(primaryWeight * 100)}% primary-language share, ` +
-    `${ownerBreadth} owner${ownerBreadth === 1 ? "" : "s"}, ` +
-    `activity score ${Math.round(activityScore * 100)}%, ` +
-    `evidence confidence ${Math.round(evidenceScore * 100)}%`;
+
+  const insights: NonNullable<TechStack["insights"]> = {
+    repositoryCount: language.repoCount,
+    primaryLanguageSharePct: formatPercent(primaryWeight),
+    ownerCount: ownerBreadth,
+    activityScorePct: formatPercent(activityScore),
+    evidenceConfidencePct: formatPercent(evidenceScore),
+  };
+
+  const description = buildSkillNarrative({
+    language: language.canonicalName,
+    repositories: insights.repositoryCount,
+    owners: insights.ownerCount,
+    primarySharePct: insights.primaryLanguageSharePct,
+    activityScorePct: insights.activityScorePct,
+    evidenceConfidencePct: insights.evidenceConfidencePct,
+  });
 
   const evidenceSummary = summarizeEvidenceHighlights(language.evidence.highlights, 4);
 
@@ -1301,6 +1331,7 @@ function scoreLanguage(
     experienceLabel,
     level,
     description,
+    insights,
     repositories,
     evidenceSummary,
     evidenceScore,
@@ -1440,9 +1471,13 @@ export async function GET(request: Request) {
           level: scoredParts.level,
           yearsOfExperience: scoredParts.yearsOfExperience,
           experienceLabel: scoredParts.experienceLabel,
-          description: params.includeEvidenceNarrative
-            ? `${scoredParts.description}; evidence: ${scoredParts.evidenceSummary.join(" | ")}`
-            : scoredParts.description,
+          description: scoredParts.description,
+          insights: {
+            ...scoredParts.insights,
+            evidenceHighlights: params.includeEvidenceNarrative
+              ? scoredParts.evidenceSummary
+              : [],
+          },
           repositories: scoredParts.repositories,
         };
 

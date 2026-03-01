@@ -247,7 +247,7 @@ export function scoreProjectQuality(
       weight: 0.06,
       score: average([
         project.description ? 1 : 0,
-        project.longDescription ? 1 : 0,
+        project.technologies.length > 0 ? 1 : 0,
         project.githubUrl ? 1 : 0,
         project.liveUrl ? 1 : 0,
       ]),

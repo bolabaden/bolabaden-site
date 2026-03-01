@@ -239,7 +239,7 @@ export function ProjectsSection() {
               <h3 className="text-2xl font-semibold mb-8 text-center">
                 Featured Projects
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 items-start md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredProjects.map((project) => (
                   <EnhancedProjectCard
                     key={project.id}
@@ -325,7 +325,7 @@ export function ProjectsSection() {
           </div>
 
           {/* All Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-1 items-start md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {filteredProjects.map((project) => (
               <EnhancedProjectCard
                 key={project.id}

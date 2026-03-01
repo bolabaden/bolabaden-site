@@ -26,7 +26,6 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  longDescription?: string;
   qualityScore?: number;
   technologies: string[];
   category: string;
@@ -72,6 +71,14 @@ export interface TechStack {
     url: string;
     pushedAt?: string;
   }[];
+  insights?: {
+    repositoryCount: number;
+    primaryLanguageSharePct: number;
+    ownerCount: number;
+    activityScorePct: number;
+    evidenceConfidencePct: number;
+    evidenceHighlights?: string[];
+  };
 }
 
 export interface ContactInfo {

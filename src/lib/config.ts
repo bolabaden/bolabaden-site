@@ -280,41 +280,46 @@ export const config = {
   ),
   HOME_SHOWCASE_TITLE: envString(
     "NEXT_PUBLIC_HOME_SHOWCASE_TITLE",
-    "Creative Space",
+    "Live Destinations",
   ),
   HOME_SHOWCASE_SUBTITLE: envString(
     "NEXT_PUBLIC_HOME_SHOWCASE_SUBTITLE",
-    "Games, experiments, tools, and cool things I'm building or hosting.",
+    "Direct entry points to active projects, dashboards, and self-hosted tools.",
   ),
   HOME_SHOWCASE_ITEMS: envJson<ShowcaseItem[]>(
     "NEXT_PUBLIC_HOME_SHOWCASE_ITEMS_JSON",
     [
       {
-        id: "coming-soon-1",
-        title: "WebAssembly Game",
-        description: "Interactive game or demo (coming soon)",
-        type: "text",
+        id: "showcase-guides",
+        title: "Technical Guides",
+        description:
+          "Read implementation walkthroughs and practical references.",
+        type: "link",
+        href: "/guides",
         color: "from-blue-600/20 to-cyan-600/20",
       },
       {
-        id: "coming-soon-2",
-        title: "Flash Archive",
-        description: "Preserved classic games (coming soon)",
-        type: "text",
+        id: "showcase-contact",
+        title: "Contact",
+        description: "Start a collaboration or reach out directly.",
+        type: "link",
+        href: "/contact",
         color: "from-orange-600/20 to-red-600/20",
       },
       {
-        id: "coming-soon-3",
-        title: "Cool Project",
-        description: "Something awesome (coming soon)",
-        type: "text",
+        id: "showcase-github",
+        title: "GitHub Profile",
+        description: "Browse repositories, commits, and open-source activity.",
+        type: "link",
+        href: `https://github.com/${envString("NEXT_PUBLIC_GITHUB_OWNER", "bolabaden")}`,
         color: "from-purple-600/20 to-pink-600/20",
       },
       {
-        id: "coming-soon-4",
-        title: "Custom Space",
-        description: "What's next?",
-        type: "text",
+        id: "showcase-searx",
+        title: "SearX Search",
+        description: "Use the integrated search entry point with API fallback.",
+        type: "link",
+        href: "/api/searx/search?q=bolabaden",
         color: "from-green-600/20 to-emerald-600/20",
       },
     ],
@@ -455,6 +460,15 @@ export const config = {
     { href: "/guides", label: "Guides" },
     { href: "/contact", label: "Contact" },
   ]),
+  ABOUT_NAV_ITEMS: envJson<NavigationItem[]>(
+    "NEXT_PUBLIC_ABOUT_NAV_ITEMS_JSON",
+    [
+      { href: "/", label: "Main Site" },
+      { href: "/projects", label: "Builds" },
+      { href: "/guides", label: "Playbooks" },
+      { href: "/contact", label: "Reach Out" },
+    ],
+  ),
   NAV_FUTURE_PLACEHOLDERS: envJson<string[]>(
     "NEXT_PUBLIC_NAV_FUTURE_PLACEHOLDERS_JSON",
     ["Labs (Soon)", "Notes (Soon)"],
@@ -687,21 +701,27 @@ export type NormalizedSection<TId extends string = string> = {
  *                         If not provided, uses all validIds with fallback labels.
  */
 export function buildConfiguredSections<TId extends string>(
-  layoutConfig: Array<{ id: unknown; label?: string; enabled?: boolean; order?: number }>,
+  layoutConfig: Array<{
+    id: unknown;
+    label?: string;
+    enabled?: boolean;
+    order?: number;
+  }>,
   validIds: Set<TId>,
   labelFallbacks: Record<TId, string>,
   legacyFallback?: (fallbackIds: TId[]) => NormalizedSection<TId>[],
 ): NormalizedSection<TId>[] {
   const fromLayout = layoutConfig
-    .filter(
-      (section): section is typeof section & { id: TId } =>
-        validIds.has(section.id as TId),
+    .filter((section): section is typeof section & { id: TId } =>
+      validIds.has(section.id as TId),
     )
     .map((section) => ({
       id: section.id,
       label: section.label?.toString().trim() || labelFallbacks[section.id],
       enabled: Boolean(section.enabled),
-      order: Number.isFinite(section.order as number) ? (section.order as number) : 999,
+      order: Number.isFinite(section.order as number)
+        ? (section.order as number)
+        : 999,
     }))
     .sort((a, b) => a.order - b.order);
 

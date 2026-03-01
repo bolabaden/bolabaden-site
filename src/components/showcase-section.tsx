@@ -40,7 +40,7 @@ export function ShowcaseSection({
                 rel={
                   item.href.startsWith("/") ? undefined : "noopener noreferrer"
                 }
-                className={`${baseClasses} bg-gradient-to-br ${bgGradient} hover:bg-gradient-to-br hover:from-primary/30 hover:to-accent/30`}
+                className={`${baseClasses} bg-linear-to-br ${bgGradient} hover:bg-linear-to-br hover:from-primary/30 hover:to-accent/30`}
               >
                 <div className={contentClasses}>
                   <h3 className="text-base font-semibold text-foreground mb-2">
@@ -103,7 +103,7 @@ export function ShowcaseSection({
           return (
             <div
               key={item.id}
-              className={`${baseClasses} bg-gradient-to-br ${bgGradient}`}
+              className={`${baseClasses} bg-linear-to-br ${bgGradient}`}
             >
               <div className={contentClasses}>
                 <h3 className="text-base font-semibold text-foreground mb-2">

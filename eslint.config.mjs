@@ -20,6 +20,28 @@ const eslintConfig = [
       "@next/next/no-html-link-for-pages": "off",
       "react/no-unescaped-entities": "off",
       "prefer-const": "error",
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXAttribute[name.name='style']",
+          message:
+            "Inline styles are not allowed. Use Tailwind utility classes or shared CSS. OpenGraph ImageResponse files are exempt.",
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      "src/app/opengraph-image.tsx",
+      "src/app/about/opengraph-image.tsx",
+      "src/app/contact/opengraph-image.tsx",
+      "src/app/guides/opengraph-image.tsx",
+      "src/app/guides/[slug]/opengraph-image.tsx",
+      "src/app/dashboard/opengraph-image.tsx",
+      "src/app/projects/opengraph-image.tsx",
+    ],
+    rules: {
+      "no-restricted-syntax": "off",
     },
   },
   {

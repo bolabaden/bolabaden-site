@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Section } from "@/components/section";
 import { PageLayout } from "@/components/page-layout";
 import { MarkdownContent } from "@/components/markdown-content";
 import { config } from "@/lib/config";
@@ -41,23 +40,27 @@ export default async function GuidePage({
 
   return (
     <PageLayout>
-      <div className="mb-4">
-        <Link
-          href="/guides"
-          className="text-sm text-primary hover:text-primary/80 transition-colors"
-        >
-          {config.GUIDE_BACK_TO_INDEX_LABEL}
-        </Link>
-      </div>
-      <Section title={guide.title} subtitle={guide.description} size="lg">
+      <div className="max-w-4xl mx-auto px-6 sm:px-8 py-20">
+        <div className="mb-4">
+          <Link
+            href="/guides"
+            className="text-sm text-emerald-300 hover:text-emerald-200 transition-colors"
+          >
+            {config.GUIDE_BACK_TO_INDEX_LABEL}
+          </Link>
+        </div>
+        <h1 className="text-3xl font-semibold text-slate-100 mb-2">
+          {guide.title}
+        </h1>
+        <p className="text-slate-400 mb-4">{guide.description}</p>
+        <div className="text-sm text-slate-500 mb-8">
+          <span className="capitalize">{guide.category}</span> •{" "}
+          {guide.difficulty} • {guide.estimatedTime}
+        </div>
         <article className="max-w-none">
-          <div className="text-sm text-muted-foreground mb-6">
-            <span className="capitalize">{guide.category}</span> •{" "}
-            {guide.difficulty} • {guide.estimatedTime}
-          </div>
           <MarkdownContent content={guide.content} />
         </article>
-      </Section>
+      </div>
     </PageLayout>
   );
 }

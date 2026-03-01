@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { Section } from "@/components/section";
 import { PageLayout } from "@/components/page-layout";
 import { config } from "@/lib/config";
 import { getGuides } from "@/lib/guides";
@@ -20,33 +19,33 @@ export default async function GuidesIndexPage() {
 
   return (
     <PageLayout>
-      <Section
-        id="guides-index"
-        title={config.GUIDES_INDEX_SECTION_TITLE}
-        subtitle={config.GUIDES_INDEX_SECTION_SUBTITLE}
-      >
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-20">
+        <h1 className="text-3xl font-semibold text-slate-100 mb-2">
+          {config.GUIDES_INDEX_SECTION_TITLE}
+        </h1>
+        <p className="text-slate-400 mb-10">
+          {config.GUIDES_INDEX_SECTION_SUBTITLE}
+        </p>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {guides.map((g) => (
             <div
               key={g.id}
-              className="p-6 transition-all duration-300 rounded-lg glass hover:bg-white/5"
+              className="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 transition hover:border-emerald-400/40"
             >
-              <h3 className="mb-2 text-lg font-semibold text-foreground">
+              <h3 className="mb-2 text-lg font-semibold text-slate-100">
                 {g.title}
               </h3>
-              <p className="mb-3 text-sm text-muted-foreground">
-                {g.description}
-              </p>
+              <p className="mb-3 text-sm text-slate-400">{g.description}</p>
               <Link
                 href={`/guides/${g.slug}`}
-                className="text-sm font-medium text-primary hover:text-primary/80"
+                className="text-sm font-medium text-emerald-300 hover:text-emerald-200"
               >
                 {config.GUIDES_INDEX_CARD_CTA}
               </Link>
             </div>
           ))}
         </div>
-      </Section>
+      </div>
     </PageLayout>
   );
 }

@@ -13,7 +13,7 @@ import { config } from "@/lib/config";
  * See: https://nextjs.org/docs/app/api-reference/functions/image-response
  */
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = {
   width: 1200,
   height: 630,

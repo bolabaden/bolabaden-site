@@ -79,6 +79,30 @@
   --ring: 217 91% 60%;
 }
 
+/**
+ * Main design theme — emerald/slate color scheme.
+ * Applied to all pages EXCEPT /about which keeps the blue glassmorphism theme.
+ * Remaps the HSL CSS variables so existing components using text-primary, bg-primary, etc.
+ * automatically render in emerald tones.
+ */
+.theme-main {
+  --background: 220 20% 4%;
+  --foreground: 210 40% 98%;
+  --primary: 160 84% 39%;
+  --primary-foreground: 220 20% 4%;
+  --secondary: 215 28% 10%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 215 16% 20%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 160 60% 30%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 215 20% 18%;
+  --input: 215 20% 18%;
+  --ring: 160 84% 39%;
+}
+
 * {
   border-color: hsl(var(--border));
 }
