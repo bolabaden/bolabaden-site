@@ -13,7 +13,11 @@ type Service = {
   height?: number;
 };
 
-export function EmbedsSection() {
+interface EmbedsSectionProps {
+  mode?: "default" | "hero";
+}
+
+export function EmbedsSection({ mode = "default" }: EmbedsSectionProps) {
   const defaultTab =
     config.EMBED_SERVICES[config.EMBED_SERVICES.length - 1]?.id || "homepage";
   const [activeTab, setActiveTab] = useState<string>(defaultTab);
@@ -40,9 +44,6 @@ export function EmbedsSection() {
 
       // Iframe styling
       Object.assign(iframe.style, {
-        width: "100%",
-        height: "100vh",
-        minHeight: "800px",
         border: "none",
         outline: "none",
         background: "transparent",
@@ -134,32 +135,54 @@ export function EmbedsSection() {
   }, [activeTab]);
 
   // Build services array from config
-  const services: Service[] = config.EMBED_SERVICES.map((svc) => ({
-    id: svc.id,
-    name: svc.name,
-    description: svc.description,
-    url: config.getSubdomainUrl(svc.subdomain),
-    height: 700,
-  }));
+  const services: Service[] = config.EMBED_SERVICES.map(
+    (svc: { id: any; name: any; description: any; subdomain: string }) => ({
+      id: svc.id,
+      name: svc.name,
+      description: svc.description,
+      url: config.getSubdomainUrl(svc.subdomain),
+      height: 700,
+    }),
+  );
 
   const activeService = services.find((s) => s.id === activeTab) || services[0];
+
+  const isHero = mode === "hero";
+  const sectionTitle = isHero ? "Live Service Window" : "Live Services";
+  const sectionSubtitle = isHero
+    ? "Start on a real-time embedded service surface, then branch into focused areas below."
+    : "Embedded, read-only views of self-hosted services";
 
   return (
     <Section
       id="embeds"
-      title="Live Services"
-      subtitle="Embedded, read-only views of self-hosted services"
+      title={sectionTitle}
+      subtitle={sectionSubtitle}
       background="muted"
+      size={isHero ? "lg" : "md"}
     >
-      <div className="glass rounded-lg p-4">
+      <div
+        className={cn(
+          "glass rounded-lg",
+          isHero ? "border border-primary/25 p-5 md:p-6" : "p-4",
+        )}
+      >
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-2 mb-6 border-b border-border">
+        <div
+          className={cn(
+            "mb-6 flex flex-wrap gap-2 border-b border-border",
+            isHero && "pb-2",
+          )}
+        >
           {services.map((service) => (
             <button
               key={service.id}
               onClick={() => setActiveTab(service.id)}
               className={cn(
-                "px-4 py-2 text-sm font-medium transition-colors rounded-t-lg border-b-2",
+                "px-4 py-2 text-sm font-medium transition-colors border-b-2",
+                isHero
+                  ? "rounded-full border border-transparent"
+                  : "rounded-t-lg",
                 activeTab === service.id
                   ? "text-primary border-primary bg-primary/10"
                   : "text-muted-foreground border-transparent hover:text-foreground hover:border-border",
@@ -171,8 +194,13 @@ export function EmbedsSection() {
         </div>
 
         {/* Service Info */}
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-foreground">
+        <div className={cn("mb-4", isHero && "mb-5 flex flex-col gap-1")}>
+          <h3
+            className={cn(
+              "font-semibold text-foreground",
+              isHero ? "text-xl" : "text-lg",
+            )}
+          >
             {activeService.name}
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -182,19 +210,28 @@ export function EmbedsSection() {
             href={activeService.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-primary hover:text-primary/80 transition-colors"
+            className={cn(
+              "text-sm text-primary transition-colors hover:text-primary/80",
+              isHero &&
+                "inline-flex w-fit items-center rounded-full border border-primary/35 bg-primary/10 px-3 py-1",
+            )}
           >
             Open in new tab →
           </a>
         </div>
 
         {/* Completely Seamless Iframe */}
-        <div className="seamless-iframe-container relative">
+        <div className="relative seamless-iframe-container">
           <iframe
             ref={iframeRef}
             src={activeService.url}
             title={activeService.name}
-            className="seamless-iframe w-full h-screen min-h-200"
+            className={cn(
+              "seamless-iframe w-full",
+              isHero
+                ? "h-[66vh] min-h-105 sm:h-[68vh] sm:min-h-125 lg:h-[72vh] xl:h-[74vh] rounded-lg border border-border/70"
+                : "h-screen min-h-200",
+            )}
             scrolling="no"
             frameBorder="0"
             sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads allow-modals"

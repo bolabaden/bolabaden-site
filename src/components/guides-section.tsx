@@ -300,7 +300,7 @@ export function GuidesSection({ guides }: { guides: Guide[] }) {
       title: "Real Infrastructure",
       description:
         "Based on actual running services with live deployed applications",
-      href: "/#embeds",
+      href: "/about#embeds",
       details: [
         "Mapped to live services",
         "Operational metrics included",

@@ -76,8 +76,12 @@ export function ChartCard({
             <button
               type="button"
               onClick={() => setExpanded((prev) => !prev)}
-              aria-label={expanded ? "Collapse chart details" : "Expand chart details"}
-              title={expanded ? "Collapse chart details" : "Expand chart details"}
+              aria-label={
+                expanded ? "Collapse chart details" : "Expand chart details"
+              }
+              title={
+                expanded ? "Collapse chart details" : "Expand chart details"
+              }
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <ChevronDown
@@ -306,7 +310,7 @@ export function ChartGrid({ historyData }: ChartGridProps) {
       color: "chart-line-orange",
       yAxisLabel: "Requests",
       description: "Incoming request load trend over time.",
-      href: "/#embeds",
+      href: "/about#embeds",
     },
   ];
 

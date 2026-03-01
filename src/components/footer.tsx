@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { Github, Mail, ArrowUp } from 'lucide-react'
-import { config } from '@/lib/config'
+import Link from "next/link";
+import { Github, Mail, ArrowUp } from "lucide-react";
+import { config } from "@/lib/config";
 
 export function Footer() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <footer className="bg-secondary/20 border-t border-border">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="border-t bg-secondary/20 border-border">
+      <div className="container px-4 py-12 mx-auto">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{config.SITE_NAME}</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <h3 className="mb-4 text-lg font-semibold">{config.SITE_NAME}</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               {config.JOB_SUBTITLE} building and sharing technical solutions.
             </p>
             <div className="flex items-center gap-4">
@@ -24,18 +24,18 @@ export function Footer() {
                 href={config.GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="transition-colors text-muted-foreground hover:text-primary"
                 aria-label={`Visit ${config.OWNER_NAME}'s GitHub profile`}
               >
-                <Github className="h-5 w-5" aria-hidden="true" />
+                <Github className="w-5 h-5" aria-hidden="true" />
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
                 href={`mailto:${config.CONTACT_EMAIL}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="transition-colors text-muted-foreground hover:text-primary"
                 aria-label={`Send email to ${config.OWNER_NAME}`}
               >
-                <Mail className="h-5 w-5" aria-hidden="true" />
+                <Mail className="w-5 h-5" aria-hidden="true" />
                 <span className="sr-only">Email</span>
               </Link>
             </div>
@@ -43,20 +43,20 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="font-semibold mb-4">Services</h4>
+            <h4 className="mb-4 font-semibold">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  href="/#embeds"
-                  className="hover:text-primary transition-colors"
+                  href="/about#embeds"
+                  className="transition-colors hover:text-primary"
                 >
                   Infrastructure & Services
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/#projects"
-                  className="hover:text-primary transition-colors"
+                  href="/projects"
+                  className="transition-colors hover:text-primary"
                 >
                   Projects
                 </Link>
@@ -64,7 +64,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/guides"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Guides
                 </Link>
@@ -74,14 +74,14 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold mb-4">Resources</h4>
+            <h4 className="mb-4 font-semibold">Resources</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href={config.GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   GitHub
                 </Link>
@@ -89,15 +89,15 @@ export function Footer() {
               <li>
                 <Link
                   href="/guides"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Documentation
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/#about"
-                  className="hover:text-primary transition-colors"
+                  href="/about#about"
+                  className="transition-colors hover:text-primary"
                 >
                   About
                 </Link>
@@ -107,12 +107,12 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
+            <h4 className="mb-4 font-semibold">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href={`mailto:${config.CONTACT_EMAIL}`}
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   {config.CONTACT_EMAIL}
                 </Link>
@@ -122,7 +122,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Get in Touch
                 </Link>
@@ -131,28 +131,29 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="flex flex-col items-center justify-between pt-8 mt-8 border-t border-border md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} {config.OWNER_NAME}. All rights reserved.
+            © {new Date().getFullYear()} {config.OWNER_NAME}. All rights
+            reserved.
           </p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <Link
               href="/contact"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="text-sm transition-colors text-muted-foreground hover:text-primary"
             >
               Contact
             </Link>
             <button
               onClick={scrollToTop}
-              className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-secondary/50"
+              className="p-2 transition-colors rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary/50"
               aria-label="Scroll to top of page"
             >
-              <ArrowUp className="h-4 w-4" aria-hidden="true" />
+              <ArrowUp className="w-4 h-4" aria-hidden="true" />
               <span className="sr-only">Scroll to top</span>
             </button>
           </div>
         </div>
       </div>
     </footer>
-  )
-} 
+  );
+}

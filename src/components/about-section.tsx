@@ -303,7 +303,7 @@ export function AboutSection() {
       title: "Practical Solutions",
       description:
         "Focus on building things that work reliably in production environments",
-      href: "#projects",
+      href: "/about#projects",
     },
     {
       icon: Users,
@@ -344,7 +344,7 @@ export function AboutSection() {
       icon: Code,
       label: "Technical Focus",
       description: "Hands-on development and architecture",
-      href: "#projects",
+      href: "/about#projects",
     },
   ];
 

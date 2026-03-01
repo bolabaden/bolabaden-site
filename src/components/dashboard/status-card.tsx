@@ -137,7 +137,7 @@ export function StatusCardGrid({ stats }: { stats: any }) {
       trend: 0,
       description:
         "Currently healthy services compared to total discovered services.",
-      href: "/#embeds",
+      href: "/about#embeds",
     },
     {
       title: "CPU Usage",

@@ -1,0 +1,15 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F172A" />
+      <stop offset="0.65" stop-color="#1E293B" />
+      <stop offset="1" stop-color="#2563EB" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg2)" />
+  <circle cx="88" cy="88" r="9" fill="#3B82F6" />
+  <text x="110" y="96" fill="#CBD5E1" font-size="28" font-family="Inter, Segoe UI, Arial, sans-serif">bolabaden.org • guides</text>
+  <text x="72" y="280" fill="#F8FAFC" font-size="70" font-weight="700" font-family="Inter, Segoe UI, Arial, sans-serif">Technical Guides</text>
+  <text x="72" y="346" fill="#93C5FD" font-size="36" font-weight="600" font-family="Inter, Segoe UI, Arial, sans-serif">Practical infrastructure knowledge</text>
+  <text x="72" y="414" fill="#E2E8F0" font-size="29" font-family="Inter, Segoe UI, Arial, sans-serif">Kubernetes, Docker, Terraform, and modern developer workflows.</text>
+</svg>

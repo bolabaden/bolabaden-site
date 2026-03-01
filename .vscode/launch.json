@@ -8,18 +8,18 @@
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev -- --port 3002",
+      "command": "npm run dev -- --port 3001",
       "env": {
         "NODE_OPTIONS": "--inspect"
       }
     },
     {
       // Launch Chrome and attach it to the running Next.js dev server for client-side breakpoints.
-      // Requires the dev server to already be running on port 3002.
+      // Requires the dev server to already be running on port 3001.
       "name": "Next.js: debug client-side",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:3002"
+      "url": "http://localhost:3001"
     },
     {
       // Same as above but using Firefox.
@@ -27,7 +27,7 @@
       "name": "Next.js: debug client-side (Firefox)",
       "type": "firefox",
       "request": "launch",
-      "url": "http://localhost:3002",
+      "url": "http://localhost:3001",
       "reAttach": true,
       "pathMappings": [
         {
@@ -46,7 +46,7 @@
       "args": [
         "dev",
         "--port",
-        "3002"
+        "3001"
       ],
       "env": {
         "NODE_OPTIONS": "--inspect"

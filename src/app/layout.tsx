@@ -1,41 +1,41 @@
-import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
-import './globals.css'
-import { config } from '@/lib/config'
+import type { Metadata } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+import { config } from "@/lib/config";
 
-const inter = Inter({ subsets: ['latin'] })
-const jetbrainsMono = JetBrains_Mono({ 
-  subsets: ['latin'],
-  variable: '--font-mono',
-})
+const inter = Inter({ subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: `${config.OWNER_NAME} | ${config.JOB_TITLE} & Platform Developer`,
-  description: `${config.OWNER_NAME} — ${config.JOB_SUBTITLE}. ${config.BIO}`,
-  keywords: ['infrastructure engineer', 'kubernetes', 'self-hosted', 'cloud platforms', 'backend engineer', 'remote work', 'terraform', 'oracle cloud', 'docker', 'devops'],
-  authors: [{ name: config.OWNER_NAME, url: config.SITE_URL }],
-  creator: config.OWNER_NAME,
+  title: `${config.SITE_NAME} | ${config.SITE_SECTION_LABEL}`,
+  description: config.SITE_META_DESCRIPTION,
+  keywords: config.SITE_META_KEYWORDS,
+  authors: [{ name: config.SITE_NAME, url: config.SITE_URL }],
+  creator: config.SITE_NAME,
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
+    type: "website",
+    locale: "en_US",
     url: config.SITE_URL,
-    title: `${config.OWNER_NAME} — ${config.JOB_TITLE}`,
-    description: 'Infrastructure automation, self-hosted services, and open-source tools — demos and code on GitHub.',
-    siteName: `${config.OWNER_NAME} Portfolio`,
+    title: `${config.SITE_NAME} — ${config.SITE_SECTION_LABEL}`,
+    description: config.SITE_OG_DESCRIPTION,
+    siteName: config.SITE_NAME,
     images: [
       {
-        url: '/images/og-preview.png',
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${config.OWNER_NAME} — ${config.JOB_TITLE} Portfolio`
-      }
+        alt: `${config.SITE_NAME} home preview`,
+      },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: `${config.OWNER_NAME} — ${config.JOB_TITLE}`,
-    description: 'Infrastructure automation, self-hosted services, and open-source tools — demos and code on GitHub.',
-    images: ['/images/og-preview.png'],
+    card: "summary_large_image",
+    title: `${config.SITE_NAME} — ${config.SITE_SECTION_LABEL}`,
+    description: config.SITE_OG_DESCRIPTION,
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
@@ -43,49 +43,45 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/images/apple-touch-icon.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/images/apple-touch-icon.png",
   },
   metadataBase: new URL(config.SITE_URL),
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: config.OWNER_NAME,
-    jobTitle: config.JOB_TITLE,
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: config.SITE_NAME,
     url: config.SITE_URL,
-    sameAs: [
-      config.GITHUB_URL,
-      config.LINKEDIN_URL,
-    ],
-    knowsAbout: ['Kubernetes', 'Terraform', 'Docker', 'Oracle Cloud', 'Infrastructure as Code', 'Backend Development'],
-    description: `${config.JOB_SUBTITLE} specializing in production-grade systems, Kubernetes orchestration, and cloud infrastructure automation.`
-  }
+    description: config.SITE_JSONLD_DESCRIPTION,
+  };
 
   return (
-    <html lang="en" className="dark">
+    <html lang={config.HTML_LANG} className="dark">
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${inter.className} ${jetbrainsMono.variable} antialiased`}>
+      <body
+        className={`${inter.className} ${jetbrainsMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
-  )
-} 
+  );
+}

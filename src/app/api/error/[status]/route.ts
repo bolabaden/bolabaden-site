@@ -1,249 +1,288 @@
-import { NextRequest } from 'next/server'
-import { config } from '@/lib/config'
+import { NextRequest } from "next/server";
+import { config } from "@/lib/config";
 
 const errorMessages = {
   400: {
-    title: 'Bad Request',
-    message: 'The request could not be understood by the server due to malformed syntax or missing parameters.',
-    technical: 'Request malformed or invalid syntax detected. Please check your request payload and parameters.'
+    title: "Bad Request",
+    message:
+      "The request could not be understood by the server due to malformed syntax or missing parameters.",
+    technical:
+      "Request malformed or invalid syntax detected. Please check your request payload and parameters.",
   },
   401: {
-    title: 'Unauthorized',
-    message: 'Authentication is required to access this resource. Please provide valid credentials.',
-    technical: 'Valid authentication credentials are required for this endpoint. Token or session may be missing or expired.'
+    title: "Unauthorized",
+    message:
+      "Authentication is required to access this resource. Please provide valid credentials.",
+    technical:
+      "Valid authentication credentials are required for this endpoint. Token or session may be missing or expired.",
   },
   402: {
-    title: 'Payment Required',
-    message: 'Payment is required to access this resource or service.',
-    technical: 'The requested resource requires payment before it can be accessed. This status is reserved for future use.'
+    title: "Payment Required",
+    message: "Payment is required to access this resource or service.",
+    technical:
+      "The requested resource requires payment before it can be accessed. This status is reserved for future use.",
   },
   403: {
-    title: 'Forbidden',
-    message: 'You do not have permission to access this resource.',
-    technical: 'Insufficient permissions for the requested resource. Access is explicitly denied.'
+    title: "Forbidden",
+    message: "You do not have permission to access this resource.",
+    technical:
+      "Insufficient permissions for the requested resource. Access is explicitly denied.",
   },
   404: {
-    title: 'Not Found',
-    message: 'The requested resource could not be found on this server.',
-    technical: 'Resource not found in the current service mesh or endpoint does not exist.'
+    title: "Not Found",
+    message: "The requested resource could not be found on this server.",
+    technical:
+      "Resource not found in the current service mesh or endpoint does not exist.",
   },
   405: {
-    title: 'Method Not Allowed',
-    message: 'The HTTP method used is not allowed for this resource.',
-    technical: 'The method specified in the request is not allowed for the resource identified by the request URI.'
+    title: "Method Not Allowed",
+    message: "The HTTP method used is not allowed for this resource.",
+    technical:
+      "The method specified in the request is not allowed for the resource identified by the request URI.",
   },
   406: {
-    title: 'Not Acceptable',
-    message: 'The requested resource is only capable of generating content not acceptable according to the Accept headers sent.',
-    technical: 'No content matching the Accept headers could be found.'
+    title: "Not Acceptable",
+    message:
+      "The requested resource is only capable of generating content not acceptable according to the Accept headers sent.",
+    technical: "No content matching the Accept headers could be found.",
   },
   407: {
-    title: 'Proxy Authentication Required',
-    message: 'You must authenticate with a proxy server before this request can be served.',
-    technical: 'Proxy authentication credentials are required.'
+    title: "Proxy Authentication Required",
+    message:
+      "You must authenticate with a proxy server before this request can be served.",
+    technical: "Proxy authentication credentials are required.",
   },
   408: {
-    title: 'Request Timeout',
-    message: 'The server timed out waiting for the request.',
-    technical: 'The client did not produce a request within the time that the server was prepared to wait.'
+    title: "Request Timeout",
+    message: "The server timed out waiting for the request.",
+    technical:
+      "The client did not produce a request within the time that the server was prepared to wait.",
   },
   409: {
-    title: 'Conflict',
-    message: 'The request could not be completed due to a conflict with the current state of the resource.',
-    technical: 'Resource conflict detected, such as an edit conflict or duplicate entry.'
+    title: "Conflict",
+    message:
+      "The request could not be completed due to a conflict with the current state of the resource.",
+    technical:
+      "Resource conflict detected, such as an edit conflict or duplicate entry.",
   },
   410: {
-    title: 'Gone',
-    message: 'The requested resource is no longer available and will not be available again.',
-    technical: 'Resource has been permanently removed from the server.'
+    title: "Gone",
+    message:
+      "The requested resource is no longer available and will not be available again.",
+    technical: "Resource has been permanently removed from the server.",
   },
   411: {
-    title: 'Length Required',
-    message: 'A Content-Length header is required on the request.',
-    technical: 'The server refuses to accept the request without a defined Content-Length.'
+    title: "Length Required",
+    message: "A Content-Length header is required on the request.",
+    technical:
+      "The server refuses to accept the request without a defined Content-Length.",
   },
   412: {
-    title: 'Precondition Failed',
-    message: 'One or more conditions given in the request header fields evaluated to false.',
-    technical: 'Precondition in request headers was not met.'
+    title: "Precondition Failed",
+    message:
+      "One or more conditions given in the request header fields evaluated to false.",
+    technical: "Precondition in request headers was not met.",
   },
   413: {
-    title: 'Payload Too Large',
-    message: 'The request is larger than the server is willing or able to process.',
-    technical: 'Request entity is too large.'
+    title: "Payload Too Large",
+    message:
+      "The request is larger than the server is willing or able to process.",
+    technical: "Request entity is too large.",
   },
   414: {
-    title: 'URI Too Long',
-    message: 'The URI provided was too long for the server to process.',
-    technical: 'Request-URI is longer than the server is willing to interpret.'
+    title: "URI Too Long",
+    message: "The URI provided was too long for the server to process.",
+    technical: "Request-URI is longer than the server is willing to interpret.",
   },
   415: {
-    title: 'Unsupported Media Type',
-    message: 'The request entity has a media type which the server or resource does not support.',
-    technical: 'Unsupported Content-Type in request.'
+    title: "Unsupported Media Type",
+    message:
+      "The request entity has a media type which the server or resource does not support.",
+    technical: "Unsupported Content-Type in request.",
   },
   416: {
-    title: 'Range Not Satisfiable',
-    message: 'The client has asked for a portion of the file, but the server cannot supply that portion.',
-    technical: 'Requested range not satisfiable.'
+    title: "Range Not Satisfiable",
+    message:
+      "The client has asked for a portion of the file, but the server cannot supply that portion.",
+    technical: "Requested range not satisfiable.",
   },
   417: {
-    title: 'Expectation Failed',
-    message: 'The server cannot meet the requirements of the Expect request-header field.',
-    technical: 'Expectation in request could not be fulfilled.'
+    title: "Expectation Failed",
+    message:
+      "The server cannot meet the requirements of the Expect request-header field.",
+    technical: "Expectation in request could not be fulfilled.",
   },
   418: {
     title: "I'm a teapot",
-    message: 'The server refuses to brew coffee because it is, permanently, a teapot.',
-    technical: 'RFC 2324: This code is returned by teapots requested to brew coffee.'
+    message:
+      "The server refuses to brew coffee because it is, permanently, a teapot.",
+    technical:
+      "RFC 2324: This code is returned by teapots requested to brew coffee.",
   },
   421: {
-    title: 'Misdirected Request',
-    message: 'The request was directed at a server that is not able to produce a response.',
-    technical: 'Request was sent to a server not configured to respond.'
+    title: "Misdirected Request",
+    message:
+      "The request was directed at a server that is not able to produce a response.",
+    technical: "Request was sent to a server not configured to respond.",
   },
   422: {
-    title: 'Unprocessable Entity',
-    message: 'The server understands the content type of the request entity, but was unable to process the contained instructions.',
-    technical: 'Semantic errors in the request entity.'
+    title: "Unprocessable Entity",
+    message:
+      "The server understands the content type of the request entity, but was unable to process the contained instructions.",
+    technical: "Semantic errors in the request entity.",
   },
   423: {
-    title: 'Locked',
-    message: 'The resource that is being accessed is locked.',
-    technical: 'Resource is currently locked and cannot be modified.'
+    title: "Locked",
+    message: "The resource that is being accessed is locked.",
+    technical: "Resource is currently locked and cannot be modified.",
   },
   424: {
-    title: 'Failed Dependency',
-    message: 'The request failed due to failure of a previous request.',
-    technical: 'A dependency on another request failed.'
+    title: "Failed Dependency",
+    message: "The request failed due to failure of a previous request.",
+    technical: "A dependency on another request failed.",
   },
   425: {
-    title: 'Too Early',
-    message: 'The server is unwilling to risk processing a request that might be replayed.',
-    technical: 'Request was sent too early.'
+    title: "Too Early",
+    message:
+      "The server is unwilling to risk processing a request that might be replayed.",
+    technical: "Request was sent too early.",
   },
   426: {
-    title: 'Upgrade Required',
-    message: 'The client should switch to a different protocol.',
-    technical: 'Protocol upgrade required (e.g., to TLS/1.0).'
+    title: "Upgrade Required",
+    message: "The client should switch to a different protocol.",
+    technical: "Protocol upgrade required (e.g., to TLS/1.0).",
   },
   428: {
-    title: 'Precondition Required',
-    message: 'The origin server requires the request to be conditional.',
-    technical: 'Request must be conditional to prevent lost updates.'
+    title: "Precondition Required",
+    message: "The origin server requires the request to be conditional.",
+    technical: "Request must be conditional to prevent lost updates.",
   },
   429: {
-    title: 'Too Many Requests',
-    message: 'You have sent too many requests in a given amount of time. Please slow down and try again later.',
-    technical: 'Request rate limit exceeded for this endpoint.'
+    title: "Too Many Requests",
+    message:
+      "You have sent too many requests in a given amount of time. Please slow down and try again later.",
+    technical: "Request rate limit exceeded for this endpoint.",
   },
   431: {
-    title: 'Request Header Fields Too Large',
-    message: 'The server is unwilling to process the request because its header fields are too large.',
-    technical: 'Request headers too large.'
+    title: "Request Header Fields Too Large",
+    message:
+      "The server is unwilling to process the request because its header fields are too large.",
+    technical: "Request headers too large.",
   },
   451: {
-    title: 'Unavailable For Legal Reasons',
-    message: 'The requested resource is unavailable due to legal reasons.',
-    technical: 'Resource access is restricted by law or regulation.'
+    title: "Unavailable For Legal Reasons",
+    message: "The requested resource is unavailable due to legal reasons.",
+    technical: "Resource access is restricted by law or regulation.",
   },
   500: {
-    title: 'Internal Server Error',
-    message: 'An unexpected error occurred on the server. Our monitoring systems have been notified.',
-    technical: 'An unexpected error occurred while processing the request.'
+    title: "Internal Server Error",
+    message:
+      "An unexpected error occurred on the server. Our monitoring systems have been notified.",
+    technical: "An unexpected error occurred while processing the request.",
   },
   501: {
-    title: 'Not Implemented',
-    message: 'The server does not support the functionality required to fulfill the request.',
-    technical: 'Requested method is not implemented by the server.'
+    title: "Not Implemented",
+    message:
+      "The server does not support the functionality required to fulfill the request.",
+    technical: "Requested method is not implemented by the server.",
   },
   502: {
-    title: 'Bad Gateway',
-    message: 'The server received an invalid response from the upstream server.',
-    technical: 'Invalid response received from upstream server.'
+    title: "Bad Gateway",
+    message:
+      "The server received an invalid response from the upstream server.",
+    technical: "Invalid response received from upstream server.",
   },
   503: {
-    title: 'Service Unavailable',
-    message: 'The service is currently unavailable due to maintenance or overload. Please try again later.',
-    technical: 'Service temporarily unavailable due to overload or maintenance.'
+    title: "Service Unavailable",
+    message:
+      "The service is currently unavailable due to maintenance or overload. Please try again later.",
+    technical:
+      "Service temporarily unavailable due to overload or maintenance.",
   },
   504: {
-    title: 'Gateway Timeout',
-    message: 'The upstream server failed to send a request in the time allowed by the server.',
-    technical: 'Upstream server failed to respond within timeout period.'
+    title: "Gateway Timeout",
+    message:
+      "The upstream server failed to send a request in the time allowed by the server.",
+    technical: "Upstream server failed to respond within timeout period.",
   },
   505: {
-    title: 'HTTP Version Not Supported',
-    message: 'The server does not support the HTTP protocol version used in the request.',
-    technical: 'Unsupported HTTP version.'
+    title: "HTTP Version Not Supported",
+    message:
+      "The server does not support the HTTP protocol version used in the request.",
+    technical: "Unsupported HTTP version.",
   },
   506: {
-    title: 'Variant Also Negotiates',
-    message: 'The server has an internal configuration error: transparent content negotiation for the request results in a circular reference.',
-    technical: 'Content negotiation configuration error.'
+    title: "Variant Also Negotiates",
+    message:
+      "The server has an internal configuration error: transparent content negotiation for the request results in a circular reference.",
+    technical: "Content negotiation configuration error.",
   },
   507: {
-    title: 'Insufficient Storage',
-    message: 'The server is unable to store the representation needed to complete the request.',
-    technical: 'Server storage limit reached.'
+    title: "Insufficient Storage",
+    message:
+      "The server is unable to store the representation needed to complete the request.",
+    technical: "Server storage limit reached.",
   },
   508: {
-    title: 'Loop Detected',
-    message: 'The server detected an infinite loop while processing the request.',
-    technical: 'Infinite loop detected in request processing.'
+    title: "Loop Detected",
+    message:
+      "The server detected an infinite loop while processing the request.",
+    technical: "Infinite loop detected in request processing.",
   },
   510: {
-    title: 'Not Extended',
-    message: 'Further extensions to the request are required for the server to fulfill it.',
-    technical: 'Request needs further extensions.'
+    title: "Not Extended",
+    message:
+      "Further extensions to the request are required for the server to fulfill it.",
+    technical: "Request needs further extensions.",
   },
   511: {
-    title: 'Network Authentication Required',
-    message: 'You need to authenticate to gain network access.',
-    technical: 'Network authentication required before request can be fulfilled.'
-  }
-}
+    title: "Network Authentication Required",
+    message: "You need to authenticate to gain network access.",
+    technical:
+      "Network authentication required before request can be fulfilled.",
+  },
+};
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ status: string }> }
+  context: { params: Promise<{ status: string }> },
 ) {
-  const params = await context.params
-  const status = parseInt(params.status, 10)
+  const params = await context.params;
+  const status = parseInt(params.status, 10);
   const errorInfo = errorMessages[status as keyof typeof errorMessages] || {
-    title: 'Unknown Error',
-    message: 'An unexpected error occurred.',
-    technical: `HTTP ${status} error encountered.`
-  }
+    title: "Unknown Error",
+    message: "An unexpected error occurred.",
+    technical: `HTTP ${status} error encountered.`,
+  };
 
   // Extract the original URL from reverse proxy headers
   const getOriginalUrl = (request: NextRequest) => {
     // Try various headers set by reverse proxies
-    const xOriginalUrl = request.headers.get('x-original-url')
-    const xForwardedHost = request.headers.get('x-forwarded-host')
-    const xForwardedProto = request.headers.get('x-forwarded-proto')
-    const referer = request.headers.get('referer')
-    
+    const xOriginalUrl = request.headers.get("x-original-url");
+    const xForwardedHost = request.headers.get("x-forwarded-host");
+    const xForwardedProto = request.headers.get("x-forwarded-proto");
+    const referer = request.headers.get("referer");
+
     // If we have forwarded host and proto, construct the original URL
     if (xForwardedHost && xForwardedProto) {
-      return `${xForwardedProto}://${xForwardedHost}`
+      return `${xForwardedProto}://${xForwardedHost}`;
     }
-    
+
     // Fall back to other headers
-    if (xOriginalUrl) return xOriginalUrl
-    if (referer) return referer
-    
+    if (xOriginalUrl) return xOriginalUrl;
+    if (referer) return referer;
+
     // Last resort - try to extract from current URL
-    const currentUrl = new URL(request.url)
-    if (currentUrl.searchParams.get('url')) {
-      return currentUrl.searchParams.get('url')!
+    const currentUrl = new URL(request.url);
+    if (currentUrl.searchParams.get("url")) {
+      return currentUrl.searchParams.get("url")!;
     }
-    
+
     // Default fallback
-    return 'Unknown URL'
-  }
-  
-  const originalUrl = getOriginalUrl(request)
+    return "Unknown URL";
+  };
+
+  const originalUrl = getOriginalUrl(request);
 
   // Return HTML error page that matches the portfolio theme
   const html = `<!DOCTYPE html>
@@ -467,7 +506,9 @@ export async function GET(
                         </div>
                     </div>
                 </div>
-                ${[502, 503, 504].includes(status) ? `
+                ${
+                  [502, 503, 504].includes(status)
+                    ? `
                 <div class="mt-4 p-3 bg-yellow-900/20 border border-yellow-700 rounded-lg">
                     <div class="flex items-center gap-2 text-yellow-400">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -482,7 +523,9 @@ export async function GET(
                         Auto-retry will start in 2 seconds...
                     </button>
                 </div>
-                ` : ''}
+                `
+                    : ""
+                }
             </div>
 
             <!-- Primary Action Buttons -->
@@ -516,19 +559,19 @@ export async function GET(
                     Quick Navigation
                 </h3>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <a href="${config.SITE_URL}/#embeds" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
+                    <a href="${config.SITE_URL}/about#embeds" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
                         <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
                         </svg>
                         <span class="text-sm text-gray-300">Services</span>
                     </a>
-                    <a href="${config.SITE_URL}/#about" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
+                    <a href="${config.SITE_URL}/about#about" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
                         <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                         <span class="text-sm text-gray-300">About</span>
                     </a>
-                    <a href="${config.getSubdomainUrl('status')}" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
+                    <a href="${config.getSubdomainUrl("status")}" class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white/5 transition-colors text-center">
                         <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -573,7 +616,7 @@ export async function GET(
                         </button>
                     </div>
                     <div class="space-y-3">
-                        <a href="${config.getSubdomainUrl('status')}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                        <a href="${config.getSubdomainUrl("status")}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
                             <svg class="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -603,22 +646,22 @@ export async function GET(
         </div>
     </div>
 </body>
-</html>`
+</html>`;
 
   return new Response(html, {
     status: status,
     headers: {
-      'Content-Type': 'text/html',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0'
-    }
-  })
+      "Content-Type": "text/html",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  });
 }
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ status: string }> }
+  context: { params: Promise<{ status: string }> },
 ) {
-  return GET(request, context)
-} 
+  return GET(request, context);
+}

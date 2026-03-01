@@ -49,7 +49,7 @@ export function HeroSection() {
       icon: Code,
       value: `${yearsExperience}+`,
       label: "Years Experience",
-      href: "/#about",
+      href: "/about#about",
       title: "See technical background and experience details",
     },
     {
@@ -57,7 +57,7 @@ export function HeroSection() {
       icon: Server,
       value: `${stats?.totalServices ?? "8+"}`,
       label: "Live Services",
-      href: "/#embeds",
+      href: "/about#embeds",
       title: "Browse live self-hosted services",
     },
     {
@@ -71,7 +71,10 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section
+      id="hero"
+      className="relative min-h-screen scroll-mt-28 flex items-center justify-center overflow-hidden"
+    >
       {/* Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
@@ -227,21 +230,21 @@ export function HeroSection() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link
-                href="/#embeds"
+                href="/about#embeds"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
                 Browse All Services{" "}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href="/#projects"
+                href="/about#projects"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
                 View Projects{" "}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href="/#guides"
+                href="/about#guides"
                 className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
               >
                 Technical Guides{" "}

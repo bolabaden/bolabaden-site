@@ -4,9 +4,11 @@ import Link from "next/link";
 import { Section } from "@/components/section";
 import { PageLayout } from "@/components/page-layout";
 import { MarkdownContent } from "@/components/markdown-content";
+import { config } from "@/lib/config";
 import { getGuides } from "@/lib/guides";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,11 +18,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const guides = await getGuides();
   const guide = guides.find((g) => g.slug === slug);
-  if (!guide) return { title: "Guide Not Found" };
-  return {
+  if (!guide) return { title: config.GUIDE_NOT_FOUND_TITLE };
+  return buildPageMetadata({
     title: guide.title,
     description: guide.description,
-  };
+    pathname: `/guides/${guide.slug}`,
+    imagePath: `/guides/${guide.slug}/opengraph-image`,
+    type: "article",
+    keywords: [guide.category, guide.difficulty, ...(guide.technologies || [])],
+  });
 }
 
 export default async function GuidePage({
@@ -40,7 +46,7 @@ export default async function GuidePage({
           href="/guides"
           className="text-sm text-primary hover:text-primary/80 transition-colors"
         >
-          ← All Guides
+          {config.GUIDE_BACK_TO_INDEX_LABEL}
         </Link>
       </div>
       <Section title={guide.title} subtitle={guide.description} size="lg">

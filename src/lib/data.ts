@@ -1,5 +1,5 @@
 import { Project, TechStack, ContactInfo } from "./types";
-import { config } from "./config";
+import { config, envJson } from "./config";
 
 // Service data is now fetched dynamically from the API
 // endpoint at /api/services
@@ -32,7 +32,7 @@ function getProjectFallbackDates(monthsAgo: number = 6) {
  * - Total commits (50+)
  * - Recent activity (updated in last 30 days with 5+ stars)
  */
-export const projects: Project[] = [
+const defaultProjects: Project[] = [
   {
     id: "bolabaden-infra",
     title: "Bolabaden Infrastructure",
@@ -210,7 +210,12 @@ response = chain.call(prompt, max_cost=5)
   },
 ];
 
-export const techStack: TechStack[] = [
+export const projects: Project[] = envJson<Project[]>(
+  "NEXT_PUBLIC_FALLBACK_PROJECTS_JSON",
+  defaultProjects,
+);
+
+const defaultTechStack: TechStack[] = [
   {
     name: "Kubernetes",
     category: "infrastructure",
@@ -271,7 +276,12 @@ export const techStack: TechStack[] = [
   },
 ];
 
-export const contactInfo: ContactInfo = {
+export const techStack: TechStack[] = envJson<TechStack[]>(
+  "NEXT_PUBLIC_TECH_STACK_JSON",
+  defaultTechStack,
+);
+
+const defaultContactInfo: ContactInfo = {
   email: config.CONTACT_EMAIL,
   github: config.GITHUB_URL,
   location: config.LOCATION,
@@ -286,12 +296,20 @@ export const contactInfo: ContactInfo = {
   },
 };
 
-export const serviceCategories = {
-  "ai-ml": "AI & Machine Learning",
-  infrastructure: "Infrastructure",
-  monitoring: "Monitoring",
-  security: "Security",
-  networking: "Networking",
-  development: "Development",
-  database: "Database",
-};
+export const contactInfo: ContactInfo = envJson<ContactInfo>(
+  "NEXT_PUBLIC_CONTACT_INFO_JSON",
+  defaultContactInfo,
+);
+
+export const serviceCategories = envJson<Record<string, string>>(
+  "NEXT_PUBLIC_SERVICE_CATEGORIES_JSON",
+  {
+    "ai-ml": "AI & Machine Learning",
+    infrastructure: "Infrastructure",
+    monitoring: "Monitoring",
+    security: "Security",
+    networking: "Networking",
+    development: "Development",
+    database: "Database",
+  },
+);
