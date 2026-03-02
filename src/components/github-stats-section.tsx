@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * Portfolio-specific GitHub Activity section for About page.
+ * 
+ * CONTEXT: Portfolio/Flex-Focused
+ * Displays comprehensive GitHub contribution history, org activity, PR/issue metrics,
+ * and language proficiency as portfolio evidence.
+ * Renders only in /about page to support portfolio/collaboration narrative.
+ * Main site pages use ProjectsSection for dynamic discovery of contributions.
+ */
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -313,22 +323,78 @@ function IssueItem({ issue }: { issue: GitHubIssueItem }) {
 // ──────────────────────────────────────────────────────────────────────────────
 
 export function GitHubStatsSection() {
-  const username = config.GITHUB_OWNER;
-  const [stats, setStats] = useState<GitHubComprehensiveStats | null>(null);
+  const usernames = config.GITHUB_USERNAMES;
+  const [allStats, setAllStats] = useState<Record<string, GitHubComprehensiveStats>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [prTab, setPrTab] = useState<"all" | "external">("all");
   const [issueTab, setIssueTab] = useState<"all" | "external">("all");
+  const [activeProfile, setActiveProfile] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/github/${username}/stats`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then(setStats)
-      .catch((e) => setError(`GitHub stats unavailable (${e})`))
-      .finally(() => setLoading(false));
-  }, [username]);
+    const fetchAll = async () => {
+      try {
+        const results = await Promise.all(
+          usernames.map(async (username) => {
+            const res = await fetch(`/api/github/${username}/stats`);
+            if (res.ok) {
+              const data = await res.json();
+              return { username, data };
+            }
+            return { username, data: null };
+          })
+        );
 
-  const profileUrl = `https://github.com/${username}`;
+        const statsMap: Record<string, GitHubComprehensiveStats> = {};
+        results.forEach(({ username, data }) => {
+          if (data) statsMap[username] = data;
+        });
+
+        if (Object.keys(statsMap).length === 0) {
+          setError("Failed to fetch GitHub stats for any user");
+        } else {
+          setAllStats(statsMap);
+          // Set the first user as active by default
+          setActiveProfile(Object.keys(statsMap)[0] || null);
+        }
+      } catch (e) {
+        setError(`GitHub stats unavailable (${e})`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, [usernames]);
+
+  // Get primary stats from the active profile (default to first user)
+  const primaryUsername = activeProfile || Object.keys(allStats)[0] || config.GITHUB_OWNER;
+  const stats = allStats[primaryUsername];
+  const profileUrl = stats ? `https://github.com/${stats.profile.login}` : `https://github.com/${primaryUsername}`;
+
+  // Aggregate stats across all users
+  const aggregatedStats = Object.values(allStats).reduce(
+    (acc, userStats) => ({
+      totalRepos: acc.totalRepos + userStats.repoSummary.totalRepos,
+      totalStars: acc.totalStars + userStats.repoSummary.totalStarsReceived,
+      totalForks: acc.totalForks + userStats.repoSummary.totalForksReceived,
+      totalPRs: acc.totalPRs + userStats.prStats.total,
+      totalIssues: acc.totalIssues + userStats.issueStats.total,
+      totalReviews: acc.totalReviews + userStats.reviewStats.total,
+      totalOrgs: acc.totalOrgs + userStats.orgs.length,
+      totalContributions: acc.totalContributions + (userStats.contributions?.totalContributions || 0),
+    }),
+    {
+      totalRepos: 0,
+      totalStars: 0,
+      totalForks: 0,
+      totalPRs: 0,
+      totalIssues: 0,
+      totalReviews: 0,
+      totalOrgs: 0,
+      totalContributions: 0,
+    }
+  );
 
   return (
     <Section
@@ -368,13 +434,49 @@ export function GitHubStatsSection() {
           transition={{ duration: 0.4 }}
           className="space-y-8"
         >
+          {/* ── Profile Switcher ── */}
+          {usernames.length > 1 && (
+            <div className="flex flex-wrap gap-2 justify-center">
+              {Object.keys(allStats).map((username) => {
+                const userProfile = allStats[username]?.profile;
+                const isActive = username === activeProfile;
+                return (
+                  <button
+                    key={username}
+                    onClick={() => setActiveProfile(username)}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2 rounded-lg transition-all",
+                      isActive
+                        ? "bg-primary/20 text-primary ring-2 ring-primary/40"
+                        : "glass hover:bg-white/10 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {userProfile && (
+                      <Image
+                        src={userProfile.avatar_url}
+                        alt={userProfile.name || username}
+                        width={24}
+                        height={24}
+                        className="w-6 h-6 rounded-full"
+                        unoptimized
+                      />
+                    )}
+                    <span className="font-medium">
+                      {userProfile?.name || username}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {/* ── Profile Header ── */}
           <div className="glass rounded-2xl p-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
               <Link href={profileUrl} target="_blank" rel="noopener noreferrer">
                 <Image
                   src={stats.profile.avatar_url}
-                  alt={stats.profile.name ?? username}
+                  alt={stats.profile.name ?? primaryUsername}
                   width={96}
                   height={96}
                   className="w-24 h-24 rounded-full border-4 border-primary/30 hover:border-primary/60 transition-colors"
@@ -390,10 +492,10 @@ export function GitHubStatsSection() {
                     rel="noopener noreferrer"
                     className="text-2xl font-bold text-foreground hover:text-primary transition-colors"
                   >
-                    {stats.profile.name ?? username}
+                    {stats.profile.name ?? primaryUsername}
                   </Link>
                   <span className="text-muted-foreground text-sm">
-                    @{username}
+                    @{stats.profile.login}
                   </span>
                 </div>
 
@@ -525,21 +627,21 @@ export function GitHubStatsSection() {
               value={fmt(stats.prStats.total)}
               sub={`${fmt(stats.prStats.merged)} merged · ${fmt(stats.prStats.toExternalRepos)} to external repos`}
               icon={GitPullRequest}
-              href={`https://github.com/pulls?q=author%3A${username}`}
+              href={`https://github.com/pulls?q=author%3A${stats.profile.login}`}
             />
             <StatCard
               label="Issues Opened"
               value={fmt(stats.issueStats.total)}
               sub={`${fmt(stats.issueStats.toExternalRepos)} to external repos`}
               icon={AlertCircle}
-              href={`https://github.com/issues?q=author%3A${username}`}
+              href={`https://github.com/issues?q=author%3A${stats.profile.login}`}
             />
             <StatCard
               label="PR Reviews"
               value={fmt(stats.reviewStats.total)}
               sub={`across ${stats.reviewStats.reposReviewed.length} repos`}
               icon={Eye}
-              href={`https://github.com/pulls?q=reviewed-by%3A${username}`}
+              href={`https://github.com/pulls?q=reviewed-by%3A${stats.profile.login}`}
             />
             <StatCard
               label="Followers"
@@ -562,7 +664,7 @@ export function GitHubStatsSection() {
               )}
               sub="via PRs + issues"
               icon={Code}
-              href={`https://github.com/pulls?q=author%3A${username}`}
+              href={`https://github.com/pulls?q=author%3A${stats.profile.login}`}
             />
             <StatCard
               label="Active Days"
@@ -582,7 +684,8 @@ export function GitHubStatsSection() {
             )}
             <StatCard
               label="Organizations"
-              value={stats.orgs.length}
+              value={usernames.length}
+              sub={`${aggregatedStats.totalOrgs} total memberships`}
               icon={Building}
               href={profileUrl}
             />
@@ -630,7 +733,7 @@ export function GitHubStatsSection() {
                   Pull Requests
                 </h3>
                 <Link
-                  href={`https://github.com/pulls?q=author%3A${username}`}
+                  href={`https://github.com/pulls?q=author%3A${stats.profile.login}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
@@ -678,7 +781,7 @@ export function GitHubStatsSection() {
                   ? stats.prStats.recent
                   : stats.prStats.recent.filter((p) => p.isExternal)
                 ).map((pr, i) => (
-                  <PRItem key={i} pr={pr} username={username} />
+                  <PRItem key={i} pr={pr} username={stats.profile.login} />
                 ))}
                 {stats.prStats.recent.length === 0 && (
                   <p className="text-xs text-muted-foreground text-center py-4">
@@ -696,7 +799,7 @@ export function GitHubStatsSection() {
                   Issues Submitted
                 </h3>
                 <Link
-                  href={`https://github.com/issues?q=author%3A${username}`}
+                  href={`https://github.com/issues?q=author%3A${stats.profile.login}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
@@ -1001,7 +1104,7 @@ export function GitHubStatsSection() {
               rel="noopener noreferrer"
               className="hover:text-primary transition-colors"
             >
-              github.com/{username}
+              github.com/{stats.profile.login}
             </Link>
           </div>
         </motion.div>

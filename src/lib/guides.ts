@@ -1,3 +1,12 @@
+/**
+ * Guide/Playbook loader and metadata parser.
+ *
+ * CONTEXT: Discovery/Reference (Main-Site Guides)
+ * Loads technical guides from /src/content/guides/ directory.
+ * Used by /guides page (discovery context) to reference playbooks and walkthroughs.
+ * Not portfolio-specific; emphasizes technical reference and learning.
+ */
+
 import "server-only";
 
 import { cache } from "react";

@@ -1,3 +1,12 @@
+/**
+ * Language categorization and taxonomy for skill analysis.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Skill Categorization
+ * Defines categories (backend, frontend, infrastructure, etc) and inference logic.
+ * Maps programming languages and technologies to expertise categories.
+ * Powers skill scoring and evidence breakdown in /api/github/skills.
+ */
+
 import { TechStack } from "@/lib/types";
 
 export type SkillCategory = TechStack["category"];

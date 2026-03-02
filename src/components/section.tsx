@@ -1,3 +1,12 @@
+/**
+ * Reusable section wrapper component with consistent spacing and styling.
+ *
+ * CONTEXT: Shared/Context-Agnostic
+ * Used in BOTH portfolio (/about) and discovery (main site) contexts.
+ * Provides consistent vertical rhythm, background variants, and sizing.
+ * Does NOT change behavior based on context; parent containers determine section purpose.
+ */
+
 import { cn } from "@/lib/utils";
 
 interface SectionProps {
@@ -41,16 +50,16 @@ export function Section({
         className,
       )}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2">
         {(title || subtitle) && (
-          <div className="text-center mb-12 md:mb-16">
+          <div className="mb-10 md:mb-12">
             {title && (
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 gradient-text">
+              <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">
                 {title}
               </h2>
             )}
             {subtitle && (
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
                 {subtitle}
               </p>
             )}

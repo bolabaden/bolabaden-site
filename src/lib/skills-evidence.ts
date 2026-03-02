@@ -1,3 +1,12 @@
+/**
+ * GitHub repository evidence signals for skill inference.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Skill Evidence Mining
+ * Analyzes repository metadata, topics, languages, descriptions, and activity patterns.
+ * Collects evidence signals to support skill claims in /api/github/skills.
+ * Powers AboutSection skill visualization with multi-source evidence validation.
+ */
+
 import { TechStack } from "@/lib/types";
 import {
   CONTEXT_ONLY_LANGUAGE_TAGS,

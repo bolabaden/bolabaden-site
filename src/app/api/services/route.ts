@@ -1,50 +1,68 @@
-'use server'
+"use server";
 
-import { NextResponse } from 'next/server'
-import { config } from '@/lib/config'
+import { NextResponse } from "next/server";
+import { config } from "@/lib/config";
+
+/**
+ * GET /api/services
+ * Aggregates running Docker containers into service summary with metadata.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Infrastructure Evidence
+ * Returns container status, uptime, categorization for TechnicalShowcase and
+ * HeroSection stats ("8+ Live Services", "99.9% Avg Uptime").
+ * Only exposes running containers for portfolio service showcase.
+ */
 
 async function getDockerContainers() {
   try {
     // Use dockerproxy service from docker-compose.yml
-    const dockerProxyUrl = process.env.DOCKER_PROXY_URL || 'http://dockerproxy:2375'
-    
+    const dockerProxyUrl =
+      process.env.DOCKER_PROXY_URL || "http://dockerproxy:2375";
+
     // Get list of containers
-    const containersRes = await fetch(`${dockerProxyUrl}/containers/json?all=true`, {
-      cache: 'no-store',
-      headers: { 'Accept': 'application/json' }
-    })
-    
+    const containersRes = await fetch(
+      `${dockerProxyUrl}/containers/json?all=true`,
+      {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      },
+    );
+
     if (!containersRes.ok) {
-      throw new Error(`Docker API failed: ${containersRes.status}`)
+      throw new Error(`Docker API failed: ${containersRes.status}`);
     }
-    
-    const containers = await containersRes.json()
-    
+
+    const containers = await containersRes.json();
+
     const services = containers.map((container: any) => {
-      const name = container.Names?.[0]?.replace('/', '') || 'unknown'
-      const image = container.Image || 'unknown'
-      const state = container.State || 'unknown'
-      const status = container.Status || 'unknown'
-      
+      const name = container.Names?.[0]?.replace("/", "") || "unknown";
+      const image = container.Image || "unknown";
+      const state = container.State || "unknown";
+      const status = container.Status || "unknown";
+
       // Extract labels for categorization
-      const labels = container.Labels || {}
-      const category = labels['homepage.group'] || 
-                     (labels['traefik.enable'] ? 'web' : 'infrastructure')
-      
+      const labels = container.Labels || {};
+      const category =
+        labels["homepage.group"] ||
+        (labels["traefik.enable"] ? "web" : "infrastructure");
+
       // Get port information
-      const ports = container.Ports || []
-      const exposedPorts = ports.map((p: any) => p.PublicPort || p.PrivatePort).filter(Boolean)
-      
+      const ports = container.Ports || [];
+      const exposedPorts = ports
+        .map((p: any) => p.PublicPort || p.PrivatePort)
+        .filter(Boolean);
+
       return {
         id: name,
-        name: name.charAt(0).toUpperCase() + name.slice(1).replace('-', ' '),
+        name: name.charAt(0).toUpperCase() + name.slice(1).replace("-", " "),
         description: `${image} container`,
-        status: state === 'running' ? 'online' : 'offline',
+        status: state === "running" ? "online" : "offline",
         category,
-        technology: [image.split(':')[0]],
-        uptime: state === 'running' ? 100 : 0,
-        url: labels['traefik.http.routers.' + name + '.rule'] ? 
-             `https://${name}.${process.env.DOMAIN || 'localhost'}` : undefined,
+        technology: [image.split(":")[0]],
+        uptime: state === "running" ? 100 : 0,
+        url: labels["traefik.http.routers." + name + ".rule"]
+          ? `https://${name}.${process.env.DOMAIN || "localhost"}`
+          : undefined,
         ports: exposedPorts,
         image,
         created: container.Created,
@@ -56,82 +74,92 @@ async function getDockerContainers() {
           requestsPerMinute: 0,
           responseTime: 0,
         },
-      }
-    })
-    
-    const onlineCount = services.filter((s: any) => s.status === 'online').length
-    const avgUptime = services.length ? 
-      services.reduce((a: number, s: any) => a + s.uptime, 0) / services.length : 0
-    
-    const categoryStats: Record<string, number> = {}
+      };
+    });
+
+    const onlineCount = services.filter(
+      (s: any) => s.status === "online",
+    ).length;
+    const avgUptime = services.length
+      ? services.reduce((a: number, s: any) => a + s.uptime, 0) /
+        services.length
+      : 0;
+
+    const categoryStats: Record<string, number> = {};
     services.forEach((s: any) => {
-      categoryStats[s.category] = (categoryStats[s.category] || 0) + 1
-    })
-    
+      categoryStats[s.category] = (categoryStats[s.category] || 0) + 1;
+    });
+
     // Get historical data from Prometheus if available
-    let statsHistory: any[] = []
+    let statsHistory: any[] = [];
     try {
-      const prometheusUrl = process.env.PROMETHEUS_URL || 'http://prometheus:9090'
-      const historyRes = await fetch(`${prometheusUrl}/api/v1/query_range?query=up&start=${Math.floor(Date.now()/1000)-86400}&end=${Math.floor(Date.now()/1000)}&step=3600`, {
-        cache: 'no-store'
-      })
-      
+      const prometheusUrl =
+        process.env.PROMETHEUS_URL || "http://prometheus:9090";
+      const historyRes = await fetch(
+        `${prometheusUrl}/api/v1/query_range?query=up&start=${Math.floor(Date.now() / 1000) - 86400}&end=${Math.floor(Date.now() / 1000)}&step=3600`,
+        {
+          cache: "no-store",
+        },
+      );
+
       if (historyRes.ok) {
-        const historyData = await historyRes.json()
-        const results = historyData?.data?.result || []
-        
+        const historyData = await historyRes.json();
+        const results = historyData?.data?.result || [];
+
         if (results.length > 0) {
-          const values = results[0]?.values || []
+          const values = results[0]?.values || [];
           statsHistory = values.map((v: any) => ({
             timestamp: new Date(v[0] * 1000).toISOString(),
             uptime: Number(v[1]) * 100,
             cpu: 0,
             memory: 0,
             requests: 0,
-          }))
+          }));
         }
       }
     } catch (e) {
       // If Prometheus unavailable, leave history empty
     }
-    
+
     return {
       services,
       stats: {
         totalServices: services.length,
         onlineServices: onlineCount,
         avgUptime: Number(avgUptime.toFixed(1)),
-        systemHealth: services.length ? Math.round((onlineCount / services.length) * 100) : 0,
+        systemHealth: services.length
+          ? Math.round((onlineCount / services.length) * 100)
+          : 0,
         avgCpu: 0,
         avgMemory: 0,
         categoryDistribution: categoryStats,
         history: statsHistory,
       },
-    }
+    };
   } catch (error) {
-    throw new Error(`Failed to fetch Docker containers: ${error}`)
+    throw new Error(`Failed to fetch Docker containers: ${error}`);
   }
 }
 
 export async function GET() {
   try {
-    const data = await getDockerContainers()
-    return NextResponse.json(data)
+    const data = await getDockerContainers();
+    return NextResponse.json(data);
   } catch (error) {
     // Provide fallback data for development/demo purposes
     const fallbackData = {
       services: [
         {
-          id: 'homepage',
-          name: 'Homepage',
-          description: 'Homepage dashboard service',
-          status: 'online',
-          category: 'web',
-          technology: ['homepage'],
+          id: "homepage",
+          name: "Homepage",
+          description: "Homepage dashboard service",
+          status: "online",
+          category: "web",
+          technology: ["homepage"],
           uptime: 100,
-          url: config.getSubdomainUrl('homepage'),
+          url: config.getSubdomainUrl("homepage"),
           ports: [3000],
-          image: 'ghcr.io/gethomepage/homepage',
+          image: "ghcr.io/gethomepage/homepage",
           created: Date.now(),
           metrics: {
             cpu: 5,
@@ -143,16 +171,16 @@ export async function GET() {
           },
         },
         {
-          id: 'searxng',
-          name: 'SearXNG',
-          description: 'Privacy-respecting search engine',
-          status: 'online',
-          category: 'web',
-          technology: ['searxng'],
+          id: "searxng",
+          name: "SearXNG",
+          description: "Privacy-respecting search engine",
+          status: "online",
+          category: "web",
+          technology: ["searxng"],
           uptime: 99.5,
-          url: config.getSubdomainUrl('search'),
+          url: config.getSubdomainUrl("search"),
           ports: [8080],
-          image: 'searxng/searxng',
+          image: "searxng/searxng",
           created: Date.now(),
           metrics: {
             cpu: 10,
@@ -162,7 +190,7 @@ export async function GET() {
             requestsPerMinute: 50,
             responseTime: 200,
           },
-        }
+        },
       ],
       stats: {
         totalServices: 2,
@@ -174,8 +202,8 @@ export async function GET() {
         categoryDistribution: { web: 2 },
         history: [],
       },
-    }
-    
-    return NextResponse.json(fallbackData)
+    };
+
+    return NextResponse.json(fallbackData);
   }
 }

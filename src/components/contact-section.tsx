@@ -1,362 +1,182 @@
 "use client";
 
-import { motion } from "framer-motion";
+/**
+ * Generic contact form section for main site discovery context.
+ *
+ * CONTEXT: Discovery/Reference (non-portfolio)
+ * Renders on /contact page for general reach-out communication.
+ * NOT portfolio-focused discussion (no enterprise/collaboration emphasis).
+ *
+ * For portfolio-specific contact/discussion, see AboutContactSection (/about#contact):
+ * - AboutContactSection emphasizes infrastructure challenges, collaboration, partnerships
+ * - ContactSection is generic "get in touch" channel
+ */
+
 import { config } from "@/lib/config";
-import {
-  Mail,
-  Github,
-  Clock,
-  MapPin,
-  MessageSquare,
-  Calendar,
-  CheckCircle,
-  Phone,
-  Video,
-  FileText,
-  Users,
-  Globe,
-} from "lucide-react";
-import { Section } from "./section";
+import { Mail, Github, Clock, MapPin } from "lucide-react";
 import { contactInfo } from "@/lib/data";
-import { cn } from "@/lib/utils";
-
-const ContactMethod = ({
-  icon: Icon,
-  title,
-  description,
-  preferred = false,
-  href,
-  external = false,
-}: {
-  icon: any;
-  title: string;
-  description: string;
-  preferred?: boolean;
-  href?: string;
-  external?: boolean;
-}) => {
-  const content = (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className={cn(
-        "glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300",
-        preferred && "border-2 border-primary/30 bg-primary/5",
-      )}
-    >
-      {preferred && (
-        <div className="flex items-center gap-2 mb-3">
-          <CheckCircle className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium text-primary">Preferred</span>
-        </div>
-      )}
-      <div className="flex items-start gap-4">
-        <div
-          className={cn(
-            "p-3 rounded-lg",
-            preferred ? "bg-primary/20" : "bg-primary/10",
-          )}
-        >
-          <Icon className="h-6 w-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-foreground mb-2">{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
-        </div>
-      </div>
-    </motion.div>
-  );
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="block focus-ring rounded-lg"
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return content;
-};
-
-const InfoCard = ({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: any;
-  label: string;
-  value: string;
-}) => (
-  <div className="flex items-center gap-3">
-    <div className="p-2 bg-primary/20 rounded-lg">
-      <Icon className="h-4 w-4 text-primary" />
-    </div>
-    <div>
-      <div className="text-sm text-muted-foreground">{label}</div>
-      <div className="font-medium text-foreground">{value}</div>
-    </div>
-  </div>
-);
-
-const PreferenceCard = ({
-  icon: Icon,
-  title,
-  items,
-  href,
-  external,
-}: {
-  icon: any;
-  title: string;
-  items: string[];
-  href?: string;
-  external?: boolean;
-}) => {
-  const content = (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="glass rounded-lg p-6 hover:bg-white/5 transition-all duration-300 h-full"
-    >
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-primary/20 rounded-lg">
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-        <h3 className="font-semibold text-foreground">{title}</h3>
-      </div>
-      <ul className="space-y-2">
-        {items.map((item, index) => (
-          <li
-            key={index}
-            className="flex items-center gap-2 text-sm text-muted-foreground"
-          >
-            <CheckCircle className="h-3 w-3 text-primary" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
-
-  if (!href) {
-    return content;
-  }
-
-  return (
-    <a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      className="block h-full"
-    >
-      {content}
-    </a>
-  );
-};
 
 export function ContactSection() {
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email",
-      description:
-        "Best for detailed discussions, project proposals, and formal communications",
-      preferred: true,
-      href: `mailto:${contactInfo.email}`,
-      external: false,
-    },
-    {
-      icon: Github,
-      title: "GitHub",
-      description:
-        "View my code, contribute to projects, or discuss technical implementations",
-      preferred: false,
-      href: contactInfo.github,
-      external: true,
-    },
-    {
-      icon: MessageSquare,
-      title: "Text-based Chat",
-      description:
-        "Quick questions, technical discussions, and project coordination",
-      preferred: true,
-      href: `mailto:${contactInfo.email}?subject=Chat%20Request`,
-      external: false,
-    },
-  ];
-
-  const workTypes = [];
-  if (contactInfo.workPreferences.fullTime) workTypes.push("Full-time");
-  if (contactInfo.workPreferences.contract) workTypes.push("Contract");
-  if (contactInfo.workPreferences.partTime) workTypes.push("Part-time");
-
   return (
-    <Section
-      id="contact"
-      title="Let's Connect"
-      subtitle="Looking for a technical engineer who can build, deploy, and maintain complex systems? Let's discuss how I can help your team."
-      background="gradient"
-    >
-      {/* Availability Status */}
-      <div className="mb-16">
-        <div className="glass rounded-lg p-8 max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-green-400 capitalize">
-              {contactInfo.availability.replace("-", " ")}
-            </span>
-          </div>
-          <h3 className="text-2xl font-semibold mb-4">Currently Available</h3>
-          <p className="text-muted-foreground mb-6">
-            Ready to take on new challenges in infrastructure, backend systems,
-            or full-stack development. Interested in both short-term consulting
-            and long-term opportunities.
-          </p>
-        </div>
-      </div>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-20">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.2em] mb-4">
+        Contact
+      </p>
+      <h1 className="text-3xl font-semibold text-foreground mb-3">
+        Get in touch
+      </h1>
+      <p className="text-muted-foreground mb-12 max-w-lg leading-relaxed">
+        Email is the best way to reach me. I typically respond within 24 hours.
+        Prefer async communication and written follow-ups.
+      </p>
 
-      {/* Contact Information */}
-      <div className="mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <InfoCard
-            icon={MapPin}
-            label="Location"
-            value={contactInfo.location}
-          />
-          <InfoCard
-            icon={Clock}
-            label="Timezone"
-            value={contactInfo.timezone}
-          />
-          <InfoCard
-            icon={Calendar}
-            label="Response Time"
-            value="Usually within 24 hours"
-          />
-          <InfoCard
-            icon={Users}
-            label="Team Size"
-            value="Remote work, distributed teams"
-          />
-        </div>
-      </div>
-
-      {/* Contact Methods */}
-      <div className="mb-16">
-        <h3 className="text-2xl font-semibold mb-8 text-center">
-          Get in Touch
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {contactMethods.map((method, index) => (
-            <ContactMethod key={index} {...method} />
-          ))}
-        </div>
-      </div>
-
-      {/* Work Preferences */}
-      <div className="mb-16">
-        <h3 className="text-2xl font-semibold mb-8 text-center">
-          Work Preferences
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <PreferenceCard
-            icon={MessageSquare}
-            title="Communication"
-            items={contactInfo.preferredCommunication}
-            href={`mailto:${contactInfo.email}`}
-          />
-          <PreferenceCard
-            icon={Calendar}
-            title="Work Types"
-            items={workTypes}
-            href="/contact"
-          />
-          <PreferenceCard
-            icon={Globe}
-            title="Remote Work"
-            items={[
-              "Fully remote",
-              "Distributed teams",
-              "Async collaboration",
-              "Flexible hours",
-            ]}
-            href={contactInfo.github}
-            external
-          />
-        </div>
-      </div>
-
-      {/* Communication Style */}
-      <div className="mb-16">
-        <div className="glass rounded-lg p-8 max-w-4xl mx-auto">
-          <h3 className="text-xl font-semibold mb-6 text-center">
-            Communication Style
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" />
-                Preferred Methods
-              </h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Email for detailed discussions and project planning</li>
-                <li>• Text-based chat for quick questions and coordination</li>
-                <li>• Documentation and written specifications</li>
-                <li>• Asynchronous communication across time zones</li>
-              </ul>
+      {/* Primary actions */}
+      <div className="space-y-3 mb-14">
+        <a
+          href={`mailto:${contactInfo.email}`}
+          className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary/40 bg-secondary/30 hover:bg-secondary/50 transition-all group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-md bg-primary/10">
+              <Mail className="h-4 w-4 text-primary" aria-hidden="true" />
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Phone className="h-5 w-5 text-muted-foreground" />
-                Limited Availability
-              </h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Phone calls by appointment only</li>
-                <li>
-                  • Video calls for initial meetings or complex discussions
-                </li>
-                <li>
-                  • Prefer written follow-ups for all verbal communications
-                </li>
-                <li>• Response time may vary for real-time communications</li>
-              </ul>
+              <p className="text-sm font-medium text-foreground">Email</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {contactInfo.email}
+              </p>
+            </div>
+          </div>
+          <span className="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Preferred
+          </span>
+        </a>
+
+        <a
+          href={contactInfo.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/40 bg-secondary/30 hover:bg-secondary/50 transition-all"
+        >
+          <div className="p-2 rounded-md bg-primary/10">
+            <Github className="h-4 w-4 text-primary" aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-foreground">GitHub</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Open source projects &amp; code
+            </p>
+          </div>
+        </a>
+      </div>
+
+      {/* Info grid */}
+      <div className="border-t border-border pt-10">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.2em] mb-6">
+          Details
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-md bg-secondary/50 mt-0.5">
+              <MapPin
+                className="h-3.5 w-3.5 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-0.5">Location</p>
+              <p className="text-sm font-medium text-foreground">
+                {contactInfo.location}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-md bg-secondary/50 mt-0.5">
+              <Clock
+                className="h-3.5 w-3.5 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-0.5">Timezone</p>
+              <p className="text-sm font-medium text-foreground">
+                {contactInfo.timezone}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-md bg-secondary/50 mt-0.5">
+              <Mail
+                className="h-3.5 w-3.5 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-0.5">
+                Response time
+              </p>
+              <p className="text-sm font-medium text-foreground">
+                Within 24 hours
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-md bg-secondary/50 mt-0.5">
+              <Github
+                className="h-3.5 w-3.5 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-0.5">
+                Availability
+              </p>
+              <p className="text-sm font-medium text-foreground capitalize">
+                {contactInfo.availability.replace("-", " ")}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Call to Action */}
-      <div className="text-center">
-        <div className="glass rounded-lg p-8 max-w-2xl mx-auto">
-          <Mail className="h-16 w-16 text-primary mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold mb-4">Ready to Start?</h3>
-          <p className="text-muted-foreground mb-6">
-            Whether you have a specific project in mind or want to discuss
-            potential opportunities, I'd love to hear from you. Let's build
-            something amazing together.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href={`mailto:${contactInfo.email}?subject=Project%20Inquiry&body=Hi%20${encodeURIComponent(config.OWNER_NAME.split(" ")[0])},%0D%0A%0D%0AI'm%20interested%20in%20discussing%20a%20potential%20opportunity.%20Here%20are%20some%20details:%0D%0A%0D%0AProject%20Type:%20%0D%0ADuration:%20%0D%0ATech%20Stack:%20%0D%0ATeam%20Size:%20%0D%0A%0D%0ALooking%20forward%20to%20hearing%20from%20you!`}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              <Mail className="h-4 w-4" />
-              Email Me
-            </a>
-            <a
-              href={contactInfo.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-colors rounded-lg"
-            >
-              <Github className="h-4 w-4" />
-              GitHub Profile
-            </a>
+      {/* Communication preferences */}
+      <div className="border-t border-border pt-10 mt-10">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.2em] mb-4">
+          Communication
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div>
+            <p className="text-sm font-medium text-foreground mb-3">
+              Preferred
+            </p>
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <li>Email for detailed discussions</li>
+              <li>Written specs and documentation</li>
+              <li>Async across time zones</li>
+              <li>Text-based chat for quick questions</li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-foreground mb-3">Limited</p>
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <li>Phone calls by appointment only</li>
+              <li>Video for initial or complex meetings</li>
+              <li>Always prefer written follow-ups</li>
+            </ul>
           </div>
         </div>
       </div>
-    </Section>
+
+      {/* CTA */}
+      <div className="border-t border-border pt-10 mt-10">
+        <a
+          href={`mailto:${contactInfo.email}?subject=Project%20Inquiry`}
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium text-sm px-5 py-2.5 rounded-md hover:opacity-90 transition-opacity"
+        >
+          <Mail className="h-4 w-4" aria-hidden="true" />
+          Send an email
+        </a>
+      </div>
+    </div>
   );
 }

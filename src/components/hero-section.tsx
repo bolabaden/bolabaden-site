@@ -1,5 +1,18 @@
 "use client";
 
+/**
+ * About page hero section with portfolio stats and service uptime.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Hero
+ * Renders on /about as portfolio entry point, featuring:
+ * - Years of experience
+ * - Live services count (infrastructure proof)
+ * - Infrastructure uptime (reliability proof)
+ * Links to /about sections for portfolio navigation.
+ *
+ * Does NOT render on main site (home page has separate inline hero).
+ */
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -81,7 +94,7 @@ export function HeroSection() {
       {/* Floating Elements */}
       <FloatingElements />
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
+      <div className="container mx-auto px-2 py-12 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Profile Photo */}
           <motion.div

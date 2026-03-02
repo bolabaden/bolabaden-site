@@ -1,3 +1,12 @@
+/**
+ * Shared TypeScript interface definitions.
+ *
+ * CONTEXT: Shared/Generic Types
+ * Defines Service, Project, TechStack, ContactInfo, Guide, etc.
+ * Used across both portfolio and discovery components and APIs.
+ * Context-agnostic; properties reflect different usage contexts.
+ */
+
 export interface Service {
   id: string;
   name: string;

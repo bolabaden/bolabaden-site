@@ -1,3 +1,12 @@
+/**
+ * Shared SEO metadata builder for all pages.
+ *
+ * CONTEXT: Shared/Generic SEO
+ * Builds Next.js Metadata objects for all routes (portfolio and discovery).
+ * Generates canonical URLs, OG metadata, and structured data.
+ * Used by page.tsx files across the site.
+ */
+
 import type { Metadata } from "next";
 import { config } from "@/lib/config";
 

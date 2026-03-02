@@ -794,6 +794,15 @@ export const LANGUAGE_ALIASES: Record<string, string> = Object.freeze({
   ...normalizeAliasMapKeys(LANGUAGE_ALIASES_OVERRIDES),
 });
 
+/**
+ * Knowledge base for skill inference: language tags, hints, patterns.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Skill Detection
+ * Taxonomy of language aliases, file type hints, topic patterns, negative signals.
+ * Reference data for evidence-based skill detection from GitHub repos.
+ * Supports /api/github/skills analysis and AboutSection visualizations.
+ */
+
 export const TOKEN_LANGUAGE_HINTS: Record<string, WeightedLanguageHint> =
   Object.freeze({
     ...TOKEN_LANGUAGE_HINTS_DEFAULTS,

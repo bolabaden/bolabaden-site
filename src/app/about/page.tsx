@@ -3,11 +3,11 @@ import Link from "next/link";
 import { AboutNavigation } from "@/components/about-navigation";
 import { HeroSection } from "@/components/hero-section";
 import { EmbedsSection } from "@/components/embeds-section";
-import { ProjectsSection } from "@/components/projects-section";
-import { GuidesSection } from "@/components/guides-section";
+import { AboutProjectsSection } from "@/components/about-projects-section";
+import { AboutGuidesSection } from "@/components/about-guides-section";
 import { GitHubStatsSection } from "@/components/github-stats-section";
 import { AboutSection } from "@/components/about-section";
-import { ContactSection } from "@/components/contact-section";
+import { AboutContactSection } from "@/components/about-contact-section";
 import { Footer } from "@/components/footer";
 import { SideToc, type TocItem } from "@/components/side-toc";
 import { SectionErrorBoundary } from "@/components/section-error-boundary";
@@ -97,12 +97,14 @@ export default async function AboutPage() {
       {aboutTocItems.length > 0 && <SideToc items={aboutTocItems} />}
       <main className="min-h-screen bg-background pb-24 pt-32 md:pb-0">
         <section className="py-10 border-b border-border/50 bg-muted/10">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-2">
             <div className="grid gap-4 md:grid-cols-3">
               {config.HOME_HUB_CARDS.slice(0, 3).map((card) => (
                 <Link
                   key={card.title}
-                  href={card.href}
+                  href={
+                    card.href === "/projects" ? "/about#projects" : card.href
+                  }
                   className="group rounded-xl border border-border bg-background/70 p-5 transition-colors hover:border-primary/50"
                 >
                   <h2 className="text-lg font-semibold text-foreground mb-2">
@@ -149,9 +151,9 @@ export default async function AboutPage() {
               return (
                 <SectionErrorBoundary
                   key={section.id}
-                  fallbackTitle="Projects section failed to load"
+                  fallbackTitle="Portfolio section failed to load"
                 >
-                  <ProjectsSection />
+                  <AboutProjectsSection />
                 </SectionErrorBoundary>
               );
             }
@@ -162,7 +164,7 @@ export default async function AboutPage() {
                   key={section.id}
                   fallbackTitle="Guides section failed to load"
                 >
-                  <GuidesSection guides={guides} />
+                  <AboutGuidesSection guides={guides} />
                 </SectionErrorBoundary>
               );
             }
@@ -194,7 +196,7 @@ export default async function AboutPage() {
                 key={section.id}
                 fallbackTitle="Contact section failed to load"
               >
-                <ContactSection />
+                <AboutContactSection />
               </SectionErrorBoundary>
             );
           })}

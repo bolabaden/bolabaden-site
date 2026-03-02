@@ -234,6 +234,13 @@ export const config = {
     "NEXT_PUBLIC_HOME_HUB_INTRO",
     "This entry page is intentionally broad: monitor live systems, navigate to focused pages, and expand into new content without restructuring the whole site.",
   ),
+  /**
+   * HOME_HUB_CARDS: Main entry points that reflect the portfolio/discovery split:
+   * - About: Portfolio-focused (curated projects, background, discussion)
+   * - Service Dashboard: Operational status monitoring
+   * - Contributions: Dynamic discovery of all repos, gists, activity
+   * - Technical Playbooks: Reference guides and implementation docs
+   */
   HOME_HUB_CARDS: envJson<HomeHubCard[]>("NEXT_PUBLIC_HOME_HUB_CARDS_JSON", [
     {
       title: "About",
@@ -252,20 +259,20 @@ export const config = {
       cta: "Open Monitoring",
     },
     {
-      title: "Projects",
+      title: "Contributions",
       description:
-        "Public tools, demos, and production-oriented builds grouped in one view.",
+        "Dynamically ranked repositories, gists, and open-source activity explorer.",
       href: "/projects",
       icon: "blocks",
-      cta: "Open Projects",
+      cta: "Explore Contributions",
     },
     {
-      title: "Technical Guides",
+      title: "Technical Playbooks",
       description:
-        "Long-form walkthroughs, references, and practical implementation guides.",
+        "Reference guides, walkthroughs, and implementation documentation.",
       href: "/guides",
       icon: "book",
-      cta: "Read Guides",
+      cta: "Browse Playbooks",
     },
   ]),
   HOME_LAYOUT_SECTIONS: envJson<HomeLayoutSection[]>(
@@ -408,28 +415,28 @@ export const config = {
   CONTACT_PAGE_TITLE: envString("NEXT_PUBLIC_CONTACT_PAGE_TITLE", "Contact"),
   CONTACT_PAGE_DESCRIPTION: envString(
     "NEXT_PUBLIC_CONTACT_PAGE_DESCRIPTION",
-    "Get in touch to start a conversation, ask questions, or discuss potential collaboration.",
+    "Direct contact options including email and social profiles. Reach out for questions, collaborations, or inquiries.",
   ),
   DASHBOARD_PAGE_TITLE: envString(
     "NEXT_PUBLIC_DASHBOARD_PAGE_TITLE",
-    "Dashboard — Live Services",
+    "Dashboard — Status & Monitoring",
   ),
   DASHBOARD_PAGE_DESCRIPTION: envString(
     "NEXT_PUBLIC_DASHBOARD_PAGE_DESCRIPTION",
-    "Live embedded views of self-hosted services including AI Research Wizard, SearXNG, and Homepage Dashboard.",
+    "Live status, monitoring, and embedded views of production self-hosted services and infrastructure.",
   ),
   PROJECTS_PAGE_TITLE: envString("NEXT_PUBLIC_PROJECTS_PAGE_TITLE", "Projects"),
   PROJECTS_PAGE_DESCRIPTION: envString(
     "NEXT_PUBLIC_PROJECTS_PAGE_DESCRIPTION",
-    "Explore public tools, infrastructure services, and production-focused engineering projects.",
+    "Explore dynamically ranked repositories and gists by stars, commits, popularity, ownership, and contribution context.",
   ),
   GUIDES_PAGE_TITLE: envString(
     "NEXT_PUBLIC_GUIDES_PAGE_TITLE",
-    "Technical Guides",
+    "Technical Playbooks",
   ),
   GUIDES_PAGE_DESCRIPTION: envString(
     "NEXT_PUBLIC_GUIDES_PAGE_DESCRIPTION",
-    "Browse detailed technical guides on Kubernetes, Docker, Terraform, and infrastructure engineering.",
+    "Reference guides and technical walkthroughs on Kubernetes, Docker, Terraform, and infrastructure engineering. Implementation-focused documentation.",
   ),
   GUIDES_INDEX_SECTION_TITLE: envString(
     "NEXT_PUBLIC_GUIDES_INDEX_SECTION_TITLE",
@@ -453,20 +460,33 @@ export const config = {
   ),
 
   /** Navigation */
+  /**
+   * NAV_ITEMS: Main site navigation emphasizing discovery and reference
+   * - Contributions: Dynamic explorer of all repositories, gists, and activity
+   * - Status: Operational monitoring of live services
+   * - Playbooks: Technical reference documentation
+   */
   NAV_ITEMS: envJson<NavigationItem[]>("NEXT_PUBLIC_NAV_ITEMS_JSON", [
     { href: "/", label: "Home" },
-    { href: "/projects", label: "Projects" },
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/guides", label: "Guides" },
+    { href: "/projects", label: "Contributions" },
+    { href: "/dashboard", label: "Status" },
+    { href: "/guides", label: "Playbooks" },
     { href: "/contact", label: "Contact" },
   ]),
+  /**
+   * ABOUT_NAV_ITEMS: About page navigation emphasizing portfolio and background
+   * Links anchor to sections within /about to keep context cohesive
+   * - Portfolio: Curated projects and production-ready work
+   * - Learning: Technical knowledge sharing and infrastructure walkthroughs
+   * - Discuss: Direct contact for technical collaboration
+   */
   ABOUT_NAV_ITEMS: envJson<NavigationItem[]>(
     "NEXT_PUBLIC_ABOUT_NAV_ITEMS_JSON",
     [
-      { href: "/", label: "Main Site" },
-      { href: "/projects", label: "Builds" },
-      { href: "/guides", label: "Playbooks" },
-      { href: "/contact", label: "Reach Out" },
+      { href: "/", label: "Home" },
+      { href: "/about#projects", label: "Portfolio" },
+      { href: "/about#guides", label: "Learning" },
+      { href: "/about#contact", label: "Discuss" },
     ],
   ),
   NAV_FUTURE_PLACEHOLDERS: envJson<string[]>(
@@ -495,17 +515,24 @@ export const config = {
     "About",
   ),
 
-  /** About page TOC */
+  /**
+   * About page layout configuration
+   * Emphasizes portfolio, background, and discussion context
+   * "Portfolio" showcases production-ready work (not general Contributions explorer)
+   * "Learning" highlights guides as knowledge-sharing, not reference docs
+   * "GitHub Activity" emphasizes contribution metrics (not just repositories)
+   * All CTAs anchor within /about for cohesive portfolio experience
+   */
   ABOUT_LAYOUT_SECTIONS: envJson<AboutLayoutSection[]>(
     "NEXT_PUBLIC_ABOUT_LAYOUT_SECTIONS_JSON",
     [
       { id: "hero", label: "Overview", enabled: true, order: 1 },
       { id: "embeds", label: "Live Services", enabled: true, order: 2 },
-      { id: "projects", label: "Projects", enabled: true, order: 3 },
-      { id: "guides", label: "Guides", enabled: true, order: 4 },
-      { id: "github-stats", label: "GitHub Stats", enabled: true, order: 5 },
-      { id: "about", label: "About", enabled: true, order: 6 },
-      { id: "contact", label: "Contact", enabled: true, order: 7 },
+      { id: "projects", label: "Portfolio", enabled: true, order: 3 },
+      { id: "guides", label: "Learning", enabled: true, order: 4 },
+      { id: "github-stats", label: "GitHub Activity", enabled: true, order: 5 },
+      { id: "about", label: "Background", enabled: true, order: 6 },
+      { id: "contact", label: "Reach Out", enabled: true, order: 7 },
     ],
   ),
   ABOUT_EMBEDS_MODE: envString("NEXT_PUBLIC_ABOUT_EMBEDS_MODE", "default"),
@@ -518,11 +545,11 @@ export const config = {
     [
       { id: "hero", label: "Overview" },
       { id: "embeds", label: "Live Services" },
-      { id: "projects", label: "Projects" },
-      { id: "guides", label: "Guides" },
-      { id: "github-stats", label: "GitHub Stats" },
-      { id: "about", label: "About" },
-      { id: "contact", label: "Contact" },
+      { id: "projects", label: "Portfolio" },
+      { id: "guides", label: "Learning" },
+      { id: "github-stats", label: "GitHub Activity" },
+      { id: "about", label: "Background" },
+      { id: "contact", label: "Reach Out" },
     ],
   ),
 
@@ -572,7 +599,7 @@ export const config = {
   ),
   OG_ABOUT_DESCRIPTION: envString(
     "NEXT_PUBLIC_OG_ABOUT_DESCRIPTION",
-    "Projects, live services, technical guides, and engineering background.",
+    "Complete portfolio, professional background, live services, and technical expertise overview.",
   ),
   OG_CONTACT_TITLE: envString("NEXT_PUBLIC_OG_CONTACT_TITLE", "Contact"),
   OG_CONTACT_SUBTITLE: envString(
@@ -585,33 +612,36 @@ export const config = {
   ),
   OG_DASHBOARD_TITLE: envString(
     "NEXT_PUBLIC_OG_DASHBOARD_TITLE",
-    "Service Dashboard",
+    "Status & Monitoring",
   ),
   OG_DASHBOARD_SUBTITLE: envString(
     "NEXT_PUBLIC_OG_DASHBOARD_SUBTITLE",
-    "Live Infrastructure Views",
+    "Live Service Status",
   ),
   OG_DASHBOARD_DESCRIPTION: envString(
     "NEXT_PUBLIC_OG_DASHBOARD_DESCRIPTION",
-    "Real-time service visibility for self-hosted platforms and operations.",
+    "Real-time uptime and status monitoring for self-hosted infrastructure and services.",
   ),
-  OG_GUIDES_TITLE: envString("NEXT_PUBLIC_OG_GUIDES_TITLE", "Technical Guides"),
+  OG_GUIDES_TITLE: envString(
+    "NEXT_PUBLIC_OG_GUIDES_TITLE",
+    "Technical Playbooks",
+  ),
   OG_GUIDES_SUBTITLE: envString(
     "NEXT_PUBLIC_OG_GUIDES_SUBTITLE",
-    "Practical Infrastructure Knowledge",
+    "Reference Documentation & Walkthroughs",
   ),
   OG_GUIDES_DESCRIPTION: envString(
     "NEXT_PUBLIC_OG_GUIDES_DESCRIPTION",
-    "Kubernetes, Docker, Terraform, VS Code workflows, and production patterns.",
+    "Implementation guides for Kubernetes, Docker, Terraform, VS Code automation, and infrastructure patterns.",
   ),
   OG_PROJECTS_TITLE: envString("NEXT_PUBLIC_OG_PROJECTS_TITLE", "Projects"),
   OG_PROJECTS_SUBTITLE: envString(
     "NEXT_PUBLIC_OG_PROJECTS_SUBTITLE",
-    "Public Tools & Services",
+    "Contributions & Gists",
   ),
   OG_PROJECTS_DESCRIPTION: envString(
     "NEXT_PUBLIC_OG_PROJECTS_DESCRIPTION",
-    "Production-minded engineering projects with open-source visibility.",
+    "Dynamic contribution intelligence across repositories and gists, grouped by ownership and use case.",
   ),
 
   /** Homepage section toggles */

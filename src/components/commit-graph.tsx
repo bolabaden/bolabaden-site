@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Commit activity visualization for repositories.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Visualization
+ * Renders in EnhancedProjectCard (used by AboutProjectsSection) to show
+ * contribution velocity and commit history as portfolio evidence.
+ * Clickable bars link to GitHub commits for transparency.
+ */
+
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";

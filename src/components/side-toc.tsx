@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Side table of contents navigation.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Navigation
+ * Renders in About page to provide in-page anchor navigation with smooth scrolling.
+ * Shows active section highlight as user reads through portfolio sections.
+ */
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -83,15 +91,15 @@ export function SideToc({ items }: SideTocProps) {
     <>
       <aside
         aria-label="Section table of contents"
-        className="pointer-events-none fixed left-3 top-32 bottom-4 z-40 hidden md:block xl:left-6"
+        className="pointer-events-none fixed right-3 top-32 bottom-4 z-40 hidden md:block xl:right-6"
       >
         <nav
-          className="pointer-events-auto relative h-full w-28"
+          className="pointer-events-auto relative h-full w-32"
           aria-label="Sections timeline"
         >
           <span
             aria-hidden="true"
-            className="absolute left-6 top-0 bottom-0 w-px bg-primary/30"
+            className="absolute left-2 top-0 bottom-0 w-px bg-primary/30"
           />
 
           <ul className="relative flex h-full flex-col justify-between py-2">
@@ -100,18 +108,18 @@ export function SideToc({ items }: SideTocProps) {
               const isReached = activeIndex >= 0 && index <= activeIndex;
 
               return (
-                <li key={item.id} className="relative pl-1">
+                <li key={item.id} className="relative">
                   <motion.button
                     type="button"
                     whileTap={{ scale: 0.96 }}
                     animate={{
-                      scale: isActive ? 1.1 : isReached ? 1.03 : 1,
-                      x: isActive ? 3 : 0,
+                      scale: isActive ? 1.15 : isReached ? 1.03 : 1,
+                      x: isActive ? -3 : 0,
                     }}
                     transition={{ type: "spring", stiffness: 320, damping: 28 }}
                     onClick={() => scrollToSection(item.id)}
                     className={cn(
-                      "group relative flex w-full items-center rounded-full px-2 py-5 text-left transition-all duration-300 focus-ring",
+                      "group relative flex w-full items-center justify-start rounded-full px-2 py-5 text-left transition-all duration-300 focus-ring",
                       isActive
                         ? "text-foreground"
                         : "text-muted-foreground hover:text-foreground",
@@ -121,9 +129,9 @@ export function SideToc({ items }: SideTocProps) {
                   >
                     <span
                       className={cn(
-                        "relative z-10 ml-4 h-2.5 w-2.5 rounded-full transition-all duration-300",
+                        "relative z-10 h-3 w-3 rounded-full transition-all duration-300",
                         isActive
-                          ? "bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.9)]"
+                          ? "bg-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)]"
                           : isReached
                             ? "bg-primary/70"
                             : "bg-muted-foreground/40 group-hover:bg-primary/60 group-focus-visible:bg-primary/60",
@@ -132,9 +140,9 @@ export function SideToc({ items }: SideTocProps) {
                     >
                       <span
                         className={cn(
-                          "pointer-events-none absolute left-1/2 -top-4 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium transition-all duration-300",
+                          "pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-medium transition-all duration-300",
                           isActive
-                            ? "text-primary"
+                            ? "text-primary font-semibold"
                             : "text-muted-foreground/80 group-hover:text-foreground/90",
                         )}
                       >

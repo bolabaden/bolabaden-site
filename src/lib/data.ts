@@ -1,3 +1,12 @@
+/**
+ * Static data definitions for projects, tech stack, contact info.
+ *
+ * CONTEXT: Shared/Reference Data
+ * Curated project list, technology definitions (from config).
+ * Used by both portfolio discovery (AboutProjectsSection) and main projects page.
+ * Serves as base data layer before API enrichment.
+ */
+
 import { Project, TechStack, ContactInfo } from "./types";
 import { config, envJson } from "./config";
 

@@ -1,6 +1,13 @@
 /**
  * Maps GitHub repositories to curated project metadata.
- * Keeps lightweight, stable fields only.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Metadata
+ * Stores custom overrides for portfolio projects (featured flag, custom titles,
+ * custom descriptions). Links stable portfolio metadata to dynamic GitHub repo data.
+ * Consumed by the auto-discover API route (/api/projects/auto-discover) that
+ * powers AboutProjectsSection — overrides are applied server-side before the
+ * component receives the curated project list.
+ * Keeps lightweight, stable fields only; dynamic data comes from github-enhanced.
  */
 
 import { Project } from "./types";

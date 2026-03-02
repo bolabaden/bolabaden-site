@@ -1,5 +1,16 @@
 "use client";
 
+/**
+ * Portfolio-specific navigation for About page (/about).
+ *
+ * CONTEXT: Portfolio/Flex-Focused
+ * Renders portfolio anchor navigation (Portfolio, Learning, GitHub Activity, Background, Reach Out)
+ * with internal page anchors (#projects, #guides, #github-stats, #about, #contact).
+ * Lazy-loads sections as user scrolls through the portfolio narrative.
+ *
+ * Contrast: MainNavbar uses external routing to discovery pages (Contributions, Playbooks, etc).
+ */
+
 import { useState, useEffect, useCallback, FormEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -75,7 +86,7 @@ export function AboutNavigation() {
       )}
     >
       <div className="border-b border-primary/30 bg-primary/10">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2">
           <form
             onSubmit={handleSearch}
             className="flex items-center gap-2 py-5"
@@ -106,7 +117,7 @@ export function AboutNavigation() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-4">
+      <div className="container mx-auto px-2 pt-4">
         <div className="flex items-center justify-between h-14">
           <Link
             href="/about"
@@ -148,6 +159,7 @@ export function AboutNavigation() {
           </div>
 
           <button
+            type="button"
             onClick={() => setIsMobileMenuOpen((v) => !v)}
             className="md:hidden text-foreground hover:text-primary transition-colors focus-ring rounded-md p-2"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -170,7 +182,7 @@ export function AboutNavigation() {
             transition={{ duration: 0.25 }}
             className="md:hidden glass backdrop-blur-lg border-t border-border"
           >
-            <div className="container mx-auto px-4 py-4">
+            <div className="container mx-auto px-2 py-4">
               <div className="flex flex-col space-y-3">
                 {config.ABOUT_NAV_ITEMS.map((item) => (
                   <AboutNavLink

@@ -1,0 +1,58 @@
+
+> bolabaden-site@0.1.0 build
+> next build
+
+ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\GitHub\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\GitHub\bolabaden-site\package-lock.json
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 21.0s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+ΓÜá Using edge runtime on a page currently disables static generation for that page
+  Generating static pages using 11 workers (0/14) ...
+  Generating static pages using 11 workers (3/14) 
+  Generating static pages using 11 workers (6/14) 
+  Generating static pages using 11 workers (10/14) 
+Γ£ô Generating static pages using 11 workers (14/14) in 1275.3ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /about
+Γö£ ╞Æ /about/opengraph-image
+Γö£ ╞Æ /api/containers
+Γö£ ╞Æ /api/error/[status]
+Γö£ ╞Æ /api/github/[username]
+Γö£ ╞Æ /api/github/[username]/stats
+Γö£ ╞Æ /api/github/skills
+Γö£ ╞Æ /api/projects
+Γö£ ╞Æ /api/projects/auto-discover
+Γö£ ╞Æ /api/projects/enhanced
+Γö£ ╞Æ /api/searx/search
+Γö£ ╞Æ /api/services
+Γö£ Γùï /contact
+Γö£ ╞Æ /contact/opengraph-image
+Γö£ Γùï /dashboard
+Γö£ ╞Æ /dashboard/opengraph-image
+Γö£ ╞Æ /guides
+Γö£ ╞Æ /guides/[slug]
+Γö£ ╞Æ /guides/[slug]/opengraph-image
+Γö£ ╞Æ /guides/opengraph-image
+Γö£ ╞Æ /opengraph-image
+Γö£ Γùï /projects
+Γö£ ╞Æ /projects/opengraph-image
+Γö£ Γùï /robots.txt
+Γöö ╞Æ /sitemap.xml
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

@@ -1,5 +1,18 @@
 "use server";
 
+/**
+ * GET /api/projects/auto-discover
+ * Discover and score all GitHub repositories for automatic portfolio curation.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Discovery
+ * Scans user's GitHub repos (owned + organization), applies quality scoring
+ * (stars, recent activity, language proficiency, category relevance),
+ * and selects featured portfolio candidates.
+ *
+ * Used by: AboutProjectsSection (portfolio showcase on /about)
+ * Data flows: all repos → scored → featured selection → portfolio display
+ */
+
 import { NextResponse } from "next/server";
 import { fetchAllUserRepos, EnhancedGitHubRepo } from "@/lib/github-enhanced";
 import { enrichProject, shouldIncludeProject } from "@/lib/project-mapper";
@@ -108,8 +121,15 @@ function repoToProject(repo: EnhancedGitHubRepo): Project {
     ...repo.topics.slice(0, 5), // Limit to 5 topics
   ].filter(Boolean) as string[];
 
+  // Extract owner from full_name (format: "owner/repo")
+  const owner = repo.full_name.split("/")[0].toLowerCase();
+  const repoName = repo.name.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+
+  // Include owner in ID to ensure uniqueness across multiple GitHub users
+  const id = `${owner}-${repoName}`;
+
   return {
-    id: repo.name.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+    id,
     title: repo.name
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -170,10 +190,24 @@ export async function GET(request: Request) {
       };
     });
 
+    // Deduplicate projects by ID (keeping the highest quality version)
+    // This handles cases where multiple users have repos with the same name
+    const deduplicatedProjects = Array.from(
+      scoredProjects
+        .reduce((map, project) => {
+          const existing = map.get(project.id);
+          if (!existing || project.qualityScore > existing.qualityScore) {
+            map.set(project.id, project);
+          }
+          return map;
+        }, new Map<string, (typeof scoredProjects)[0]>())
+        .values(),
+    );
+
     // Feature only the top quality projects (capped ratio + minimum threshold)
     const featuredIds = new Set(
       selectFeaturedProjectIds(
-        scoredProjects.map((project) => ({
+        deduplicatedProjects.map((project) => ({
           id: project.id,
           score: project.qualityScore ?? 0,
           archived: project.status === "archived",
@@ -186,7 +220,7 @@ export async function GET(request: Request) {
       ),
     );
 
-    const projects = scoredProjects.map((project) => ({
+    const projects = deduplicatedProjects.map((project) => ({
       ...project,
       featured: featuredIds.has(project.id),
     }));

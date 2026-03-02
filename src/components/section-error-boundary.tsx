@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Error boundary wrapper for individual page sections.
+ *
+ * CONTEXT: Shared/Utility
+ * Gracefully handles section rendering errors in BOTH portfolio (/about) and discovery (main site) contexts.
+ * Isolates failures to prevent full page crashes.
+ */
+
 import React from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 
@@ -44,6 +52,7 @@ export class SectionErrorBoundary extends React.Component<Props, State> {
             {this.state.error?.message ?? "An unexpected error occurred"}
           </p>
           <button
+            type="button"
             onClick={() => this.setState({ hasError: false })}
             className="flex items-center gap-2 text-xs text-primary hover:text-primary/80 transition-colors mt-1"
           >

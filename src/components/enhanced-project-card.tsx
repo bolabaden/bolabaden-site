@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * Reusable project card component with advanced GitHub stats visualization.
+ *
+ * CONTEXT: Shared/Context-Agnostic
+ * This card is used in BOTH contexts but renders same data:
+ * - AboutProjectsSection (portfolio): Shows featured + all portfolio projects
+ * - ProjectsSection (discovery): Shows dynamic contributions with filters
+ *
+ * Props determine context-specific behavior (featured flag, stats display).
+ * Card itself does NOT change appearance by context; container components handle framing.
+ */
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";

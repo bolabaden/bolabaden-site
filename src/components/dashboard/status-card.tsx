@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Individual service status display card.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Infrastructure Monitoring
+ * Renders single service status (online/offline/maintenance) with uptime, metrics.
+ * Component of Dashboard (portfolio infrastructure evidence on /dashboard page).
+ */
+
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getHealthColor } from "@/lib/dashboard-utils";

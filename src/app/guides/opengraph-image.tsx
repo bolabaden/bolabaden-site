@@ -1,3 +1,11 @@
+/**
+ * OpenGraph image for /guides page (discovery context).
+ *
+ * CONTEXT: Discovery/Reference
+ * Technical Playbooks page preview with reference-focused messaging.
+ * Shows guides as learning/reference resources for main site discovery.
+ */
+
 import { ImageResponse } from "next/og";
 import { config } from "@/lib/config";
 

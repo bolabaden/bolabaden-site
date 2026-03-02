@@ -1,3 +1,13 @@
+/**
+ * GET /api/searx/search
+ * Proxy to SearX metasearch engine for privacy-focused search.
+ *
+ * CONTEXT: Portfolio Infrastructure/Services
+ * Routes search queries to self-hosted SearX instance.
+ * Embedded in Research Wizard service (portfolio infrastructure showcase).
+ * Demonstrates infrastructure management and privacy-first tool integration.
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { config } from "@/lib/config";
 

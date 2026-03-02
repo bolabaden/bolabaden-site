@@ -1,3 +1,13 @@
+/**
+ * Project quality and portfolio curation scoring.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Curation Logic
+ * Calculates composite quality scores (stars, activity, language proficiency, category relevance)
+ * for portfolio-featured project selection.
+ * Used by /api/projects/auto-discover to rank and select featured works.
+ * Not used on main discovery /projects page; only portfolio context.
+ */
+
 import { EnhancedGitHubRepo, EnhancedRepoStats } from "./github-enhanced";
 import { Project } from "./types";
 

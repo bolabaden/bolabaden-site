@@ -1,6 +1,10 @@
 /**
- * Enhanced GitHub API service with commit activity, stats, and rich data
- * Fetches comprehensive repository information for dynamic project cards
+ * Enhanced GitHub API service with comprehensive repo metrics.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Rich Data
+ * Fetches commit activity, contributor history, language stats, comprehensive metrics.
+ * Powers portfolio project cards (AboutProjectsSection) with deep visibility into contributions.
+ * Also used by discovery ProjectsSection for detailed repo insights.
  */
 
 export interface GitHubCommitActivity {

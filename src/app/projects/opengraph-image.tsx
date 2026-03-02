@@ -1,3 +1,11 @@
+/**
+ * OpenGraph image for /projects page (discovery context).
+ *
+ * CONTEXT: Discovery/Reference
+ * Contributions & Gists dynamic discovery page preview.
+ * Emphasizes contributions discovery and exploration, not portfolio curation.
+ */
+
 import { ImageResponse } from "next/og";
 import { config } from "@/lib/config";
 

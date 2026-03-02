@@ -1,3 +1,12 @@
+/**
+ * Root app layout with global metadata and font configuration.
+ *
+ * CONTEXT: Shared App Shell
+ * Base layout for entire site (both portfolio and discovery contexts).
+ * Configures fonts (Inter, JetBrains Mono), global metadata, theme providers.
+ * Does not change based on context; applies consistently across all pages.
+ */
+
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";

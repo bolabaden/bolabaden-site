@@ -1,37 +1,45 @@
 /**
- * GitHub API service for fetching repository data
+ * GitHub API service for basic repository data.
+ *
+ * CONTEXT: Discovery/Reference Focused
+ * Fetches basic repo metadata (stars, forks, languages) without curation.
+ * Currently consumed by the generic projects API route (/api/projects) that
+ * powers the Discovery /projects page listing.
+ * Re-exports parseGitHubUrl from github-enhanced to avoid duplication.
+ * Contrast: github-enhanced.ts adds richer portfolio-curation data (quality
+ * scores, skills evidence) used by portfolio-specific API routes.
  */
 
 // Re-export parseGitHubUrl from the enhanced module to avoid duplication
-import { parseGitHubUrl } from './github-enhanced'
-export { parseGitHubUrl }
+import { parseGitHubUrl } from "./github-enhanced";
+export { parseGitHubUrl };
 
 export interface GitHubRepo {
-  name: string
-  full_name: string
-  description: string
-  created_at: string
-  updated_at: string
-  pushed_at: string
-  stargazers_count: number
-  watchers_count: number
-  forks_count: number
-  open_issues_count: number
-  language: string
-  topics: string[]
-  html_url: string
-  homepage: string | null
-  archived: boolean
+  name: string;
+  full_name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  pushed_at: string;
+  stargazers_count: number;
+  watchers_count: number;
+  forks_count: number;
+  open_issues_count: number;
+  language: string;
+  topics: string[];
+  html_url: string;
+  homepage: string | null;
+  archived: boolean;
 }
 
 export interface GitHubRepoStats {
-  updatedAt: Date
-  createdAt: Date
-  stars: number
-  forks: number
-  openIssues: number
-  language: string
-  topics: string[]
+  updatedAt: Date;
+  createdAt: Date;
+  stars: number;
+  forks: number;
+  openIssues: number;
+  language: string;
+  topics: string[];
 }
 
 /**
@@ -42,16 +50,16 @@ export interface GitHubRepoStats {
  */
 export async function fetchGitHubRepo(
   owner: string,
-  repo: string
+  repo: string,
 ): Promise<GitHubRepo | null> {
   try {
-    const token = process.env.GITHUB_TOKEN
+    const token = process.env.GITHUB_TOKEN;
     const headers: HeadersInit = {
-      'Accept': 'application/vnd.github.v3+json',
-    }
-    
+      Accept: "application/vnd.github.v3+json",
+    };
+
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     const response = await fetch(
@@ -59,19 +67,21 @@ export async function fetchGitHubRepo(
       {
         headers,
         next: { revalidate: 300 }, // Cache for 5 minutes
-      }
-    )
+      },
+    );
 
     if (!response.ok) {
-      console.error(`GitHub API error for ${owner}/${repo}: ${response.status}`)
-      return null
+      console.error(
+        `GitHub API error for ${owner}/${repo}: ${response.status}`,
+      );
+      return null;
     }
 
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error(`Failed to fetch GitHub repo ${owner}/${repo}:`, error)
-    return null
+    console.error(`Failed to fetch GitHub repo ${owner}/${repo}:`, error);
+    return null;
   }
 }
 
@@ -80,17 +90,19 @@ export async function fetchGitHubRepo(
  * @param githubUrl - GitHub repository URL
  * @returns Repository stats or null if not found
  */
-export async function getRepoStats(githubUrl: string): Promise<GitHubRepoStats | null> {
-  const parsed = parseGitHubUrl(githubUrl)
-  
+export async function getRepoStats(
+  githubUrl: string,
+): Promise<GitHubRepoStats | null> {
+  const parsed = parseGitHubUrl(githubUrl);
+
   if (!parsed) {
-    return null
+    return null;
   }
 
-  const repo = await fetchGitHubRepo(parsed.owner, parsed.repo)
-  
+  const repo = await fetchGitHubRepo(parsed.owner, parsed.repo);
+
   if (!repo) {
-    return null
+    return null;
   }
 
   return {
@@ -101,7 +113,7 @@ export async function getRepoStats(githubUrl: string): Promise<GitHubRepoStats |
     openIssues: repo.open_issues_count,
     language: repo.language,
     topics: repo.topics || [],
-  }
+  };
 }
 
 /**
@@ -110,8 +122,7 @@ export async function getRepoStats(githubUrl: string): Promise<GitHubRepoStats |
  * @returns Array of repository stats (null for failed fetches)
  */
 export async function fetchMultipleRepos(
-  githubUrls: string[]
+  githubUrls: string[],
 ): Promise<(GitHubRepoStats | null)[]> {
-  return Promise.all(githubUrls.map(url => getRepoStats(url)))
+  return Promise.all(githubUrls.map((url) => getRepoStats(url)));
 }
-

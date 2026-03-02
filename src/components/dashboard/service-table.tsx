@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Detailed service listing table.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Infrastructure Evidence
+ * Displays all running services with status, uptime, and management links.
+ * Reference table for portfolio infrastructure showcase on /dashboard.
+ */
+
 import { useState } from "react";
 import {
   CheckCircle,

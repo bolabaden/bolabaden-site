@@ -1,3 +1,11 @@
+/**
+ * OpenGraph image for /contact page (discovery context).
+ *
+ * CONTEXT: Discovery/Reference
+ * Generic contact page preview for social media sharing.
+ * Shows "Get in touch" messaging for discovery/reference context.
+ */
+
 import { ImageResponse } from "next/og";
 import { config } from "@/lib/config";
 

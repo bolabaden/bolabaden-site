@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Service category breakdown visualization.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Infrastructure Monitoring
+ * Pie/donut chart showing infrastructure organization (databases, services, monitoring, etc).
+ * Part of Dashboard portfolio evidence for infrastructure scope and organization.
+ */
+
 import { motion } from "framer-motion";
 import { getCategoryDisplayName } from "@/lib/dashboard-utils";
 import { Layers } from "lucide-react";

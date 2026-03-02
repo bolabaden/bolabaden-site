@@ -1,3 +1,11 @@
+/**
+ * Dynamic XML sitemap generation.
+ *
+ * CONTEXT: Shared SEO Utility
+ * Generates sitemap entries for all routes (portfolio and discovery pages).
+ * Helps search engines discover and index both /about and main-site pages.
+ */
+
 import { MetadataRoute } from "next";
 import { config } from "@/lib/config";
 import { getGuides } from "@/lib/guides";

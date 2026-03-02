@@ -1,3 +1,13 @@
+/**
+ * GET /api/github/skills
+ * Analyzes and scores technical skills by language evidence and repository signals.
+ *
+ * CONTEXT: Portfolio/Flex-Focused Skill Evidence
+ * Mines GitHub repos for language usage patterns, project categories, contribution types.
+ * Powers AboutSection skill visualization and confidence scoring on /about page.
+ * Demonstrates multi-language expertise and depth through evidence-based analysis.
+ */
+
 import { NextResponse } from "next/server";
 import {
   EnhancedGitHubRepo,
@@ -1117,7 +1127,10 @@ function confidenceFromSignals(
     1,
   );
   const continuityEvidence = clamp(language.activeMonths.size / 18, 0, 1);
-  const evidenceConfidence = evidenceConfidenceScore(language.evidence, totalRepos);
+  const evidenceConfidence = evidenceConfidenceScore(
+    language.evidence,
+    totalRepos,
+  );
   const raw =
     bytesEvidence * 0.2 +
     repoEvidence * 0.16 +
@@ -1300,7 +1313,10 @@ function scoreLanguage(
     evidenceConfidencePct: insights.evidenceConfidencePct,
   });
 
-  const evidenceSummary = summarizeEvidenceHighlights(language.evidence.highlights, 4);
+  const evidenceSummary = summarizeEvidenceHighlights(
+    language.evidence.highlights,
+    4,
+  );
 
   const repositories = language.records
     .sort((a, b) => {

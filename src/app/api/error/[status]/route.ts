@@ -1,3 +1,11 @@
+/**
+ * Custom error response handler.
+ *
+ * CONTEXT: Shared/Generic Error Handling
+ * Returns formatted error pages with technical details and user-friendly messages.
+ * Used across both portfolio and discovery contexts for consistent error responses.
+ */
+
 import { NextRequest } from "next/server";
 import { config } from "@/lib/config";
 

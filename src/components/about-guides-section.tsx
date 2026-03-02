@@ -1,3 +1,13 @@
+/**
+ * Guides showcase section for the portfolio About page.
+ *
+ * CONTEXT: Portfolio/Flex-Focused
+ * Presents technical guides with rich animated cards, category filters,
+ * and expandable feature/category breakdowns. Emphasises guides as
+ * evidence of infrastructure depth rather than a browsable reference index.
+ * Contrast: /guides uses its own minimal inline listing (PageLayout, no animations).
+ * See GuidesIndexPage (app/guides/page.tsx) for the Discovery-context equivalent.
+ */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -240,6 +250,7 @@ const GuideCategoryCard = ({
             ))}
             <li className="pt-1">
               <button
+                type="button"
                 onClick={() => {
                   const event = new CustomEvent("guides:set-filter", {
                     detail: category,
@@ -258,7 +269,7 @@ const GuideCategoryCard = ({
   );
 };
 
-export function GuidesSection({ guides }: { guides: Guide[] }) {
+export function AboutGuidesSection({ guides }: { guides: Guide[] }) {
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
   const categories = [
@@ -330,8 +341,8 @@ export function GuidesSection({ guides }: { guides: Guide[] }) {
   return (
     <Section
       id="guides"
-      title="Guides & Resources"
-      subtitle="Technical guides, deployment tutorials, and infrastructure documentation. Learn how to replicate and extend what I've built."
+      title="Learning & Implementation"
+      subtitle="Technical guides written to share infrastructure knowledge and deployment patterns I've learned building production systems."
       background="gradient"
     >
       {/* Features Overview */}
@@ -362,6 +373,7 @@ export function GuidesSection({ guides }: { guides: Guide[] }) {
           {categories.map((category) => (
             <button
               key={category}
+              type="button"
               onClick={() => setActiveFilter(category)}
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize",
@@ -387,25 +399,27 @@ export function GuidesSection({ guides }: { guides: Guide[] }) {
       <div className="text-center">
         <div className="glass rounded-lg p-8 max-w-2xl mx-auto">
           <BookOpen className="h-16 w-16 text-primary mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold mb-4">Want More Guides?</h3>
+          <h3 className="text-2xl font-semibold mb-4">
+            Full Reference Library
+          </h3>
           <p className="text-muted-foreground mb-6">
-            Looking for specific deployment guides or have questions about
-            self-hosting? I'm constantly adding new content based on real
-            infrastructure experience.
+            These guides represent the infrastructure knowledge I've built
+            across production deployments. Full reference library and updated
+            walkthroughs are available on the dedicated playbooks page.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/contact"
+              href="/guides"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
-              Request a Guide
+              <BookOpen className="h-4 w-4" />
+              Browse All Playbooks
             </Link>
             <Link
-              href="/guides"
+              href="/about#contact"
               className="inline-flex items-center gap-2 px-6 py-3 glass hover:bg-white/10 transition-colors rounded-lg"
             >
-              <BookOpen className="h-4 w-4" />
-              Browse All Guides
+              Discuss Infrastructure
             </Link>
           </div>
         </div>

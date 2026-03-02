@@ -40,22 +40,33 @@ export default async function GuidePage({
 
   return (
     <PageLayout>
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 py-20">
-        <div className="mb-4">
+      <div className="max-w-3xl mx-auto px-2 sm:px-4 lg:px-6 py-16">
+        <div className="mb-8">
           <Link
             href="/guides"
-            className="text-sm text-emerald-300 hover:text-emerald-200 transition-colors"
+            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
           >
             {config.GUIDE_BACK_TO_INDEX_LABEL}
           </Link>
         </div>
-        <h1 className="text-3xl font-semibold text-slate-100 mb-2">
-          {guide.title}
-        </h1>
-        <p className="text-slate-400 mb-4">{guide.description}</p>
-        <div className="text-sm text-slate-500 mb-8">
-          <span className="capitalize">{guide.category}</span> •{" "}
-          {guide.difficulty} • {guide.estimatedTime}
+        <div className="border-b border-[#1f1f1f] pb-8 mb-8">
+          <h1 className="text-3xl font-semibold text-white tracking-tight mb-3">
+            {guide.title}
+          </h1>
+          <p className="text-zinc-400 mb-4 leading-relaxed">
+            {guide.description}
+          </p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
+              {guide.category}
+            </span>
+            <span className="text-zinc-700">·</span>
+            <span className="text-xs text-zinc-500 capitalize">
+              {guide.difficulty}
+            </span>
+            <span className="text-zinc-700">·</span>
+            <span className="text-xs text-zinc-500">{guide.estimatedTime}</span>
+          </div>
         </div>
         <article className="max-w-none">
           <MarkdownContent content={guide.content} />

@@ -41,21 +41,21 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Services */}
+          {/* Portfolio */}
           <div>
-            <h4 className="mb-4 font-semibold">Services</h4>
+            <h4 className="mb-4 font-semibold">Portfolio</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href="/about#embeds"
                   className="transition-colors hover:text-primary"
                 >
-                  Infrastructure & Services
+                  Live Services
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/projects"
+                  href="/about#projects"
                   className="transition-colors hover:text-primary"
                 >
                   Projects
@@ -63,18 +63,18 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/guides"
+                  href="/about#guides"
                   className="transition-colors hover:text-primary"
                 >
-                  Guides
+                  Learning
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Background */}
           <div>
-            <h4 className="mb-4 font-semibold">Resources</h4>
+            <h4 className="mb-4 font-semibold">Background</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
@@ -88,10 +88,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/guides"
+                  href="/about#about"
                   className="transition-colors hover:text-primary"
                 >
-                  Documentation
+                  Background
                 </Link>
               </li>
               <li>
@@ -107,7 +107,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="mb-4 font-semibold">Contact</h4>
+            <h4 className="mb-4 font-semibold">Reach Out</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
@@ -121,10 +121,10 @@ export function Footer() {
               <li>{config.TIMEZONE}</li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/about#contact"
                   className="transition-colors hover:text-primary"
                 >
-                  Get in Touch
+                  Discuss Opportunities
                 </Link>
               </li>
             </ul>
@@ -138,12 +138,13 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <Link
-              href="/contact"
+              href="/about#contact"
               className="text-sm transition-colors text-muted-foreground hover:text-primary"
             >
-              Contact
+              Discuss
             </Link>
             <button
+              type="button"
               onClick={scrollToTop}
               className="p-2 transition-colors rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary/50"
               aria-label="Scroll to top of page"

@@ -4,15 +4,22 @@ import { MainNavbar } from "@/components/main-navbar";
 import { MainFooter } from "@/components/main-footer";
 
 /**
- * Shared page layout for all main-design pages (everything except /about).
- * Uses the emerald/slate color scheme. The /about page uses its own layout
- * with the glassmorphism Navigation + Footer to look like a different site.
+ * Main Site Page Layout - Discovery/Reference Context
+ *
+ * CONTEXT: Discovery/Reference Focused (non-portfolio)
+ * Wraps all main-site pages (/projects, /guides, /contact, /dashboard) with consistent
+ * neutral dark theme (theme-main, emerald accent), navigation, and footer.
+ *
+ * Uses MainNavbar with discovery-focused nav items (Contributions, Status, Playbooks, Contact).
+ * Uses MainFooter with external routing and discovery language.
+ *
+ * Contrast: /about uses dynamic About layout with portfolio nav and footer.tsx.
  */
 export function PageLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="theme-main min-h-screen bg-[#0b0d10] text-slate-100">
+    <div className="theme-main min-h-screen bg-[#0a0a0a] text-white">
       <MainNavbar />
-      <main className="pt-8 pb-24 md:pb-0">{children}</main>
+      <main>{children}</main>
       <MainFooter />
     </div>
   );

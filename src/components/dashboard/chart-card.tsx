@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Sparkline chart for service metrics (CPU, memory, request rate).
+ *
+ * CONTEXT: Portfolio/Flex-Focused Infrastructure Monitoring
+ * Visualizes real-time service performance and health metrics in Dashboard.
+ * Part of infrastructure evidence display showing operational proficiency.
+ */
+
 import { motion } from "framer-motion";
 import { generateSparklinePoints, formatTime } from "@/lib/dashboard-utils";
 import { useState } from "react";

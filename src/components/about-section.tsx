@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Portfolio-specific Background/History section for About page.
+ *
+ * CONTEXT: Portfolio/Flex-Focused
+ * This component is exclusively rendered in /about to showcase professional background,
+ * technical skills, and work history in a portfolio discussion context.
+ * Do NOT use this component on main discovery pages (/projects, /guides, etc).
+ */
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
