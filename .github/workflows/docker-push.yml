@@ -87,6 +87,13 @@ jobs:
           GHIDRA_VERSION=""
           IMAGE_TAG="${{ github.ref_name }}"
 
+          # Sanitize IMAGE_TAG for pull_request events: github.ref_name
+          # is "<pr_number>/merge" which contains a slash, making it an
+          # invalid Docker tag. Use "pr-<number>" instead.
+          if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+            IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
+          fi
+
           if [[ -n "${VERSION_TAG_UPSTREAM_API}" ]]; then
             UPSTREAM_JSON=$(curl -sSL -H 'Accept: application/vnd.github+json' "${VERSION_TAG_UPSTREAM_API}")
             UPSTREAM_TAG=$(echo "$UPSTREAM_JSON" | jq -r '.tag_name // empty')
